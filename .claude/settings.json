@@ -5,7 +5,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "/Users/ram/ai-papers/.claude/hooks/plan-gate.sh"
+            "command": "/Users/ram/programming/vibecoding/ai-paper/.claude/hooks/plan-gate.sh"
           }
         ],
         "matcher": "Write|Edit|MultiEdit"
@@ -14,7 +14,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "/Users/ram/ai-papers/.claude/hooks/bash-gate.sh"
+            "command": "/Users/ram/programming/vibecoding/ai-paper/.claude/hooks/bash-gate.sh"
           }
         ],
         "matcher": "Bash"
@@ -25,7 +25,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "/Users/ram/ai-papers/.claude/hooks/doc-reminder.sh"
+            "command": "/Users/ram/programming/vibecoding/ai-paper/.claude/hooks/doc-reminder.sh"
           }
         ],
         "matcher": "Write|Edit|MultiEdit"
@@ -34,7 +34,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "/Users/ram/ai-papers/.claude/hooks/bash-audit.sh"
+            "command": "/Users/ram/programming/vibecoding/ai-paper/.claude/hooks/bash-audit.sh"
           }
         ],
         "matcher": "Bash"
@@ -45,7 +45,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "/Users/ram/ai-papers/.claude/hooks/completion-gate.sh"
+            "command": "/Users/ram/programming/vibecoding/ai-paper/.claude/hooks/completion-gate.sh"
           }
         ]
       }
@@ -55,7 +55,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "/Users/ram/ai-papers/.claude/hooks/subagent-track.sh"
+            "command": "/Users/ram/programming/vibecoding/ai-paper/.claude/hooks/subagent-track.sh"
           }
         ]
       }
@@ -65,7 +65,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "/Users/ram/ai-papers/.claude/hooks/subagent-cleanup.sh"
+            "command": "/Users/ram/programming/vibecoding/ai-paper/.claude/hooks/subagent-cleanup.sh"
           }
         ]
       }
