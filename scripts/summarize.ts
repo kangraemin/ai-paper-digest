@@ -21,11 +21,15 @@ async function main() {
     await db.update(papers)
       .set({
         titleKo: result.titleKo,
-        summaryKo: result.summaryKo,
+        oneLiner: result.oneLiner,
+        targetAudience: result.targetAudience,
+        keyFindings: result.keyFindings,
+        evidence: result.evidence,
+        howToApply: result.howToApply,
+        codeExample: result.codeExample,
+        relatedResources: JSON.stringify(result.relatedResources),
         aiCategory: result.aiCategory,
         devRelevance: result.devRelevance,
-        relevanceReason: result.relevanceReason,
-        devNote: result.devNote,
         summarizedAt: new Date().toISOString(),
       })
       .where(eq(papers.id, id));
