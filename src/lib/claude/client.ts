@@ -6,7 +6,7 @@ const client = new Anthropic();
 
 export async function summarizePaper(title: string, abstract: string): Promise<SummaryResult> {
   const response = await client.messages.create({
-    model: 'claude-haiku-4-5-20251001',
+    model: 'claude-sonnet-4-6-20260315',
     max_tokens: 2000,
     messages: [{
       role: 'user',
