@@ -1,0 +1,8 @@
+{
+  "docs_git_track": true,
+  "commit_strategy": "per-step",
+  "commit_skill": true,
+  "target_dir": "/Users/ram/ai-papers/.claude",
+  "enforcement_mode": "hooks",
+  "agent_mode": "team"
+}
