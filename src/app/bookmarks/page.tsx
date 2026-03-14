@@ -13,6 +13,7 @@ interface Paper {
   devRelevance: number | null;
   targetAudience: string | null;
   tags: string | null;
+  source: string | null;
   isHot: boolean | null;
   publishedAt: string;
   authors: string;
