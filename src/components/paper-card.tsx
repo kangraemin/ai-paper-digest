@@ -83,15 +83,15 @@ export function PaperCard({ id, title, titleKo, oneLiner, aiCategory, devRelevan
           {/* Bottom row */}
           <div className="flex items-center gap-4 mt-2 pt-3 border-t border-zinc-800/50">
             {targetAudience && (
-              <div className="flex items-center gap-1.5 text-zinc-400">
-                <Code size={14} />
-                <span className="font-mono text-[11px]">For: {targetAudience}</span>
+              <div className="flex items-center gap-1.5 text-zinc-400 min-w-0 flex-1">
+                <Code size={14} className="shrink-0" />
+                <span className="font-mono text-[11px] truncate">For: {targetAudience}</span>
               </div>
             )}
             {devRelevance != null && (
-              <div className="flex items-center gap-1.5" style={{ color: catColor }}>
+              <div className="flex items-center gap-1.5 shrink-0" style={{ color: catColor }}>
                 <Target size={14} />
-                <span className="font-mono text-[11px]">{devRelevance}% Match</span>
+                <span className="font-mono text-[11px]">{devRelevance * 20}% Match</span>
               </div>
             )}
           </div>
