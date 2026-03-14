@@ -6,7 +6,7 @@
   },
   "plan_approved": true,
   "team_name": "ux-rework",
-  "current_dev_phase": 1,
+  "current_dev_phase": 2,
   "current_step": 1,
   "dev_phases": {
     "1": {
@@ -25,10 +25,10 @@
         {
           "step": 2,
           "description": "prompts.ts aiCategory 분류 기준을 실무 6개로 교체",
-          "status": "pending"
+          "status": "done"
         }
       ],
-      "status": "pending"
+      "status": "done"
     },
     "2": {
       "name": "Design System",

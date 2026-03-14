@@ -5,16 +5,12 @@ export const SUMMARY_PROMPT = `당신은 AI/ML 논문 요약 전문가입니다.
 1. titleKo: 한글 제목 (학술 용어는 영어 유지)
 2. summaryKo: 한글 요약 3~5줄 (일반 개발자가 이해할 수 있는 수준, 핵심 기여와 방법론 포함)
 3. aiCategory: 아래 카테고리 중 하나만 선택
-   - nlp: 자연어처리, 언어모델, 텍스트
-   - cv: 컴퓨터비전, 이미지, 비디오
-   - rl: 강화학습
-   - multimodal: 멀티모달 (텍스트+이미지 등)
-   - agent: AI 에이전트, 도구 사용
-   - reasoning: 추론, 사고 체인
-   - optimization: 학습 최적화, 효율성
-   - safety: AI 안전, 정렬
-   - architecture: 모델 아키텍처, 트랜스포머
-   - other: 위에 해당 없음
+   - prompting: 프롬프팅, 시스템 프롬프트, few-shot, CoT, 프롬프트 엔지니어링
+   - rag: 검색 증강 생성, 청킹, 임베딩, 벡터 검색, 지식 기반
+   - agent: AI 에이전트, 도구 사용, MCP, 멀티에이전트, 함수 호출
+   - fine-tuning: 파인튜닝, RLHF, DPO, LoRA, 어댑터, 정렬
+   - eval: 벤치마크, 평가, 품질 측정, 레드팀, 안전성 평가
+   - cost-speed: 추론 최적화, 토큰 절약, 배치, 양자화, 디스틸레이션, 모델 압축
 4. devRelevance: LLM을 사용하는 개발자에게 얼마나 유용한지 1~5 점수
    - 5: 직접 적용 가능 (새 프롬프팅 기법, 파인튜닝, RAG, 에이전트 패턴, API 활용)
    - 4: 실무에 참고 (벤치마크, 성능 비교, 아키텍처 개선, 추론 최적화)
