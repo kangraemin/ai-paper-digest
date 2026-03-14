@@ -1,12 +1,12 @@
 {
-  "workflow_phase": "development",
+  "workflow_phase": "done",
   "mode": "normal",
   "planning": {
     "no_question_streak": 0
   },
   "plan_approved": true,
   "team_name": "ux-rework",
-  "current_dev_phase": 2,
+  "current_dev_phase": 4,
   "current_step": 1,
   "dev_phases": {
     "1": {
@@ -41,15 +41,15 @@
         {
           "step": 1,
           "description": "globals.css 컬러 시스템을 블루 틴트 다크 + 웜 엠버 액센트로 변경",
-          "status": "pending"
+          "status": "done"
         },
         {
           "step": 2,
           "description": "layout.tsx에 JetBrains Mono 폰트 추가 + max-w-3xl로 변경",
-          "status": "pending"
+          "status": "done"
         }
       ],
-      "status": "pending"
+      "status": "done"
     },
     "3": {
       "name": "Components",
@@ -63,20 +63,20 @@
         {
           "step": 1,
           "description": "header.tsx → 터미널 느낌 모노스페이스 로고 + sticky",
-          "status": "pending"
+          "status": "done"
         },
         {
           "step": 2,
           "description": "paper-card.tsx → Card 래퍼 제거, devNote 최상단, 리스트형 + 새 카테고리 스타일",
-          "status": "pending"
+          "status": "done"
         },
         {
           "step": 3,
           "description": "newsletter-form.tsx → 푸터 컴팩트 인라인 폼",
-          "status": "pending"
+          "status": "done"
         }
       ],
-      "status": "pending"
+      "status": "done"
     },
     "4": {
       "name": "Page Assembly",
@@ -88,14 +88,14 @@
         {
           "step": 1,
           "description": "HotPapers 제거, CategoryFilter 렌더링 제거, devRelevance 내림차순 정렬, 빈 상태 디자인",
-          "status": "pending"
+          "status": "done"
         }
       ],
-      "status": "pending"
+      "status": "done"
     }
   },
   "verification": {
-    "rounds_passed": 0
+    "rounds_passed": 3
   },
   "task_dir": "docs/2026-03-14/ux-rework",
   "active_file": "docs/2026-03-14/ux-rework/.active"
