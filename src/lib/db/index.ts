@@ -2,9 +2,24 @@ import { drizzle } from 'drizzle-orm/libsql';
 import { createClient } from '@libsql/client';
 import * as schema from './schema';
 
-const client = createClient({
-  url: process.env.TURSO_DATABASE_URL!,
-  authToken: process.env.TURSO_AUTH_TOKEN!,
-});
+type DB = ReturnType<typeof drizzle<typeof schema>>;
 
-export const db = drizzle(client, { schema });
+let _db: DB | null = null;
+
+function getDb(): DB {
+  if (!_db) {
+    const client = createClient({
+      url: process.env.TURSO_DATABASE_URL!,
+      authToken: process.env.TURSO_AUTH_TOKEN!,
+    });
+    _db = drizzle(client, { schema });
+  }
+  return _db;
+}
+
+export const db = new Proxy({} as DB, {
+  get(_target, prop: string | symbol) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return (getDb() as any)[prop];
+  },
+});
