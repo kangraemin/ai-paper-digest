@@ -1,12 +1,34 @@
 import { spawn } from 'child_process';
 
-const SCREEN_PROMPT = `You are a filter for an AI paper digest aimed at developers who build apps using GPT/Claude APIs.
+const PAPER_SCREEN_PROMPT = `You are a filter for an AI paper digest aimed at developers who build apps using GPT/Claude APIs.
 Decide if this paper is useful for such developers (NOT researchers, NOT ML engineers training models).
 Papers about prompting, RAG, agents, tool use, fine-tuning, eval, inference optimization, code generation are useful.
 Papers about model architecture, pure theory, math proofs, specialized domains (medical, legal, robotics) are NOT useful.
 
 Title: {title}
 Abstract: {abstract}
+
+Answer in JSON only: {"pass": true/false, "reason": "one line explanation"}`;
+
+const HN_SCREEN_PROMPT = `You are a filter for an AI/dev news digest. The audience is developers who build software with AI (LLMs, APIs, agents).
+
+Pass if the post is about ANY of these:
+- AI tools, products, SDKs, APIs (GPT, Claude, Gemini, open-source LLMs, etc.)
+- Developer experience with AI (coding assistants, workflows, productivity)
+- AI engineering (RAG, agents, prompting, eval, deployment, fine-tuning)
+- AI industry news (launches, pricing, benchmarks, policy affecting developers)
+- Software engineering practices related to AI integration
+- Open source AI projects, models, frameworks
+
+Reject ONLY if the post is clearly:
+- Non-tech (politics, finance, health with no AI angle)
+- Pure academic ML research with no practical application
+- Job postings or hiring threads
+- Unrelated to AI/software development entirely
+
+When in doubt, PASS. We prefer more content over less.
+
+Title: {title}
 
 Answer in JSON only: {"pass": true/false, "reason": "one line explanation"}`;
 
@@ -30,8 +52,9 @@ function runClaude(prompt: string): Promise<string> {
   });
 }
 
-export async function screenPaper(title: string, abstract: string): Promise<{ pass: boolean; reason: string }> {
-  const prompt = SCREEN_PROMPT.replace('{title}', title).replace('{abstract}', abstract);
+export async function screenPaper(title: string, abstract: string, source: 'paper' | 'hn' = 'paper'): Promise<{ pass: boolean; reason: string }> {
+  const template = source === 'hn' ? HN_SCREEN_PROMPT : PAPER_SCREEN_PROMPT;
+  const prompt = template.replace('{title}', title).replace('{abstract}', abstract);
   let text = await runClaude(prompt);
 
   // JSON 추출: 코드블록, 또는 { } 매칭
@@ -50,13 +73,14 @@ export async function screenPaper(title: string, abstract: string): Promise<{ pa
 
 export async function screenBatch(
   papers: { id: string; title: string; abstract: string }[],
-  concurrency = 3
+  concurrency = 3,
+  source: 'paper' | 'hn' = 'paper'
 ): Promise<Map<string, { pass: boolean; reason: string }>> {
   const results = new Map<string, { pass: boolean; reason: string }>();
   for (let i = 0; i < papers.length; i += concurrency) {
     const batch = papers.slice(i, i + concurrency);
     const settled = await Promise.allSettled(
-      batch.map(p => screenPaper(p.title, p.abstract).then(r => ({ id: p.id, ...r })))
+      batch.map(p => screenPaper(p.title, p.abstract, source).then(r => ({ id: p.id, ...r })))
     );
     for (const result of settled) {
       if (result.status === 'fulfilled') {
