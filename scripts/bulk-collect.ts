@@ -85,8 +85,51 @@ async function collectS2() {
 }
 
 async function collectHN() {
-  // Phase 3 Step 2에서 구현
-  console.log('📰 HN 수집은 아직 미구현');
+  console.log('📰 HN Algolia 벌크 수집 시작...');
+
+  const stories = await fetchHNStoriesAlgolia({ daysBack: 180, minScore: 50 });
+  console.log(`  수집: ${stories.length}편`);
+
+  // 스크리닝
+  console.log('  🔍 스크리닝...');
+  const screenResults = await screenBatch(
+    stories.map(s => ({ id: `hn_${s.objectID}`, title: s.title, abstract: s.title }))
+  );
+  const passed = stories.filter(s => screenResults.get(`hn_${s.objectID}`)?.pass);
+  console.log(`  스크리닝 통과: ${passed.length}편`);
+
+  if (dryRun) {
+    console.log(`  [dry-run] DB 저장 스킵`);
+    return;
+  }
+
+  // DB 저장
+  let newCount = 0;
+  for (const story of passed) {
+    const id = `hn_${story.objectID}`;
+    const existing = await db.select().from(papers).where(eq(papers.id, id)).limit(1);
+    if (existing.length > 0) continue;
+
+    const hotScore = Math.min(Math.floor(story.points / 5), 100);
+    await db.insert(papers).values({
+      id,
+      title: story.title,
+      abstract: story.title,
+      authors: JSON.stringify([story.author]),
+      categories: JSON.stringify(['hacker_news']),
+      primaryCategory: 'hacker_news',
+      publishedAt: new Date(story.created_at_i * 1000).toISOString(),
+      arxivUrl: story.url ?? `https://news.ycombinator.com/item?id=${story.objectID}`,
+      pdfUrl: '',
+      source: 'hacker_news',
+      hotScore,
+      isHot: hotScore >= 70,
+      collectedAt: new Date().toISOString(),
+    }).onConflictDoNothing();
+    newCount++;
+  }
+
+  console.log(`  ✅ HN: ${passed.length}편 중 ${newCount}편 신규 저장`);
 }
 
 async function main() {
