@@ -12,6 +12,7 @@ interface Paper {
   aiCategory: string | null;
   devRelevance: number | null;
   targetAudience: string | null;
+  tags: string | null;
   isHot: boolean | null;
   publishedAt: string;
   authors: string;
