@@ -1,9 +1,11 @@
 import type { ArxivEntry } from './arxiv/types';
 
 const BUZZ_KEYWORDS = [
-  'GPT', 'LLM', 'ChatGPT', 'foundation model', 'large language',
+  'GPT', 'LLM', 'ChatGPT', 'large language',
   'reasoning', 'chain-of-thought', 'agent', 'multimodal',
-  'benchmark', 'state-of-the-art', 'SOTA', 'scaling',
+  'benchmark', 'prompting', 'RAG', 'retrieval',
+  'tool use', 'function calling', 'fine-tuning', 'LoRA',
+  'quantization', 'code generation', 'inference', 'eval', 'embedding',
 ];
 
 export function calculateHotScore(paper: ArxivEntry): number {
