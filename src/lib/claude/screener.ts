@@ -34,12 +34,18 @@ export async function screenPaper(title: string, abstract: string): Promise<{ pa
   const prompt = SCREEN_PROMPT.replace('{title}', title).replace('{abstract}', abstract);
   let text = await runClaude(prompt);
 
+  // JSON 추출: 코드블록, 또는 { } 매칭
   if (text.includes('```')) {
     text = text.split('```')[1];
     if (text.startsWith('json')) text = text.slice(4);
     text = text.trim();
   }
-  return JSON.parse(text);
+  const jsonMatch = text.match(/\{[\s\S]*?"pass"[\s\S]*?\}/);
+  if (jsonMatch) {
+    return JSON.parse(jsonMatch[0]);
+  }
+  // fallback: pass 못 찾으면 탈락 처리
+  return { pass: false, reason: 'Failed to parse screening response' };
 }
 
 export async function screenBatch(
