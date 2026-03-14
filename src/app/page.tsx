@@ -118,8 +118,9 @@ export default async function Home({ searchParams }: Props) {
   const params = await searchParams;
   return (
     <div className="space-y-6">
+      <SourceTabs />
       <Suspense fallback={<div className="py-12 text-center text-muted-foreground">로딩 중...</div>}>
-        <TimelineFeed category={params.category} />
+        <TimelineFeed category={params.category} source={params.source} />
       </Suspense>
       <NewsletterForm />
     </div>
