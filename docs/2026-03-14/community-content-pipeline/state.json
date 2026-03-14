@@ -6,25 +6,25 @@
   },
   "plan_approved": true,
   "team_name": "community-pipeline",
-  "current_dev_phase": 1,
-  "current_step": 2,
+  "current_dev_phase": 3,
+  "current_step": 1,
   "dev_phases": {
     "1": {
       "name": "데이터 수집 기반",
       "steps": 2,
-      "status": "in_progress",
+      "status": "done",
       "folder": "phase-1-data-fetching"
     },
     "2": {
       "name": "AI 정리 파이프라인",
       "steps": 2,
-      "status": "pending",
+      "status": "done",
       "folder": "phase-2-ai-pipeline"
     },
     "3": {
       "name": "CI/CD 통합",
       "steps": 1,
-      "status": "pending",
+      "status": "in_progress",
       "folder": "phase-3-cicd"
     }
   },
