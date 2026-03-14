@@ -1,6 +1,6 @@
 import { db } from "@/lib/db";
 import { papers } from "@/lib/db/schema";
-import { desc, and, gte, eq, not, isNotNull } from "drizzle-orm";
+import { desc, and, eq, not, isNotNull } from "drizzle-orm";
 import { PaperCard } from "@/components/paper-card";
 import { SourceTabs } from "@/components/source-tabs";
 import { CategoryChips } from "@/components/category-chips";
@@ -38,12 +38,8 @@ function groupByDate(items: (typeof papers.$inferSelect)[]): Record<string, (typ
 }
 
 async function TimelineFeed({ category, source }: { category?: string; source?: string }) {
-  const sevenDaysAgo = new Date();
-  sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
-
   const conditions = [];
   conditions.push(isNotNull(papers.summarizedAt));
-  conditions.push(gte(papers.publishedAt, sevenDaysAgo.toISOString().split('T')[0]));
 
   if (source === 'community') {
     conditions.push(eq(papers.source, 'hacker_news'));
