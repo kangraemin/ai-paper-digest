@@ -1,14 +1,15 @@
 import { db } from "@/lib/db";
 import { papers } from "@/lib/db/schema";
-import { desc, and, gte, eq } from "drizzle-orm";
+import { desc, and, gte, eq, not } from "drizzle-orm";
 import { PaperCard } from "@/components/paper-card";
+import { SourceTabs } from "@/components/source-tabs";
 import { NewsletterForm } from "@/components/newsletter-form";
 import { Suspense } from "react";
 
 export const dynamic = "force-dynamic";
 
 interface Props {
-  searchParams: Promise<{ category?: string }>;
+  searchParams: Promise<{ category?: string; source?: string }>;
 }
 
 function formatDateHeader(dateStr: string): string {
@@ -35,12 +36,19 @@ function groupByDate(items: (typeof papers.$inferSelect)[]): Record<string, (typ
   return groups;
 }
 
-async function TimelineFeed({ category }: { category?: string }) {
+async function TimelineFeed({ category, source }: { category?: string; source?: string }) {
   const sevenDaysAgo = new Date();
   sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
 
   const conditions = [];
   conditions.push(gte(papers.publishedAt, sevenDaysAgo.toISOString().split('T')[0]));
+
+  if (source === 'community') {
+    conditions.push(eq(papers.source, 'hacker_news'));
+  } else {
+    conditions.push(not(eq(papers.source, 'hacker_news')));
+  }
+
   if (category && category !== 'all') {
     conditions.push(eq(papers.aiCategory, category));
   }
@@ -55,7 +63,9 @@ async function TimelineFeed({ category }: { category?: string }) {
       <div className="py-20 text-center">
         <p className="text-4xl mb-4">¯\_(ツ)_/¯</p>
         <p className="text-muted-foreground">오늘은 조용한 날이네요.</p>
-        <p className="text-sm text-muted-foreground mt-1">논문 수집을 실행하거나 내일 다시 확인해 주세요.</p>
+        <p className="text-sm text-muted-foreground mt-1">
+          {source === 'community' ? 'HN 수집을 실행하거나 내일 다시 확인해 주세요.' : '논문 수집을 실행하거나 내일 다시 확인해 주세요.'}
+        </p>
       </div>
     );
   }
@@ -91,6 +101,7 @@ async function TimelineFeed({ category }: { category?: string }) {
                 devRelevance={paper.devRelevance}
                 targetAudience={paper.targetAudience}
                 tags={paper.tags}
+                source={paper.source}
                 isHot={paper.isHot}
                 publishedAt={paper.publishedAt}
                 authors={paper.authors}
