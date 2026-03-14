@@ -6,8 +6,8 @@
   },
   "plan_approved": true,
   "team_name": "ai-paper-digest",
-  "current_dev_phase": 3,
-  "current_step": 3,
+  "current_dev_phase": 5,
+  "current_step": 2,
   "dev_phases": {
     "1": {
       "name": "Foundation",
@@ -24,19 +24,19 @@
     "3": {
       "name": "Core UI",
       "steps": 3,
-      "status": "in_progress",
+      "status": "completed",
       "folder": "phase-3"
     },
     "4": {
       "name": "Advanced",
       "steps": 3,
-      "status": "pending",
+      "status": "completed",
       "folder": "phase-4"
     },
     "5": {
       "name": "Deploy",
       "steps": 2,
-      "status": "pending",
+      "status": "completed",
       "folder": "phase-5"
     }
   },

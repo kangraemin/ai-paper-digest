@@ -4,6 +4,7 @@ import { desc, eq, and, gte, lt } from "drizzle-orm";
 import { PaperCard } from "@/components/paper-card";
 import { CategoryFilter } from "@/components/category-filter";
 import { DateNav } from "@/components/date-nav";
+import { NewsletterForm } from "@/components/newsletter-form";
 import { Suspense } from "react";
 
 export const dynamic = "force-dynamic";
@@ -65,10 +66,44 @@ async function PaperGrid({ date, category, page }: { date?: string; category?: s
   );
 }
 
+async function HotPapers() {
+  const hotItems = await db.select().from(papers)
+    .where(eq(papers.isHot, true))
+    .orderBy(desc(papers.publishedAt))
+    .limit(5);
+
+  if (hotItems.length === 0) return null;
+
+  return (
+    <section className="space-y-3">
+      <h2 className="text-lg font-semibold">🔥 핫 논문</h2>
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {hotItems.map((paper) => (
+          <PaperCard
+            key={paper.id}
+            id={paper.id}
+            title={paper.title}
+            titleKo={paper.titleKo}
+            summaryKo={paper.summaryKo}
+            aiCategory={paper.aiCategory}
+            devRelevance={paper.devRelevance}
+            isHot={paper.isHot}
+            publishedAt={paper.publishedAt}
+            authors={paper.authors}
+          />
+        ))}
+      </div>
+    </section>
+  );
+}
+
 export default async function Home({ searchParams }: Props) {
   const params = await searchParams;
   return (
     <div className="space-y-6">
+      <Suspense>
+        <HotPapers />
+      </Suspense>
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <h1 className="text-2xl font-bold">오늘의 논문</h1>
         <Suspense><DateNav /></Suspense>
@@ -77,6 +112,7 @@ export default async function Home({ searchParams }: Props) {
       <Suspense fallback={<div className="py-12 text-center text-muted-foreground">로딩 중...</div>}>
         <PaperGrid date={params.date} category={params.category} page={params.page} />
       </Suspense>
+      <NewsletterForm />
     </div>
   );
 }
