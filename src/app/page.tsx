@@ -1,66 +1,97 @@
 import { db } from "@/lib/db";
 import { papers } from "@/lib/db/schema";
-import { desc, eq, and, gte, lt } from "drizzle-orm";
+import { desc, eq, and, gte } from "drizzle-orm";
 import { PaperCard } from "@/components/paper-card";
 import { CategoryFilter } from "@/components/category-filter";
-import { DateNav } from "@/components/date-nav";
 import { NewsletterForm } from "@/components/newsletter-form";
 import { Suspense } from "react";
 
 export const dynamic = "force-dynamic";
 
 interface Props {
-  searchParams: Promise<{ date?: string; category?: string; page?: string }>;
+  searchParams: Promise<{ category?: string }>;
 }
 
-async function PaperGrid({ date, category, page }: { date?: string; category?: string; page?: string }) {
-  const conditions = [];
+function formatDateHeader(dateStr: string): string {
+  const date = new Date(dateStr + 'T00:00:00');
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const yesterday = new Date(today);
+  yesterday.setDate(yesterday.getDate() - 1);
 
-  if (date) {
-    const nextDay = new Date(date + "T00:00:00Z");
-    nextDay.setUTCDate(nextDay.getUTCDate() + 1);
-    conditions.push(gte(papers.publishedAt, date));
-    conditions.push(lt(papers.publishedAt, nextDay.toISOString().split("T")[0]));
+  if (date.toDateString() === today.toDateString()) return '오늘';
+  if (date.toDateString() === yesterday.toDateString()) return '어제';
+
+  const weekdays = ['일', '월', '화', '수', '목', '금', '토'];
+  return `${date.getMonth() + 1}월 ${date.getDate()}일 (${weekdays[date.getDay()]})`;
+}
+
+function groupByDate(items: (typeof papers.$inferSelect)[]): Record<string, (typeof papers.$inferSelect)[]> {
+  const groups: Record<string, (typeof papers.$inferSelect)[]> = {};
+  for (const item of items) {
+    const date = item.publishedAt.split('T')[0];
+    if (!groups[date]) groups[date] = [];
+    groups[date].push(item);
   }
+  return groups;
+}
 
-  if (category && category !== "all") {
+async function TimelineFeed({ category }: { category?: string }) {
+  const sevenDaysAgo = new Date();
+  sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+
+  const conditions = [];
+  conditions.push(gte(papers.publishedAt, sevenDaysAgo.toISOString().split('T')[0]));
+  if (category && category !== 'all') {
     conditions.push(eq(papers.aiCategory, category));
   }
 
-  const where = conditions.length > 0 ? and(...conditions) : undefined;
-  const pageNum = Math.max(1, Number(page || "1"));
-  const limit = 20;
-  const offset = (pageNum - 1) * limit;
-
   const items = await db.select().from(papers)
-    .where(where)
+    .where(and(...conditions))
     .orderBy(desc(papers.publishedAt))
-    .limit(limit)
-    .offset(offset);
+    .limit(100);
 
   if (items.length === 0) {
     return (
       <div className="py-12 text-center text-muted-foreground">
-        해당 조건의 논문이 없습니다.
+        최근 7일 내 논문이 없습니다. 수집을 실행해주세요.
       </div>
     );
   }
 
+  const grouped = groupByDate(items);
+
   return (
-    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-      {items.map((paper) => (
-        <PaperCard
-          key={paper.id}
-          id={paper.id}
-          title={paper.title}
-          titleKo={paper.titleKo}
-          summaryKo={paper.summaryKo}
-          aiCategory={paper.aiCategory}
-          devRelevance={paper.devRelevance}
-          isHot={paper.isHot}
-          publishedAt={paper.publishedAt}
-          authors={paper.authors}
-        />
+    <div className="space-y-8">
+      {Object.entries(grouped).map(([date, datePapers]) => (
+        <section key={date}>
+          <div className="sticky top-0 z-10 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 py-2 mb-4">
+            <div className="flex items-center gap-3">
+              <div className="h-px flex-1 bg-border" />
+              <span className="text-sm font-medium text-muted-foreground whitespace-nowrap">
+                {formatDateHeader(date)} · {datePapers.length}편
+              </span>
+              <div className="h-px flex-1 bg-border" />
+            </div>
+          </div>
+          <div className="space-y-3">
+            {datePapers.map(paper => (
+              <PaperCard
+                key={paper.id}
+                id={paper.id}
+                title={paper.title}
+                titleKo={paper.titleKo}
+                summaryKo={paper.summaryKo}
+                aiCategory={paper.aiCategory}
+                devRelevance={paper.devRelevance}
+                devNote={paper.devNote}
+                isHot={paper.isHot}
+                publishedAt={paper.publishedAt}
+                authors={paper.authors}
+              />
+            ))}
+          </div>
+        </section>
       ))}
     </div>
   );
@@ -87,6 +118,7 @@ async function HotPapers() {
             summaryKo={paper.summaryKo}
             aiCategory={paper.aiCategory}
             devRelevance={paper.devRelevance}
+            devNote={paper.devNote}
             isHot={paper.isHot}
             publishedAt={paper.publishedAt}
             authors={paper.authors}
@@ -104,13 +136,12 @@ export default async function Home({ searchParams }: Props) {
       <Suspense>
         <HotPapers />
       </Suspense>
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <h1 className="text-2xl font-bold">오늘의 논문</h1>
-        <Suspense><DateNav /></Suspense>
+      <div className="flex items-center justify-between">
+        <h1 className="text-2xl font-bold">최근 논문</h1>
       </div>
       <Suspense><CategoryFilter /></Suspense>
       <Suspense fallback={<div className="py-12 text-center text-muted-foreground">로딩 중...</div>}>
-        <PaperGrid date={params.date} category={params.category} page={params.page} />
+        <TimelineFeed category={params.category} />
       </Suspense>
       <NewsletterForm />
     </div>

@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { HotBadge } from './hot-badge';
 
@@ -23,12 +23,14 @@ interface PaperCardProps {
   summaryKo: string | null;
   aiCategory: string | null;
   devRelevance: number | null;
+  devNote: string | null;
   isHot: boolean | null;
   publishedAt: string;
   authors: string;
 }
 
-export function PaperCard({ id, title, titleKo, summaryKo, aiCategory, devRelevance, isHot, publishedAt, authors }: PaperCardProps) {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export function PaperCard({ id, title, titleKo, summaryKo, aiCategory, devRelevance, devNote, isHot, publishedAt, authors }: PaperCardProps) {
   const authorList = JSON.parse(authors) as string[];
   const displayAuthors = authorList.length > 3
     ? `${authorList.slice(0, 3).join(', ')} +${authorList.length - 3}`
@@ -36,15 +38,10 @@ export function PaperCard({ id, title, titleKo, summaryKo, aiCategory, devReleva
 
   return (
     <Link href={`/papers/${id}`}>
-      <Card className="h-full transition-shadow hover:shadow-lg">
-        <CardHeader className="pb-2">
-          <div className="flex items-start justify-between gap-2">
-            <CardTitle className="text-base leading-tight">
-              {titleKo || title}
-            </CardTitle>
+      <Card className="transition-shadow hover:shadow-md">
+        <CardContent className="py-4">
+          <div className="flex items-center gap-2 mb-1.5">
             {isHot && <HotBadge />}
-          </div>
-          <div className="flex items-center gap-2 pt-1">
             {aiCategory && (
               <Badge variant="secondary" className={`text-xs text-white ${CATEGORY_COLORS[aiCategory] || ''}`}>
                 {aiCategory.toUpperCase()}
@@ -56,16 +53,25 @@ export function PaperCard({ id, title, titleKo, summaryKo, aiCategory, devReleva
               </Badge>
             )}
           </div>
-        </CardHeader>
-        <CardContent>
+
+          <h3 className="font-semibold leading-snug mb-1">
+            {titleKo || title}
+          </h3>
+
           {summaryKo && (
-            <p className="mb-2 line-clamp-3 text-sm text-muted-foreground">
+            <p className="text-sm text-muted-foreground line-clamp-2 mb-1.5">
               {summaryKo}
             </p>
           )}
-          <div className="flex items-center justify-between text-xs text-muted-foreground">
-            <span>{displayAuthors}</span>
-            <span>{new Date(publishedAt).toLocaleDateString('ko-KR')}</span>
+
+          {devNote && (
+            <p className="text-sm text-primary/80 italic mb-1.5">
+              💬 {devNote}
+            </p>
+          )}
+
+          <div className="text-xs text-muted-foreground">
+            {displayAuthors}
           </div>
         </CardContent>
       </Card>

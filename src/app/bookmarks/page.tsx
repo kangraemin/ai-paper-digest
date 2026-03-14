@@ -11,6 +11,7 @@ interface Paper {
   summaryKo: string | null;
   aiCategory: string | null;
   devRelevance: number | null;
+  devNote: string | null;
   isHot: boolean | null;
   publishedAt: string;
   authors: string;
