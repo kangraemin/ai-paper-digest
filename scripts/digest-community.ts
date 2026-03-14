@@ -36,7 +36,7 @@ function extractJson(text: string): string {
   return match ? match[0] : text;
 }
 
-async function main() {
+export async function digestCommunity(): Promise<number> {
   console.log('📰 Digesting community content...');
 
   const items = await db.select().from(papers)
@@ -95,6 +95,7 @@ async function main() {
   }
 
   console.log(`\n✅ Digested ${successCount}/${items.length} community items`);
+  return successCount;
 }
 
-main().catch(console.error);
+digestCommunity().catch(console.error);
