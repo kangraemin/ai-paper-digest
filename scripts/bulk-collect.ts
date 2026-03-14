@@ -101,7 +101,9 @@ async function collectHN() {
   // 스크리닝
   console.log('  🔍 스크리닝...');
   const screenResults = await screenBatch(
-    stories.map(s => ({ id: `hn_${s.objectID}`, title: s.title, abstract: s.title }))
+    stories.map(s => ({ id: `hn_${s.objectID}`, title: s.title, abstract: s.title })),
+    3,
+    'hn'
   );
   const passed = stories.filter(s => screenResults.get(`hn_${s.objectID}`)?.pass);
   console.log(`  스크리닝 통과: ${passed.length}편`);

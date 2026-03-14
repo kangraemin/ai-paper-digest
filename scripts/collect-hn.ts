@@ -12,7 +12,9 @@ async function main() {
   // Claude 스크리닝 (기존 screener 재사용)
   console.log('🔍 Screening stories...');
   const screenResults = await screenBatch(
-    stories.map(s => ({ id: `hn_${s.id}`, title: s.title, abstract: s.title }))
+    stories.map(s => ({ id: `hn_${s.id}`, title: s.title, abstract: s.title })),
+    3,
+    'hn'
   );
   const passed = stories.filter(s => screenResults.get(`hn_${s.id}`)?.pass);
   console.log(`[스크리닝] ${stories.length}편 중 ${passed.length}편 통과`);
