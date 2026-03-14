@@ -36,22 +36,22 @@ export function NewsletterForm() {
   };
 
   return (
-    <section className="rounded-lg border bg-card p-6 text-center">
-      <h3 className="mb-2 text-lg font-semibold">일일 AI 논문 다이제스트</h3>
-      <p className="mb-4 text-sm text-muted-foreground">
-        매일 아침 핫한 AI 논문 요약을 이메일로 받아보세요.
-      </p>
-      <form onSubmit={handleSubmit} className="mx-auto flex max-w-md gap-2">
-        <Input
-          type="email"
-          placeholder="이메일 주소"
-          value={email}
-          onChange={e => setEmail(e.target.value)}
-          required
-        />
-        <Button type="submit" disabled={status === 'loading'}>
-          {status === 'loading' ? '구독 중...' : '구독'}
-        </Button>
+    <section className="border-t py-6">
+      <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row items-center gap-3">
+        <span className="text-sm text-muted-foreground whitespace-nowrap">매일 아침 AI 논문 다이제스트 받기</span>
+        <div className="flex gap-2 w-full sm:w-auto">
+          <Input
+            type="email"
+            placeholder="이메일 주소"
+            value={email}
+            onChange={e => setEmail(e.target.value)}
+            required
+            className="h-9 text-sm"
+          />
+          <Button type="submit" size="sm" disabled={status === 'loading'}>
+            {status === 'loading' ? '구독 중...' : '구독'}
+          </Button>
+        </div>
       </form>
       {message && (
         <p className={`mt-2 text-sm ${status === 'success' ? 'text-green-600' : 'text-red-600'}`}>
