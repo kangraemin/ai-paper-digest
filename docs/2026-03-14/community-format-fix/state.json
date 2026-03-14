@@ -21,7 +21,7 @@
     }
   },
   "verification": {
-    "rounds_passed": 0
+    "rounds_passed": 3
   },
   "task_dir": "docs/2026-03-14/community-format-fix",
   "active_file": "docs/2026-03-14/community-format-fix/.active"
