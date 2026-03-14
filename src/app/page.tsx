@@ -1,6 +1,6 @@
 import { db } from "@/lib/db";
 import { papers } from "@/lib/db/schema";
-import { desc, and, gte, eq, not } from "drizzle-orm";
+import { desc, and, gte, eq, not, isNotNull } from "drizzle-orm";
 import { PaperCard } from "@/components/paper-card";
 import { SourceTabs } from "@/components/source-tabs";
 import { CategoryChips } from "@/components/category-chips";
@@ -42,6 +42,7 @@ async function TimelineFeed({ category, source }: { category?: string; source?: 
   sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
 
   const conditions = [];
+  conditions.push(isNotNull(papers.summarizedAt));
   conditions.push(gte(papers.publishedAt, sevenDaysAgo.toISOString().split('T')[0]));
 
   if (source === 'community') {
