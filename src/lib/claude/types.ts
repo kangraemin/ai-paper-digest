@@ -7,6 +7,8 @@ export interface SummaryResult {
   howToApply: string;
   codeExample: string;
   relatedResources: string[];
+  glossary: Record<string, string>;
+  tags: string[];
   aiCategory: string;
   devRelevance: number;
 }

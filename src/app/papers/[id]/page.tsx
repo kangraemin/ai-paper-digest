@@ -36,11 +36,19 @@ export default async function PaperDetail({ params }: Props) {
         {paper.aiCategory && (
           <Badge variant="secondary">{paper.aiCategory.toUpperCase()}</Badge>
         )}
-        {categoryList.map(cat => (
-          <Badge key={cat} variant="outline">{cat}</Badge>
-        ))}
+        {paper.tags && (() => {
+          const tagList = JSON.parse(paper.tags) as string[];
+          return tagList.map(tag => (
+            <Badge key={tag} variant="outline" className="text-xs">{tag}</Badge>
+          ));
+        })()}
         {paper.devRelevance && (
-          <Badge variant="outline">관련도: {paper.devRelevance}/5</Badge>
+          <Badge variant="outline">
+            관련도: {paper.devRelevance}/5
+            {paper.devRelevance === 5 && ' (바로 적용)'}
+            {paper.devRelevance === 4 && ' (설정 변경)'}
+            {paper.devRelevance === 3 && ' (참고)'}
+          </Badge>
         )}
         <BookmarkButton paperId={paper.id} />
       </div>
@@ -115,6 +123,23 @@ export default async function PaperDetail({ params }: Props) {
                 </li>
               ))}
             </ul>
+          </section>
+        ) : null;
+      })()}
+
+      {paper.glossary && (() => {
+        const terms = JSON.parse(paper.glossary) as Record<string, string>;
+        return Object.keys(terms).length > 0 ? (
+          <section className="space-y-2">
+            <h2 className="text-lg font-semibold">용어 사전</h2>
+            <dl className="space-y-2">
+              {Object.entries(terms).map(([term, desc]) => (
+                <div key={term} className="rounded-lg bg-muted/50 p-3">
+                  <dt className="font-mono font-semibold text-sm">{term}</dt>
+                  <dd className="text-sm text-muted-foreground mt-1">{desc}</dd>
+                </div>
+              ))}
+            </dl>
           </section>
         ) : null;
       })()}

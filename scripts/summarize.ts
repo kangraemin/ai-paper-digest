@@ -28,6 +28,8 @@ async function main() {
         howToApply: result.howToApply,
         codeExample: result.codeExample,
         relatedResources: JSON.stringify(result.relatedResources),
+        glossary: JSON.stringify(result.glossary),
+        tags: JSON.stringify(result.tags),
         aiCategory: result.aiCategory,
         devRelevance: result.devRelevance,
         summarizedAt: new Date().toISOString(),

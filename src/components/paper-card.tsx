@@ -17,12 +17,13 @@ interface PaperCardProps {
   aiCategory: string | null;
   devRelevance: number | null;
   targetAudience: string | null;
+  tags: string | null;
   isHot: boolean | null;
   publishedAt: string;
   authors: string;
 }
 
-export function PaperCard({ id, title, titleKo, oneLiner, aiCategory, targetAudience, isHot, authors }: PaperCardProps) {
+export function PaperCard({ id, title, titleKo, oneLiner, aiCategory, targetAudience, tags, isHot, authors }: PaperCardProps) {
   const authorList = JSON.parse(authors) as string[];
   const displayAuthors = authorList.length > 3
     ? `${authorList.slice(0, 3).join(', ')} +${authorList.length - 3}`
@@ -48,6 +49,12 @@ export function PaperCard({ id, title, titleKo, oneLiner, aiCategory, targetAudi
               {aiCategory}
             </span>
           )}
+          {tags && (() => {
+            const tagList = (JSON.parse(tags) as string[]).slice(0, 3);
+            return tagList.map(tag => (
+              <span key={tag} className="px-1.5 py-0.5 rounded bg-muted text-[11px]">{tag}</span>
+            ));
+          })()}
           {oneLiner && <span className="line-clamp-1 flex-1">{oneLiner}</span>}
         </div>
 

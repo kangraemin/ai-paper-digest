@@ -24,6 +24,8 @@ export const papers = sqliteTable('papers', {
   howToApply: text('how_to_apply'),
   codeExample: text('code_example'),
   relatedResources: text('related_resources'),
+  glossary: text('glossary'),
+  tags: text('tags'),
   hotScore: integer('hot_score').default(0),
   isHot: integer('is_hot', { mode: 'boolean' }).default(false),
   source: text('source').default('arxiv'),

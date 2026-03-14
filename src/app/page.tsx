@@ -90,6 +90,7 @@ async function TimelineFeed({ category }: { category?: string }) {
                 aiCategory={paper.aiCategory}
                 devRelevance={paper.devRelevance}
                 targetAudience={paper.targetAudience}
+                tags={paper.tags}
                 isHot={paper.isHot}
                 publishedAt={paper.publishedAt}
                 authors={paper.authors}

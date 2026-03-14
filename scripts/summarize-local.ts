@@ -28,6 +28,7 @@ async function update() {
     oneLiner: string; targetAudience: string; keyFindings: string;
     evidence: string; howToApply: string; codeExample: string;
     relatedResources: string[];
+    glossary: Record<string, string>; tags: string[];
     aiCategory: string; devRelevance: number;
   }> = JSON.parse(input);
 
@@ -41,6 +42,8 @@ async function update() {
       howToApply: r.howToApply,
       codeExample: r.codeExample,
       relatedResources: JSON.stringify(r.relatedResources),
+      glossary: JSON.stringify(r.glossary),
+      tags: JSON.stringify(r.tags),
       aiCategory: r.aiCategory,
       devRelevance: r.devRelevance,
       summarizedAt: new Date().toISOString(),
