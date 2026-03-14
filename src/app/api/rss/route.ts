@@ -1,6 +1,6 @@
 import { db } from '@/lib/db';
 import { papers } from '@/lib/db/schema';
-import { desc, eq } from 'drizzle-orm';
+import { desc, eq, and, isNotNull } from 'drizzle-orm';
 
 function escapeXml(s: string): string {
   return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
@@ -11,8 +11,8 @@ export async function GET(req: Request) {
   const category = searchParams.get('category');
 
   const items = category
-    ? await db.select().from(papers).where(eq(papers.aiCategory, category)).orderBy(desc(papers.publishedAt)).limit(50)
-    : await db.select().from(papers).orderBy(desc(papers.publishedAt)).limit(50);
+    ? await db.select().from(papers).where(and(isNotNull(papers.summarizedAt), eq(papers.aiCategory, category))).orderBy(desc(papers.publishedAt)).limit(50)
+    : await db.select().from(papers).where(isNotNull(papers.summarizedAt)).orderBy(desc(papers.publishedAt)).limit(50);
 
   const siteUrl = new URL(req.url).origin;
 
