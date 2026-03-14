@@ -62,6 +62,7 @@ async function main() {
       // 3. claude -p로 정리
       const prompt = COMMUNITY_DIGEST_PROMPT
         .replace('{title}', item.title)
+        .replace('{url}', item.arxivUrl)
         .replace('{content}', content || '(원문을 가져올 수 없습니다)')
         .replace('{comments}', comments.length > 0 ? comments.join('\n---\n') : '(댓글 없음)');
 

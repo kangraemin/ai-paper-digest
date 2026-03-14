@@ -87,7 +87,7 @@ async function collectS2() {
 async function collectHN() {
   console.log('📰 HN Algolia 벌크 수집 시작...');
 
-  const stories = await fetchHNStoriesAlgolia({ daysBack: 180, minScore: 50 });
+  const stories = await fetchHNStoriesAlgolia({ daysBack: 240, minScore: 50 });
   console.log(`  수집: ${stories.length}편`);
 
   // 스크리닝
