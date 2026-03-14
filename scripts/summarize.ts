@@ -13,7 +13,7 @@ async function main() {
   if (unsummarized.length === 0) return;
 
   const results = await summarizeBatch(
-    unsummarized.map(p => ({ id: p.id, title: p.title, abstract: p.abstract })),
+    unsummarized.map(p => ({ id: p.id, title: p.title, abstract: p.abstract, pdfUrl: p.pdfUrl ?? undefined })),
     5
   );
 
