@@ -12,6 +12,20 @@ export async function fetchPopularPapers(limit = 5): Promise<S2Paper[]> {
   return data.data ?? [];
 }
 
+async function fetchWithRetry(url: string, retries = 5): Promise<Response> {
+  for (let i = 0; i < retries; i++) {
+    const res = await fetch(url);
+    if (res.status === 429) {
+      const wait = 10000 * (i + 1); // 10s, 20s, 30s...
+      console.log(`  [S2] 429 레이트 리밋 — ${wait / 1000}초 대기 후 재시도 (${i + 1}/${retries})`);
+      await new Promise(r => setTimeout(r, wait));
+      continue;
+    }
+    return res;
+  }
+  throw new Error('Semantic Scholar API error: 429 (max retries exceeded)');
+}
+
 export async function fetchPapersByYear(
   year: number,
   opts?: { limit?: number; offset?: number }
@@ -20,7 +34,7 @@ export async function fetchPapersByYear(
   const offset = opts?.offset ?? 0;
   const url = `${S2_API}/paper/search?query=large+language+model&year=${year}&sort=citationCount&limit=${limit}&offset=${offset}&fields=paperId,title,abstract,authors,year,citationCount,externalIds,fieldsOfStudy`;
 
-  const res = await fetch(url);
+  const res = await fetchWithRetry(url);
   if (!res.ok) throw new Error(`Semantic Scholar API error: ${res.status}`);
 
   const data = await res.json();
