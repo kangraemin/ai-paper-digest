@@ -1,11 +1,11 @@
 {
-  "workflow_phase": "development",
+  "workflow_phase": "done",
   "mode": "normal",
   "planning": {
     "no_question_streak": 0
   },
   "plan_approved": true,
-  "team_name": "community-pipeline",
+  "team_name": "",
   "current_dev_phase": 3,
   "current_step": 1,
   "dev_phases": {
@@ -24,7 +24,7 @@
     "3": {
       "name": "CI/CD 통합",
       "steps": 1,
-      "status": "in_progress",
+      "status": "done",
       "folder": "phase-3-cicd"
     }
   },

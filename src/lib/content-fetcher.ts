@@ -1,32 +1,30 @@
-export async function fetchContent(
-  url: string,
-  maxChars = 5000,
-): Promise<string> {
+const USER_AGENT = 'Mozilla/5.0 AI-Paper-Digest/1.0';
+const TIMEOUT_MS = 10_000;
+
+export async function fetchContent(url: string, maxChars = 5000): Promise<string> {
   try {
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 10_000);
+    const timer = setTimeout(() => controller.abort(), TIMEOUT_MS);
 
     const res = await fetch(url, {
+      headers: { 'User-Agent': USER_AGENT },
       signal: controller.signal,
-      headers: {
-        "User-Agent":
-          "Mozilla/5.0 (compatible; AIPaperBot/1.0; +https://github.com/ai-paper)",
-      },
     });
-    clearTimeout(timeout);
+    clearTimeout(timer);
 
     const html = await res.text();
 
     const text = html
-      .replace(/<script[\s\S]*?<\/script>/gi, "")
-      .replace(/<style[\s\S]*?<\/style>/gi, "")
-      .replace(/<[^>]+>/g, " ")
-      .replace(/\s+/g, " ")
+      .replace(/<script[\s\S]*?<\/script>/gi, '')
+      .replace(/<style[\s\S]*?<\/style>/gi, '')
+      .replace(/<[^>]+>/g, '')
+      .replace(/\s{2,}/g, ' ')
+      .replace(/\n{2,}/g, '\n')
       .trim();
 
     return text.slice(0, maxChars);
-  } catch (err) {
-    console.warn("fetchContent failed:", err);
-    return "";
+  } catch (e) {
+    console.warn('[content-fetcher] fetch failed:', (e as Error).message);
+    return '';
   }
 }
