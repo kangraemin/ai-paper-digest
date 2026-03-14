@@ -12,7 +12,7 @@ Answer in JSON only: {"pass": true/false, "reason": "one line explanation"}`;
 
 function runClaude(prompt: string): Promise<string> {
   return new Promise((resolve, reject) => {
-    const proc = spawn('claude', ['-p', '--model', 'haiku'], {
+    const proc = spawn('claude', ['-p', '--model', 'opus'], {
       stdio: ['pipe', 'pipe', 'pipe'],
     });
     let stdout = '';
