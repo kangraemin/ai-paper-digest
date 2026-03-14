@@ -12,6 +12,9 @@ function parseBulletList(value: string): string[] {
     const arr = JSON.parse(value);
     if (Array.isArray(arr)) return arr;
   } catch {}
+  if (value.includes(',- ')) {
+    return value.split(',- ').map(l => l.replace(/^-\s*/, '').trim()).filter(Boolean);
+  }
   return value.split('\n').filter(l => l.trim()).map(l => l.replace(/^-\s*/, ''));
 }
 
