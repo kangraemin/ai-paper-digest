@@ -1,5 +1,5 @@
 {
-  "workflow_phase": "verification",
+  "workflow_phase": "done",
   "mode": "normal",
   "planning": {
     "no_question_streak": 0
@@ -35,7 +35,7 @@
     }
   },
   "verification": {
-    "rounds_passed": 1
+    "rounds_passed": 3
   },
   "task_dir": "docs/2026-03-14/timeline-redesign",
   "active_file": "docs/2026-03-14/timeline-redesign/.active"
