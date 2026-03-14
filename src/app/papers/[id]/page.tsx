@@ -60,12 +60,64 @@ export default async function PaperDetail({ params }: Props) {
         <span>{new Date(paper.publishedAt).toLocaleDateString('ko-KR')}</span>
       </div>
 
-      {paper.summaryKo && (
+      {paper.oneLiner && (
+        <p className="text-lg font-medium text-amber-700 dark:text-amber-400">
+          {paper.oneLiner}
+        </p>
+      )}
+
+      {paper.targetAudience && (
         <section className="space-y-2">
-          <h2 className="text-lg font-semibold">한글 요약</h2>
-          <p className="leading-relaxed">{paper.summaryKo}</p>
+          <h2 className="text-lg font-semibold">누가 읽으면 좋은지</h2>
+          <p className="leading-relaxed">{paper.targetAudience}</p>
         </section>
       )}
+
+      {paper.keyFindings && (
+        <section className="space-y-2">
+          <h2 className="text-lg font-semibold">주요 내용</h2>
+          <p className="leading-relaxed">{paper.keyFindings}</p>
+        </section>
+      )}
+
+      {paper.evidence && (
+        <section className="space-y-2">
+          <h2 className="text-lg font-semibold">근거</h2>
+          <p className="leading-relaxed">{paper.evidence}</p>
+        </section>
+      )}
+
+      {paper.howToApply && (
+        <section className="space-y-2">
+          <h2 className="text-lg font-semibold">적용 방법</h2>
+          <p className="leading-relaxed">{paper.howToApply}</p>
+        </section>
+      )}
+
+      {paper.codeExample && (
+        <section className="space-y-2">
+          <h2 className="text-lg font-semibold">바로 써보기</h2>
+          <pre className="overflow-x-auto rounded-lg bg-muted p-4 text-sm"><code>{paper.codeExample}</code></pre>
+        </section>
+      )}
+
+      {paper.relatedResources && (() => {
+        const resources = JSON.parse(paper.relatedResources) as string[];
+        return resources.length > 0 ? (
+          <section className="space-y-2">
+            <h2 className="text-lg font-semibold">관련 리소스</h2>
+            <ul className="list-disc list-inside space-y-1">
+              {resources.map((url, i) => (
+                <li key={i}>
+                  <a href={url} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline break-all">
+                    {url}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </section>
+        ) : null;
+      })()}
 
       <section className="space-y-2">
         <h2 className="text-lg font-semibold">Abstract</h2>
