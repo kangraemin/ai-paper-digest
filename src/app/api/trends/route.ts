@@ -1,6 +1,6 @@
 import { db } from '@/lib/db';
 import { papers } from '@/lib/db/schema';
-import { sql } from 'drizzle-orm';
+import { sql, and, isNotNull } from 'drizzle-orm';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(req: NextRequest) {
@@ -13,7 +13,7 @@ export async function GET(req: NextRequest) {
     count: sql<number>`count(*)`,
   })
     .from(papers)
-    .where(sql`${papers.publishedAt} >= date('now', '-${sql.raw(String(days))} days')`)
+    .where(and(isNotNull(papers.summarizedAt), sql`${papers.publishedAt} >= date('now', '-${sql.raw(String(days))} days')`))
     .groupBy(papers.aiCategory);
 
   return NextResponse.json({ period, data: trendData });
