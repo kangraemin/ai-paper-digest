@@ -7,7 +7,7 @@ const client = new Anthropic();
 export async function summarizePaper(title: string, abstract: string): Promise<SummaryResult> {
   const response = await client.messages.create({
     model: 'claude-haiku-4-5-20251001',
-    max_tokens: 500,
+    max_tokens: 2000,
     messages: [{
       role: 'user',
       content: SUMMARY_PROMPT.replace('{title}', title).replace('{abstract}', abstract),
