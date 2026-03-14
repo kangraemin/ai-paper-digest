@@ -11,6 +11,16 @@ export interface HNItem {
   type: string;
 }
 
+export interface AlgoliaHNHit {
+  objectID: string;
+  title: string;
+  url?: string;
+  points: number;
+  author: string;
+  created_at_i: number;
+  num_comments: number;
+}
+
 const AI_KEYWORDS = [
   'AI', 'LLM', 'GPT', 'Claude', 'machine learning', 'deep learning',
   'neural', 'transformer', 'language model', 'ChatGPT', 'OpenAI',
