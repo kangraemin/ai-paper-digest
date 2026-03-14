@@ -6,19 +6,19 @@
   },
   "plan_approved": true,
   "team_name": "ai-paper-digest",
-  "current_dev_phase": 1,
-  "current_step": 2,
+  "current_dev_phase": 2,
+  "current_step": 1,
   "dev_phases": {
     "1": {
       "name": "Foundation",
       "steps": 2,
-      "status": "in_progress",
+      "status": "completed",
       "folder": "phase-1"
     },
     "2": {
       "name": "Data Pipeline",
       "steps": 3,
-      "status": "pending",
+      "status": "in_progress",
       "folder": "phase-2"
     },
     "3": {
