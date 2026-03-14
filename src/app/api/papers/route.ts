@@ -1,6 +1,6 @@
 import { db } from '@/lib/db';
 import { papers } from '@/lib/db/schema';
-import { desc, eq, and, gte, lt, sql } from 'drizzle-orm';
+import { desc, eq, and, gte, lt, sql, isNotNull } from 'drizzle-orm';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(req: NextRequest) {
@@ -12,6 +12,7 @@ export async function GET(req: NextRequest) {
   const offset = (page - 1) * limit;
 
   const conditions = [];
+  conditions.push(isNotNull(papers.summarizedAt));
 
   if (date) {
     const nextDate = new Date(date + 'T00:00:00Z');
