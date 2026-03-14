@@ -26,3 +26,30 @@ export async function fetchPapersByYear(
   const data = await res.json();
   return data.data ?? [];
 }
+
+export async function fetchAllPapersForYear(
+  year: number,
+  maxPapers = 500
+): Promise<S2Paper[]> {
+  const all: S2Paper[] = [];
+  const pageSize = 100;
+
+  while (all.length < maxPapers) {
+    const batch = await fetchPapersByYear(year, {
+      limit: Math.min(pageSize, maxPapers - all.length),
+      offset: all.length,
+    });
+
+    if (batch.length === 0) break;
+    all.push(...batch);
+
+    console.log(`  [S2 ${year}] ${all.length}편 수집...`);
+
+    if (batch.length < pageSize) break;
+    if (all.length < maxPapers) {
+      await new Promise(r => setTimeout(r, 1000));
+    }
+  }
+
+  return all;
+}
