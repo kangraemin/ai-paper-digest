@@ -6,13 +6,13 @@
   },
   "plan_approved": true,
   "team_name": "design-overhaul",
-  "current_dev_phase": 1,
-  "current_step": 2,
+  "current_dev_phase": 2,
+  "current_step": 1,
   "dev_phases": {
     "1": {
       "name": "테마 & 레이아웃 기반",
       "steps": 2,
-      "status": "in_progress",
+      "status": "done",
       "folder": "phase-1-theme-layout"
     },
     "2": {
