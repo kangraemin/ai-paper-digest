@@ -1,8 +1,7 @@
 import { db } from "@/lib/db";
 import { papers } from "@/lib/db/schema";
-import { desc, eq, and, gte } from "drizzle-orm";
+import { desc, and, gte, eq } from "drizzle-orm";
 import { PaperCard } from "@/components/paper-card";
-import { CategoryFilter } from "@/components/category-filter";
 import { NewsletterForm } from "@/components/newsletter-form";
 import { Suspense } from "react";
 
@@ -53,13 +52,19 @@ async function TimelineFeed({ category }: { category?: string }) {
 
   if (items.length === 0) {
     return (
-      <div className="py-12 text-center text-muted-foreground">
-        최근 7일 내 논문이 없습니다. 수집을 실행해주세요.
+      <div className="py-20 text-center">
+        <p className="text-4xl mb-4">¯\_(ツ)_/¯</p>
+        <p className="text-muted-foreground">오늘은 조용한 날이네요.</p>
+        <p className="text-sm text-muted-foreground mt-1">논문 수집을 실행하거나 내일 다시 확인해 주세요.</p>
       </div>
     );
   }
 
   const grouped = groupByDate(items);
+
+  for (const date of Object.keys(grouped)) {
+    grouped[date].sort((a, b) => (b.devRelevance ?? 0) - (a.devRelevance ?? 0));
+  }
 
   return (
     <div className="space-y-8">
@@ -97,49 +102,10 @@ async function TimelineFeed({ category }: { category?: string }) {
   );
 }
 
-async function HotPapers() {
-  const hotItems = await db.select().from(papers)
-    .where(eq(papers.isHot, true))
-    .orderBy(desc(papers.publishedAt))
-    .limit(5);
-
-  if (hotItems.length === 0) return null;
-
-  return (
-    <section className="space-y-3">
-      <h2 className="text-lg font-semibold">🔥 핫 논문</h2>
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {hotItems.map((paper) => (
-          <PaperCard
-            key={paper.id}
-            id={paper.id}
-            title={paper.title}
-            titleKo={paper.titleKo}
-            summaryKo={paper.summaryKo}
-            aiCategory={paper.aiCategory}
-            devRelevance={paper.devRelevance}
-            devNote={paper.devNote}
-            isHot={paper.isHot}
-            publishedAt={paper.publishedAt}
-            authors={paper.authors}
-          />
-        ))}
-      </div>
-    </section>
-  );
-}
-
 export default async function Home({ searchParams }: Props) {
   const params = await searchParams;
   return (
     <div className="space-y-6">
-      <Suspense>
-        <HotPapers />
-      </Suspense>
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold">최근 논문</h1>
-      </div>
-      <Suspense><CategoryFilter /></Suspense>
       <Suspense fallback={<div className="py-12 text-center text-muted-foreground">로딩 중...</div>}>
         <TimelineFeed category={params.category} />
       </Suspense>
