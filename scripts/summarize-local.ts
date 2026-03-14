@@ -24,19 +24,25 @@ async function update() {
   const filePath = args[args.length - 1];
   const input = readFileSync(filePath, 'utf-8');
   const results: Array<{
-    id: string; titleKo: string; summaryKo: string;
+    id: string; titleKo: string;
+    oneLiner: string; targetAudience: string; keyFindings: string;
+    evidence: string; howToApply: string; codeExample: string;
+    relatedResources: string[];
     aiCategory: string; devRelevance: number;
-    relevanceReason: string; devNote: string;
   }> = JSON.parse(input);
 
   for (const r of results) {
     await db.update(papers).set({
       titleKo: r.titleKo,
-      summaryKo: r.summaryKo,
+      oneLiner: r.oneLiner,
+      targetAudience: r.targetAudience,
+      keyFindings: r.keyFindings,
+      evidence: r.evidence,
+      howToApply: r.howToApply,
+      codeExample: r.codeExample,
+      relatedResources: JSON.stringify(r.relatedResources),
       aiCategory: r.aiCategory,
       devRelevance: r.devRelevance,
-      relevanceReason: r.relevanceReason,
-      devNote: r.devNote,
       summarizedAt: new Date().toISOString(),
     }).where(eq(papers.id, r.id));
   }

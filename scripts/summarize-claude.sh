@@ -140,7 +140,7 @@ for i, paper in enumerate(papers, 1):
         inner = json.loads(output)
 
         # 필수 필드 확인
-        assert "titleKo" in inner and "summaryKo" in inner
+        assert "titleKo" in inner and "oneLiner" in inner
 
         inner["id"] = pid
 
