@@ -12,13 +12,12 @@ export async function fetchPopularPapers(limit = 5): Promise<S2Paper[]> {
   return data.data ?? [];
 }
 
-async function fetchWithRetry(url: string, retries = 5): Promise<Response> {
+async function fetchWithRetry(url: string, retries = 30): Promise<Response> {
   for (let i = 0; i < retries; i++) {
     const res = await fetch(url);
     if (res.status === 429) {
-      const wait = 10000 * (i + 1); // 10s, 20s, 30s...
-      console.log(`  [S2] 429 레이트 리밋 — ${wait / 1000}초 대기 후 재시도 (${i + 1}/${retries})`);
-      await new Promise(r => setTimeout(r, wait));
+      console.log(`  [S2] 429 레이트 리밋 — 1분 대기 후 재시도 (${i + 1}/${retries})`);
+      await new Promise(r => setTimeout(r, 60_000));
       continue;
     }
     return res;
