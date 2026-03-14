@@ -84,21 +84,39 @@ export default async function PaperDetail({ params }: Props) {
       {paper.keyFindings && (
         <section className="space-y-2">
           <h2 className="text-lg font-semibold">주요 내용</h2>
-          <p className="leading-relaxed">{paper.keyFindings}</p>
+          <ul className="space-y-1.5">
+            {paper.keyFindings.split('\n').filter(l => l.trim()).map((line, i) => (
+              <li key={i} className="leading-relaxed pl-4 relative before:content-['•'] before:absolute before:left-0 before:text-muted-foreground">
+                {line.replace(/^-\s*/, '')}
+              </li>
+            ))}
+          </ul>
         </section>
       )}
 
       {paper.evidence && (
         <section className="space-y-2">
           <h2 className="text-lg font-semibold">근거</h2>
-          <p className="leading-relaxed">{paper.evidence}</p>
+          <ul className="space-y-1.5">
+            {paper.evidence.split('\n').filter(l => l.trim()).map((line, i) => (
+              <li key={i} className="leading-relaxed pl-4 relative before:content-['•'] before:absolute before:left-0 before:text-muted-foreground">
+                {line.replace(/^-\s*/, '')}
+              </li>
+            ))}
+          </ul>
         </section>
       )}
 
       {paper.howToApply && (
         <section className="space-y-2">
           <h2 className="text-lg font-semibold">적용 방법</h2>
-          <p className="leading-relaxed">{paper.howToApply}</p>
+          <ul className="space-y-1.5">
+            {paper.howToApply.split('\n').filter(l => l.trim()).map((line, i) => (
+              <li key={i} className="leading-relaxed pl-4 relative before:content-['•'] before:absolute before:left-0 before:text-muted-foreground">
+                {line.replace(/^-\s*/, '')}
+              </li>
+            ))}
+          </ul>
         </section>
       )}
 
