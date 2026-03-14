@@ -18,7 +18,7 @@ export default async function PaperDetail({ params }: Props) {
   if (result.length === 0) notFound();
   const paper = result[0];
   const authorList = JSON.parse(paper.authors) as string[];
-  const categoryList = JSON.parse(paper.categories) as string[];
+  const _categoryList = JSON.parse(paper.categories) as string[];
 
   return (
     <article className="space-y-6">

@@ -47,6 +47,6 @@ export async function fetchHNComments(storyId: number, limit = 10): Promise<stri
   );
 
   return comments
-    .filter((c: any) => c && c.text && !c.dead && !c.deleted)
-    .map((c: any) => c.text.replace(/<[^>]*>/g, ''));
+    .filter((c: { text?: string; dead?: boolean; deleted?: boolean }) => c && c.text && !c.dead && !c.deleted)
+    .map((c: { text: string }) => c.text.replace(/<[^>]*>/g, ''));
 }
