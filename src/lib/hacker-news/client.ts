@@ -36,3 +36,17 @@ export async function fetchHNTopAI(limit = 30): Promise<HNItem[]> {
     )
     .slice(0, limit);
 }
+
+export async function fetchHNComments(storyId: number, limit = 10): Promise<string[]> {
+  const storyRes = await fetch(`${HN_API}/item/${storyId}.json`);
+  const story = await storyRes.json();
+  const kids: number[] = story.kids?.slice(0, limit) ?? [];
+
+  const comments = await Promise.all(
+    kids.map(id => fetch(`${HN_API}/item/${id}.json`).then(r => r.json()))
+  );
+
+  return comments
+    .filter((c: any) => c && c.text && !c.dead && !c.deleted)
+    .map((c: any) => c.text.replace(/<[^>]*>/g, ''));
+}
