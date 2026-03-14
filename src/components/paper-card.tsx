@@ -18,12 +18,13 @@ interface PaperCardProps {
   devRelevance: number | null;
   targetAudience: string | null;
   tags: string | null;
+  source: string | null;
   isHot: boolean | null;
   publishedAt: string;
   authors: string;
 }
 
-export function PaperCard({ id, title, titleKo, oneLiner, aiCategory, targetAudience, tags, isHot, authors }: PaperCardProps) {
+export function PaperCard({ id, title, titleKo, oneLiner, aiCategory, targetAudience, tags, source, isHot, authors }: PaperCardProps) {
   const authorList = JSON.parse(authors) as string[];
   const displayAuthors = authorList.length > 3
     ? `${authorList.slice(0, 3).join(', ')} +${authorList.length - 3}`
@@ -44,6 +45,11 @@ export function PaperCard({ id, title, titleKo, oneLiner, aiCategory, targetAudi
         </div>
 
         <div className="flex items-center gap-2 text-xs text-muted-foreground">
+          {source === 'hacker_news' && (
+            <span className="font-mono px-1.5 py-0.5 rounded bg-orange-500/15 text-orange-700 dark:text-orange-300">
+              HN
+            </span>
+          )}
           {aiCategory && (
             <span className={`font-mono px-1.5 py-0.5 rounded ${CATEGORY_STYLES[aiCategory] || ''}`}>
               {aiCategory}
