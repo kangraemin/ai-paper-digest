@@ -3,4 +3,6 @@ export interface SummaryResult {
   summaryKo: string;
   aiCategory: string;
   devRelevance: number;
+  relevanceReason: string;
+  devNote: string;
 }

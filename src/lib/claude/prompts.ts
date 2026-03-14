@@ -1,4 +1,4 @@
-export const SUMMARY_PROMPT = `당신은 AI/ML 논문 요약 전문가입니다.
+export const SUMMARY_PROMPT = `당신은 AI/ML 논문 요약 전문가입니다. LLM을 실무에 사용하는 개발자 관점에서 논문을 분석합니다.
 
 다음 논문의 초록을 읽고 JSON으로 응답하세요:
 
@@ -21,6 +21,10 @@ export const SUMMARY_PROMPT = `당신은 AI/ML 논문 요약 전문가입니다.
    - 3: 알면 좋음 (새 모델 발표, 학습 방법론, 데이터셋)
    - 2: 학술적 (이론 중심, 수학 증명, 특수 도메인)
    - 1: 개발자와 무관 (순수 언어학, 뇌과학, 물리 시뮬레이션)
+5. relevanceReason: devRelevance 점수를 준 이유 한 줄 (왜 이 점수인지 구체적 근거)
+6. devNote: 이 논문을 왜 읽어야 하는지 개발자 시점 한 줄 코멘트
+   - "~하고 있다면 이 논문의 ~가 참고됨" 형식 권장
+   - devRelevance가 1~2인 경우 빈 문자열("")로 응답
 
 논문 제목: {title}
 초록: {abstract}

@@ -24,6 +24,8 @@ async function main() {
         summaryKo: result.summaryKo,
         aiCategory: result.aiCategory,
         devRelevance: result.devRelevance,
+        relevanceReason: result.relevanceReason,
+        devNote: result.devNote,
         summarizedAt: new Date().toISOString(),
       })
       .where(eq(papers.id, id));

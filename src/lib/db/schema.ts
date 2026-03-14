@@ -15,6 +15,8 @@ export const papers = sqliteTable('papers', {
   summaryKo: text('summary_ko'),
   aiCategory: text('ai_category'),
   devRelevance: integer('dev_relevance').default(3),
+  relevanceReason: text('relevance_reason'),
+  devNote: text('dev_note'),
   hotScore: integer('hot_score').default(0),
   isHot: integer('is_hot', { mode: 'boolean' }).default(false),
   source: text('source').default('arxiv'),
