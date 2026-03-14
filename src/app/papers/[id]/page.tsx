@@ -7,6 +7,14 @@ import { CopyButton } from '@/components/copy-button';
 import Link from 'next/link';
 import { Calendar, Users, FileText, Zap, ChevronDown } from 'lucide-react';
 
+function parseBulletList(value: string): string[] {
+  try {
+    const arr = JSON.parse(value);
+    if (Array.isArray(arr)) return arr;
+  } catch {}
+  return value.split('\n').filter(l => l.trim()).map(l => l.replace(/^-\s*/, ''));
+}
+
 const categoryColorMap: Record<string, string> = {
   prompting: '#3b82f6',
   rag: '#10b981',
@@ -125,9 +133,9 @@ export default async function PaperDetail({ params }: Props) {
             Core Mechanics
           </h3>
           <ul className="space-y-2">
-            {paper.keyFindings.split('\n').filter(l => l.trim()).map((line, i) => (
+            {parseBulletList(paper.keyFindings).map((line, i) => (
               <li key={i} className="text-[14px] text-zinc-400 leading-relaxed pl-4 relative before:content-['•'] before:absolute before:left-0 before:text-zinc-600">
-                {line.replace(/^-\s*/, '')}
+                {line}
               </li>
             ))}
           </ul>
@@ -141,9 +149,9 @@ export default async function PaperDetail({ params }: Props) {
             Evidence
           </h3>
           <ul className="space-y-2">
-            {paper.evidence.split('\n').filter(l => l.trim()).map((line, i) => (
+            {parseBulletList(paper.evidence).map((line, i) => (
               <li key={i} className="text-[14px] text-zinc-400 leading-relaxed pl-4 relative before:content-['•'] before:absolute before:left-0 before:text-zinc-600">
-                {line.replace(/^-\s*/, '')}
+                {line}
               </li>
             ))}
           </ul>
@@ -157,9 +165,9 @@ export default async function PaperDetail({ params }: Props) {
             How to Apply
           </h3>
           <ul className="space-y-2">
-            {paper.howToApply.split('\n').filter(l => l.trim()).map((line, i) => (
+            {parseBulletList(paper.howToApply).map((line, i) => (
               <li key={i} className="text-[14px] text-zinc-400 leading-relaxed pl-4 relative before:content-['•'] before:absolute before:left-0 before:text-zinc-600">
-                {line.replace(/^-\s*/, '')}
+                {line}
               </li>
             ))}
           </ul>
