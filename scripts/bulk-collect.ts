@@ -79,6 +79,8 @@ async function collectS2() {
     }
     totalNew += newCount;
     console.log(`  ✅ ${year}년: ${passed.length}편 중 ${newCount}편 신규 저장`);
+    // 연도 간 딜레이 — 레이트 리밋 방지
+    await new Promise(r => setTimeout(r, 120_000));
   }
 
   console.log(`\n🔬 S2 벌크 수집 완료: 총 ${totalNew}편 신규`);
