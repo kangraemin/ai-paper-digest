@@ -13,16 +13,16 @@ interface PaperCardProps {
   id: string;
   title: string;
   titleKo: string | null;
-  summaryKo: string | null;
+  oneLiner: string | null;
   aiCategory: string | null;
   devRelevance: number | null;
-  devNote: string | null;
+  targetAudience: string | null;
   isHot: boolean | null;
   publishedAt: string;
   authors: string;
 }
 
-export function PaperCard({ id, title, titleKo, summaryKo, aiCategory, devNote, isHot, authors }: PaperCardProps) {
+export function PaperCard({ id, title, titleKo, oneLiner, aiCategory, targetAudience, isHot, authors }: PaperCardProps) {
   const authorList = JSON.parse(authors) as string[];
   const displayAuthors = authorList.length > 3
     ? `${authorList.slice(0, 3).join(', ')} +${authorList.length - 3}`
@@ -31,9 +31,9 @@ export function PaperCard({ id, title, titleKo, summaryKo, aiCategory, devNote, 
   return (
     <Link href={`/papers/${id}`}>
       <div className="py-4 border-b border-border hover:bg-muted/30 transition-colors">
-        {devNote && (
+        {targetAudience && (
           <p className="text-[15px] font-medium text-amber-700 dark:text-amber-400 mb-1.5">
-            {devNote}
+            {targetAudience}
           </p>
         )}
 
@@ -48,7 +48,7 @@ export function PaperCard({ id, title, titleKo, summaryKo, aiCategory, devNote, 
               {aiCategory}
             </span>
           )}
-          {summaryKo && <span className="line-clamp-1 flex-1">{summaryKo}</span>}
+          {oneLiner && <span className="line-clamp-1 flex-1">{oneLiner}</span>}
         </div>
 
         <div className="text-xs text-muted-foreground mt-1 font-mono">

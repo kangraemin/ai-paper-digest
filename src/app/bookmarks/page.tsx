@@ -8,10 +8,10 @@ interface Paper {
   id: string;
   title: string;
   titleKo: string | null;
-  summaryKo: string | null;
+  oneLiner: string | null;
   aiCategory: string | null;
   devRelevance: number | null;
-  devNote: string | null;
+  targetAudience: string | null;
   isHot: boolean | null;
   publishedAt: string;
   authors: string;

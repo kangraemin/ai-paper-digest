@@ -28,7 +28,7 @@ export async function GET(req: Request) {
     <item>
       <title>${escapeXml(p.titleKo || p.title)}</title>
       <link>${p.arxivUrl}</link>
-      <description>${escapeXml(p.summaryKo || p.abstract)}</description>
+      <description>${escapeXml(p.oneLiner || p.abstract)}</description>
       <category>${p.aiCategory || 'other'}</category>
       <guid isPermaLink="false">${p.id}</guid>
       <pubDate>${new Date(p.publishedAt).toUTCString()}</pubDate>

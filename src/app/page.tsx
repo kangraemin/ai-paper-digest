@@ -86,10 +86,10 @@ async function TimelineFeed({ category }: { category?: string }) {
                 id={paper.id}
                 title={paper.title}
                 titleKo={paper.titleKo}
-                summaryKo={paper.summaryKo}
+                oneLiner={paper.oneLiner}
                 aiCategory={paper.aiCategory}
                 devRelevance={paper.devRelevance}
-                devNote={paper.devNote}
+                targetAudience={paper.targetAudience}
                 isHot={paper.isHot}
                 publishedAt={paper.publishedAt}
                 authors={paper.authors}

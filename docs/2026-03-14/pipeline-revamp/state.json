@@ -6,8 +6,8 @@
   },
   "plan_approved": true,
   "team_name": "pipeline-revamp",
-  "current_dev_phase": 3,
-  "current_step": 3,
+  "current_dev_phase": 4,
+  "current_step": 1,
   "dev_phases": {
     "1": {
       "name": "collection-filter",

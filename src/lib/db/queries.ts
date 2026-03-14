@@ -13,6 +13,7 @@ export async function searchPapers(query: string, limit = 20, offset = 0) {
         like(papers.titleKo, pattern),
         like(papers.summaryKo, pattern),
         like(papers.abstract, pattern),
+        like(papers.keyFindings, pattern),
       )
     )
     .orderBy(desc(papers.publishedAt))
@@ -27,6 +28,7 @@ export async function searchPapers(query: string, limit = 20, offset = 0) {
         like(papers.titleKo, pattern),
         like(papers.summaryKo, pattern),
         like(papers.abstract, pattern),
+        like(papers.keyFindings, pattern),
       )
     );
 
