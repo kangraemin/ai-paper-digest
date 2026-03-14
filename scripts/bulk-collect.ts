@@ -24,7 +24,13 @@ async function collectS2() {
 
   for (const { year, maxPapers } of S2_YEARS) {
     console.log(`\n📅 ${year}년 (최대 ${maxPapers}편)...`);
-    const fetched = await fetchAllPapersForYear(year, maxPapers);
+    let fetched;
+    try {
+      fetched = await fetchAllPapersForYear(year, maxPapers);
+    } catch (e) {
+      console.error(`  ❌ ${year}년 수집 실패 (스킵): ${(e as Error).message}`);
+      continue;
+    }
     console.log(`  수집: ${fetched.length}편`);
 
     // 스크리닝
