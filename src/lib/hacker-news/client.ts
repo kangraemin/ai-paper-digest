@@ -60,3 +60,36 @@ export async function fetchHNComments(storyId: number, limit = 10): Promise<stri
     .filter((c: { text?: string; dead?: boolean; deleted?: boolean }) => c && c.text && !c.dead && !c.deleted)
     .map((c: { text: string }) => c.text.replace(/<[^>]*>/g, ''));
 }
+
+export async function fetchHNStoriesAlgolia(
+  opts?: { daysBack?: number; minScore?: number; maxPages?: number }
+): Promise<AlgoliaHNHit[]> {
+  const daysBack = opts?.daysBack ?? 180;
+  const minScore = opts?.minScore ?? 50;
+  const maxPages = opts?.maxPages ?? 10;
+
+  const since = Math.floor(Date.now() / 1000) - daysBack * 86400;
+  const all: AlgoliaHNHit[] = [];
+
+  for (let page = 0; page < maxPages; page++) {
+    const url = `https://hn.algolia.com/api/v1/search?tags=story&numericFilters=created_at_i>${since},points>${minScore}&hitsPerPage=100&page=${page}`;
+    const res = await fetch(url);
+    if (!res.ok) throw new Error(`Algolia HN API error: ${res.status}`);
+
+    const data = await res.json();
+    const hits: AlgoliaHNHit[] = data.hits ?? [];
+    if (hits.length === 0) break;
+
+    const aiHits = hits.filter(hit =>
+      AI_KEYWORDS.some(kw => hit.title.toLowerCase().includes(kw.toLowerCase()))
+    );
+    all.push(...aiHits);
+
+    console.log(`  [HN Algolia] page ${page + 1}: ${hits.length}건 중 ${aiHits.length}건 AI 관련`);
+
+    if (hits.length < 100) break;
+    await new Promise(r => setTimeout(r, 500));
+  }
+
+  return all;
+}
