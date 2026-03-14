@@ -5,7 +5,7 @@ import { calculateHotScore } from '../src/lib/hot-scorer';
 
 async function main() {
   console.log('📄 Fetching papers from arXiv...');
-  const fetched = await fetchRecentPapers(200);
+  const fetched = await fetchRecentPapers(100);
   console.log(`Found ${fetched.length} papers`);
 
   let newCount = 0;

@@ -4,8 +4,18 @@ import type { ArxivEntry } from './types';
 const ARXIV_API = 'https://export.arxiv.org/api/query';
 const CATEGORIES = ['cs.AI', 'cs.CL', 'cs.LG'];
 
+const PRACTICAL_KEYWORDS = [
+  'prompting', 'prompt engineering', 'RAG', 'retrieval-augmented',
+  'agent', 'tool use', 'function calling', 'fine-tuning', 'LoRA',
+  'RLHF', 'DPO', 'inference', 'quantization', 'distillation',
+  'eval', 'benchmark', 'code generation', 'in-context learning',
+  'chain-of-thought', 'embedding', 'chunking', 'vector search',
+];
+
 export async function fetchRecentPapers(maxResults = 100): Promise<ArxivEntry[]> {
-  const query = CATEGORIES.map(c => `cat:${c}`).join('+OR+');
+  const catQuery = CATEGORIES.map(c => `cat:${c}`).join('+OR+');
+  const absQuery = PRACTICAL_KEYWORDS.map(k => `abs:${k}`).join('+OR+');
+  const query = `(${catQuery})+AND+(${absQuery})`;
   const url = `${ARXIV_API}?search_query=${query}&sortBy=submittedDate&sortOrder=descending&max_results=${maxResults}`;
 
   const res = await fetch(url);
