@@ -71,7 +71,6 @@ async function main() {
 
       // 4. DB 업데이트
       await db.update(papers).set({
-        abstract: content.slice(0, 2000) || item.title,
         titleKo: result.titleKo,
         oneLiner: result.oneLiner,
         targetAudience: result.targetAudience,

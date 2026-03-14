@@ -3,6 +3,7 @@ import { papers } from "@/lib/db/schema";
 import { desc, and, gte, eq, not } from "drizzle-orm";
 import { PaperCard } from "@/components/paper-card";
 import { SourceTabs } from "@/components/source-tabs";
+import { CategoryChips } from "@/components/category-chips";
 import { NewsletterForm } from "@/components/newsletter-form";
 import { Suspense } from "react";
 
@@ -45,9 +46,10 @@ async function TimelineFeed({ category, source }: { category?: string; source?: 
 
   if (source === 'community') {
     conditions.push(eq(papers.source, 'hacker_news'));
-  } else {
+  } else if (source === 'papers') {
     conditions.push(not(eq(papers.source, 'hacker_news')));
   }
+  // source === 'all' or undefined → no source filter
 
   if (category && category !== 'all') {
     conditions.push(eq(papers.aiCategory, category));
@@ -62,8 +64,8 @@ async function TimelineFeed({ category, source }: { category?: string; source?: 
     return (
       <div className="py-20 text-center">
         <p className="text-4xl mb-4">¯\_(ツ)_/¯</p>
-        <p className="text-muted-foreground">오늘은 조용한 날이네요.</p>
-        <p className="text-sm text-muted-foreground mt-1">
+        <p className="text-zinc-400">오늘은 조용한 날이네요.</p>
+        <p className="text-sm text-zinc-500 mt-1">
           {source === 'community' ? 'HN 수집을 실행하거나 내일 다시 확인해 주세요.' : '논문 수집을 실행하거나 내일 다시 확인해 주세요.'}
         </p>
       </div>
@@ -80,14 +82,11 @@ async function TimelineFeed({ category, source }: { category?: string; source?: 
     <div className="space-y-8">
       {Object.entries(grouped).map(([date, datePapers]) => (
         <section key={date}>
-          <div className="sticky top-0 z-10 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 py-2 mb-4">
-            <div className="flex items-center gap-3">
-              <div className="h-px flex-1 bg-border" />
-              <span className="text-sm font-medium text-muted-foreground whitespace-nowrap">
-                {formatDateHeader(date)} · {datePapers.length}편
-              </span>
-              <div className="h-px flex-1 bg-border" />
-            </div>
+          <div className="sticky top-0 z-10 bg-zinc-950/95 backdrop-blur supports-[backdrop-filter]:bg-zinc-950/60 py-2 mb-4">
+            <h2 className="font-mono text-[12px] text-zinc-500 uppercase tracking-wider mb-1 flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-zinc-600 inline-block" />
+              {formatDateHeader(date)} · {datePapers.length}편
+            </h2>
           </div>
           <div className="space-y-3">
             {datePapers.map(paper => (
@@ -117,9 +116,15 @@ async function TimelineFeed({ category, source }: { category?: string; source?: 
 export default async function Home({ searchParams }: Props) {
   const params = await searchParams;
   return (
-    <div className="space-y-6">
-      <SourceTabs />
-      <Suspense fallback={<div className="py-12 text-center text-muted-foreground">로딩 중...</div>}>
+    <div className="w-full max-w-[800px] flex flex-col px-4 sm:px-6 py-6">
+      {/* Filter section */}
+      <div className="mb-8 border-b border-zinc-800 pb-4">
+        <SourceTabs />
+        <div className="mt-4">
+          <CategoryChips />
+        </div>
+      </div>
+      <Suspense fallback={<div className="py-12 text-center text-zinc-400">로딩 중...</div>}>
         <TimelineFeed category={params.category} source={params.source} />
       </Suspense>
       <NewsletterForm />

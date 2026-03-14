@@ -1,12 +1,28 @@
 import Link from 'next/link';
+import { Code, Target } from 'lucide-react';
 
-const CATEGORY_STYLES: Record<string, string> = {
-  prompting: 'bg-blue-500/15 text-blue-700 dark:text-blue-300',
-  rag: 'bg-emerald-500/15 text-emerald-700 dark:text-emerald-300',
-  agent: 'bg-violet-500/15 text-violet-700 dark:text-violet-300',
-  'fine-tuning': 'bg-orange-500/15 text-orange-700 dark:text-orange-300',
-  eval: 'bg-pink-500/15 text-pink-700 dark:text-pink-300',
-  'cost-speed': 'bg-teal-500/15 text-teal-700 dark:text-teal-300',
+const categoryColorMap: Record<string, string> = {
+  prompting: '#3b82f6',
+  rag: '#10b981',
+  agent: '#8b5cf6',
+  'fine-tuning': '#f97316',
+  finetuning: '#f97316',
+  eval: '#ec4899',
+  'cost-speed': '#14b8a6',
+  cost: '#14b8a6',
+  security: '#ef4444',
+};
+
+const categoryDisplayName: Record<string, string> = {
+  prompting: 'Prompting',
+  rag: 'RAG',
+  agent: 'Agent',
+  'fine-tuning': 'Fine-tuning',
+  finetuning: 'Fine-tuning',
+  eval: 'Eval',
+  'cost-speed': 'Cost',
+  cost: 'Cost',
+  security: 'Security',
 };
 
 interface PaperCardProps {
@@ -24,48 +40,61 @@ interface PaperCardProps {
   authors: string;
 }
 
-export function PaperCard({ id, title, titleKo, oneLiner, aiCategory, targetAudience, tags, source, isHot, authors }: PaperCardProps) {
-  const authorList = JSON.parse(authors) as string[];
-  const displayAuthors = authorList.length > 3
-    ? `${authorList.slice(0, 3).join(', ')} +${authorList.length - 3}`
-    : authorList.join(', ');
+export function PaperCard({ id, title, titleKo, oneLiner, aiCategory, devRelevance, targetAudience, source }: PaperCardProps) {
+  const catColor = aiCategory ? (categoryColorMap[aiCategory] ?? '#888') : '#888';
+  const catName = aiCategory ? (categoryDisplayName[aiCategory] ?? aiCategory) : null;
 
   return (
-    <Link href={`/papers/${id}`}>
-      <div className="py-4 border-b border-border hover:bg-muted/30 transition-colors">
-        {targetAudience && (
-          <p className="text-[15px] font-medium text-amber-700 dark:text-amber-400 mb-1.5">
-            {targetAudience}
-          </p>
-        )}
+    <Link href={`/papers/${id}`} className="group block w-full">
+      <div
+        className="bg-zinc-900 border border-zinc-800 border-l-[3px] rounded-sm hover:bg-zinc-800/50 transition-colors p-4"
+        style={{ borderLeftColor: catColor }}
+      >
+        <div className="flex flex-col gap-2">
+          {/* Top row: category badge + source */}
+          <div className="flex items-center gap-3">
+            {catName && (
+              <span
+                className="font-mono text-[12px] px-1.5 py-0.5 rounded-sm"
+                style={{ color: catColor, backgroundColor: `${catColor}1a` }}
+              >
+                [{catName}]
+              </span>
+            )}
+            {source === 'hacker_news' && (
+              <span className="font-mono text-[12px] px-1.5 py-0.5 rounded-sm bg-orange-500/10 text-orange-400">
+                HN
+              </span>
+            )}
+          </div>
 
-        <div className="flex items-start gap-2 mb-1">
-          <h3 className="font-semibold leading-snug flex-1">{titleKo || title}</h3>
-          {isHot && <span className="text-orange-500 shrink-0">🔥</span>}
-        </div>
+          {/* Title + description */}
+          <div>
+            <h3 className="text-[16px] font-semibold text-zinc-100 tracking-[-0.02em] leading-tight mb-1">
+              {titleKo || title}
+            </h3>
+            {oneLiner && (
+              <p className="text-[14px] text-zinc-400 leading-relaxed line-clamp-2">
+                {oneLiner}
+              </p>
+            )}
+          </div>
 
-        <div className="flex items-center gap-2 text-xs text-muted-foreground">
-          {source === 'hacker_news' && (
-            <span className="font-mono px-1.5 py-0.5 rounded bg-orange-500/15 text-orange-700 dark:text-orange-300">
-              HN
-            </span>
-          )}
-          {aiCategory && (
-            <span className={`font-mono px-1.5 py-0.5 rounded ${CATEGORY_STYLES[aiCategory] || ''}`}>
-              {aiCategory}
-            </span>
-          )}
-          {tags && (() => {
-            const tagList = (JSON.parse(tags) as string[]).slice(0, 3);
-            return tagList.map(tag => (
-              <span key={tag} className="px-1.5 py-0.5 rounded bg-muted text-[11px]">{tag}</span>
-            ));
-          })()}
-          {oneLiner && <span className="line-clamp-1 flex-1">{oneLiner}</span>}
-        </div>
-
-        <div className="text-xs text-muted-foreground mt-1 font-mono">
-          {displayAuthors}
+          {/* Bottom row */}
+          <div className="flex items-center gap-4 mt-2 pt-3 border-t border-zinc-800/50">
+            {targetAudience && (
+              <div className="flex items-center gap-1.5 text-zinc-400">
+                <Code size={14} />
+                <span className="font-mono text-[11px]">For: {targetAudience}</span>
+              </div>
+            )}
+            {devRelevance != null && (
+              <div className="flex items-center gap-1.5" style={{ color: catColor }}>
+                <Target size={14} />
+                <span className="font-mono text-[11px]">{devRelevance}% Match</span>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </Link>

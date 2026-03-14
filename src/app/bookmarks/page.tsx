@@ -48,7 +48,7 @@ export default function BookmarksPage() {
         <p className="text-muted-foreground">로딩 중...</p>
       ) : papers.length === 0 ? (
         <p className="py-12 text-center text-muted-foreground">
-          북마크한 논문이 없습니다.
+          북마크한 항목이 없습니다.
         </p>
       ) : (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">

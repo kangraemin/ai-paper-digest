@@ -54,12 +54,22 @@ export default async function PaperDetail({ params }: Props) {
       </div>
 
       <div className="flex gap-3 text-sm">
-        <Link href={paper.arxivUrl} target="_blank" className="text-blue-500 hover:underline">
-          arXiv
-        </Link>
-        <Link href={paper.pdfUrl} target="_blank" className="text-blue-500 hover:underline">
-          PDF
-        </Link>
+        {paper.source === 'hacker_news' ? (
+          <Link href={paper.arxivUrl} target="_blank" className="text-blue-500 hover:underline">
+            원문
+          </Link>
+        ) : (
+          <>
+            <Link href={paper.arxivUrl} target="_blank" className="text-blue-500 hover:underline">
+              arXiv
+            </Link>
+            {paper.pdfUrl && (
+              <Link href={paper.pdfUrl} target="_blank" className="text-blue-500 hover:underline">
+                PDF
+              </Link>
+            )}
+          </>
+        )}
       </div>
 
       <div className="text-sm text-muted-foreground">
@@ -162,10 +172,12 @@ export default async function PaperDetail({ params }: Props) {
         ) : null;
       })()}
 
-      <section className="space-y-2">
-        <h2 className="text-lg font-semibold">Abstract</h2>
-        <p className="leading-relaxed text-muted-foreground">{paper.abstract}</p>
-      </section>
+      {paper.source !== 'hacker_news' && (
+        <section className="space-y-2">
+          <h2 className="text-lg font-semibold">Abstract</h2>
+          <p className="leading-relaxed text-muted-foreground">{paper.abstract}</p>
+        </section>
+      )}
     </article>
   );
 }

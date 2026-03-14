@@ -1,5 +1,5 @@
 {
-  "workflow_phase": "development",
+  "workflow_phase": "done",
   "mode": "normal",
   "planning": {
     "no_question_streak": 0
@@ -7,28 +7,28 @@
   "plan_approved": true,
   "team_name": "design-overhaul",
   "current_dev_phase": 2,
-  "current_step": 1,
+  "current_step": 2,
   "dev_phases": {
     "1": {
-      "name": "테마 & 레이아웃 기반",
+      "name": "\ud14c\ub9c8 & \ub808\uc774\uc544\uc6c3 \uae30\ubc18",
       "steps": 2,
       "status": "done",
       "folder": "phase-1-theme-layout"
     },
     "2": {
-      "name": "홈 피드 & PaperCard",
+      "name": "\ud648 \ud53c\ub4dc & PaperCard",
       "steps": 2,
       "status": "pending",
       "folder": "phase-2-home-feed"
     },
     "3": {
-      "name": "논문 상세 페이지",
+      "name": "\ub17c\ubb38 \uc0c1\uc138 \ud398\uc774\uc9c0",
       "steps": 1,
       "status": "pending",
       "folder": "phase-3-paper-detail"
     },
     "4": {
-      "name": "북마크 & Submit",
+      "name": "\ubd81\ub9c8\ud06c & Submit",
       "steps": 2,
       "status": "pending",
       "folder": "phase-4-bookmarks-submit"
