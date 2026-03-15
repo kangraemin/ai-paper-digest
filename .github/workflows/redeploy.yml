@@ -1,0 +1,12 @@
+name: Redeploy
+on:
+  workflow_dispatch:
+  workflow_call:
+
+jobs:
+  redeploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Trigger Vercel redeploy (캐시 초기화)
+        run: curl -X POST "${{ secrets.VERCEL_DEPLOY_HOOK }}"

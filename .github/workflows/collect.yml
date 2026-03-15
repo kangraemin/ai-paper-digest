@@ -41,7 +41,7 @@ jobs:
     uses: ./.github/workflows/summarize.yml
     secrets: inherit
 
-  notify:
+  redeploy:
     needs: summarize
-    uses: ./.github/workflows/notify.yml
+    uses: ./.github/workflows/redeploy.yml
     secrets: inherit
