@@ -32,14 +32,12 @@ function groupByDate(items: PaperListItem[]): Record<string, PaperListItem[]> {
 
 interface PaperFeedProps {
   initialPapers: PaperListItem[];
-  initialSource: string;
-  initialCategory: string;
 }
 
-export function PaperFeed({ initialPapers, initialSource, initialCategory }: PaperFeedProps) {
+export function PaperFeed({ initialPapers }: PaperFeedProps) {
   const [allPapers, setAllPapers] = useState(initialPapers);
-  const [source, setSource] = useState(initialSource);
-  const [category, setCategory] = useState(initialCategory);
+  const [source, setSource] = useState('all');
+  const [category, setCategory] = useState('all');
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(initialPapers.length >= 20);
   const [loading, setLoading] = useState(false);
@@ -98,7 +96,12 @@ export function PaperFeed({ initialPapers, initialSource, initialCategory }: Pap
       </div>
 
       {loading ? (
-        <div className="py-12 text-center text-zinc-400">로딩 중...</div>
+        <div className="py-12 flex flex-col items-center gap-3">
+          <div className="w-48 h-1 bg-zinc-800 rounded-full overflow-hidden">
+            <div className="h-full bg-zinc-400 rounded-full animate-[loading-bar_1.2s_ease-in-out_infinite]" />
+          </div>
+          <p className="text-sm text-zinc-500">로딩 중...</p>
+        </div>
       ) : allPapers.length === 0 ? (
         <div className="py-20 text-center">
           <p className="text-4xl mb-4">¯\_(ツ)_/¯</p>
@@ -146,7 +149,14 @@ export function PaperFeed({ initialPapers, initialSource, initialCategory }: Pap
                 disabled={loadingMore}
                 className="px-6 py-2 rounded-lg border border-zinc-700 text-zinc-300 hover:bg-zinc-800 transition-colors disabled:opacity-50"
               >
-                {loadingMore ? '로딩 중...' : '더 보기'}
+                {loadingMore ? (
+                  <span className="flex items-center gap-2">
+                    <span className="w-16 h-1 bg-zinc-700 rounded-full overflow-hidden inline-block">
+                      <span className="block h-full bg-zinc-400 rounded-full animate-[loading-bar_1.2s_ease-in-out_infinite]" />
+                    </span>
+                    로딩 중...
+                  </span>
+                ) : '더 보기'}
               </button>
             </div>
           )}

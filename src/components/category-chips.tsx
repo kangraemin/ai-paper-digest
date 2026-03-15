@@ -44,7 +44,7 @@ export function CategoryChips({ current, onChange }: CategoryChipsProps) {
               className={`flex h-7 shrink-0 items-center justify-center rounded-full px-3 font-mono text-[12px] transition-colors border ${
                 isActive
                   ? 'border-zinc-600 bg-zinc-800 text-white'
-                  : 'border-zinc-800 bg-zinc-900 hover:bg-zinc-800 text-zinc-300'
+                  : 'border-zinc-800 bg-zinc-900 hover:bg-zinc-700 text-zinc-300'
               }`}
             >
               {cat.label}

@@ -20,10 +20,10 @@ export function SourceTabs({ current, onChange }: SourceTabsProps) {
         <button
           key={source.id}
           onClick={() => handleClick(source.id)}
-          className={`flex flex-col items-center justify-center border-b-[2px] pb-2 font-medium text-[14px] transition-colors ${
+          className={`flex flex-col items-center justify-center border-b-[2px] pb-2 font-medium text-[14px] transition-all ${
             current === source.id
               ? 'border-b-white text-white'
-              : 'border-b-transparent text-zinc-500 hover:text-white'
+              : 'border-b-transparent text-zinc-500 hover:text-zinc-200'
           }`}
         >
           {source.label}
