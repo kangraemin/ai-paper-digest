@@ -14,7 +14,7 @@ async function main() {
 
   const results = await summarizeBatch(
     unsummarized.map(p => ({ id: p.id, title: p.title, abstract: p.abstract, pdfUrl: p.pdfUrl ?? undefined })),
-    5
+    1
   );
 
   for (const [id, result] of results) {
