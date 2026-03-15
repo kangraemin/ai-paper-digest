@@ -1,5 +1,5 @@
 {
-  "version": "01e46fb",
+  "version": "2ebed96",
   "installed_at": "2026-03-15T15:12:48.855096",
   "files": [
     "agents/dev.md",
@@ -20,5 +20,6 @@
     "hooks/subagent-cleanup.sh",
     "hooks/lib/resolve-task.sh",
     "scripts/update-check.sh"
-  ]
+  ],
+  "updated_at": "2026-03-15T20:36:38.506759"
 }
