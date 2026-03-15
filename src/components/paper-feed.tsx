@@ -48,14 +48,13 @@ export function PaperFeed({ initialPapers }: PaperFeedProps) {
   const [loading, setLoading] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
   const isInitialRender = useRef(true);
-  const hasUrlFilter = useRef(source !== 'all' || category !== 'all');
 
   // 필터 변경 시 fetch
   useEffect(() => {
     if (isInitialRender.current) {
       isInitialRender.current = false;
-      // URL에 필터가 있으면 마운트 시 즉시 fetch (뒤로가기 복원)
-      if (!hasUrlFilter.current) return;
+      // URL에 필터가 없는 초기 상태면 서버 렌더 데이터 그대로 사용
+      if (source === 'all' && category === 'all') return;
     }
     const params = new URLSearchParams();
     if (source !== 'all') params.set('source', source);
