@@ -34,19 +34,29 @@ interface PaperFeedProps {
   initialPapers: PaperListItem[];
 }
 
+function getInitialFilter(key: string): string {
+  if (typeof window === 'undefined') return 'all';
+  return new URLSearchParams(window.location.search).get(key) || 'all';
+}
+
 export function PaperFeed({ initialPapers }: PaperFeedProps) {
   const [allPapers, setAllPapers] = useState(initialPapers);
-  const [source, setSource] = useState('all');
-  const [category, setCategory] = useState('all');
+  const [source, setSource] = useState(() => getInitialFilter('source'));
+  const [category, setCategory] = useState(() => getInitialFilter('category'));
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(initialPapers.length >= 20);
   const [loading, setLoading] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
   const isInitialRender = useRef(true);
+  const hasUrlFilter = useRef(source !== 'all' || category !== 'all');
 
   // 필터 변경 시 fetch
   useEffect(() => {
-    if (isInitialRender.current) { isInitialRender.current = false; return; }
+    if (isInitialRender.current) {
+      isInitialRender.current = false;
+      // URL에 필터가 있으면 마운트 시 즉시 fetch (뒤로가기 복원)
+      if (!hasUrlFilter.current) return;
+    }
     const params = new URLSearchParams();
     if (source !== 'all') params.set('source', source);
     if (category !== 'all') params.set('category', category);
