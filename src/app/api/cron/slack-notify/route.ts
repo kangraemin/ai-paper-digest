@@ -81,7 +81,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: 'SLACK_WEBHOOK_URL not set' }, { status: 500 });
   }
 
-  const siteUrl = process.env.SITE_URL || 'https://ai-paper.vercel.app';
+  const siteUrl = process.env.SITE_URL || 'https://ai-paper-delta.vercel.app';
 
   const pending = await db
     .select()
