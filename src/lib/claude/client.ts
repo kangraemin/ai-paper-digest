@@ -1,18 +1,30 @@
 import { spawn } from 'child_process';
+import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from 'fs';
+import { join } from 'path';
+import { tmpdir } from 'os';
 import { SUMMARY_PROMPT } from './prompts';
 import { fetchPdfText } from '../pdf-fetcher';
 import type { SummaryResult } from './types';
 
 function runClaude(prompt: string): Promise<string> {
+  // 빈 settings.json이 있는 임시 HOME 생성 → stop hook 등 모든 훅 비활성화
+  const tmpHome = mkdtempSync(join(tmpdir(), 'claude-'));
+  mkdirSync(join(tmpHome, '.claude'));
+  writeFileSync(join(tmpHome, '.claude', 'settings.json'), '{}');
+
+  const cleanup = () => rmSync(tmpHome, { recursive: true, force: true });
+
   return new Promise((resolve, reject) => {
     const proc = spawn('claude', ['-p', '--model', 'sonnet', '--output-format', 'json'], {
       stdio: ['pipe', 'pipe', 'pipe'],
+      env: { ...process.env, HOME: tmpHome },
     });
     let stdout = '';
     let stderr = '';
     proc.stdout.on('data', (d: Buffer) => { stdout += d.toString(); });
     proc.stderr.on('data', (d: Buffer) => { stderr += d.toString(); });
     proc.on('close', (code: number | null) => {
+      cleanup();
       if (code !== 0) {
         reject(new Error(`claude exited ${code}: ${stderr}`));
         return;
@@ -29,10 +41,10 @@ function runClaude(prompt: string): Promise<string> {
         resolve(stdout.trim());
       }
     });
-    proc.on('error', reject);
+    proc.on('error', (e) => { cleanup(); reject(e); });
     proc.stdin.write(prompt);
     proc.stdin.end();
-    setTimeout(() => { proc.kill(); reject(new Error('timeout')); }, 120000);
+    setTimeout(() => { proc.kill(); cleanup(); reject(new Error('timeout')); }, 120000);
   });
 }
 
