@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
+import { GoogleAnalytics } from "@next/third-parties/google";
 import { Header } from "@/components/header";
 import "./globals.css";
 
@@ -33,6 +34,7 @@ export default function RootLayout({
         <Header />
         <main className="flex-1 flex flex-col items-center w-full">{children}</main>
       </body>
+      <GoogleAnalytics gaId="G-6N6MYM10K5" />
     </html>
   );
 }
