@@ -5,8 +5,9 @@ import type { SummaryResult } from './types';
 
 function runClaude(prompt: string): Promise<string> {
   return new Promise((resolve, reject) => {
-    // --settings '{"hooks":{}}' → stop hook 등 모든 훅 비활성화
-    const proc = spawn('claude', ['-p', '--model', 'sonnet', '--output-format', 'json', '--settings', '{"hooks":{}}'], {
+    // 모든 훅 비활성화: --settings으로 각 hook 이벤트를 빈 배열로 덮어씀
+    const noHooks = JSON.stringify({ hooks: { Stop: [], SessionEnd: [], PostToolUse: [], UserPromptSubmit: [], SessionStart: [], PreToolUse: [] } });
+    const proc = spawn('claude', ['-p', '--model', 'sonnet', '--output-format', 'json', '--settings', noHooks], {
       stdio: ['pipe', 'pipe', 'pipe'],
     });
     let stdout = '';
