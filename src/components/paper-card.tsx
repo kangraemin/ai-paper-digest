@@ -79,6 +79,18 @@ export function PaperCard({ id, title, titleKo, oneLiner, aiCategory, devRelevan
             )}
           </div>
 
+          {/* Bottom row: audience + match */}
+          {(targetAudience || devRelevance) && (
+            <div className="flex items-center gap-4 mt-1 pt-3 border-t border-zinc-800/50 text-[11px] font-mono text-zinc-500">
+              {targetAudience && (
+                <span>For: {targetAudience.split(' ').slice(0, 3).join(' ')}</span>
+              )}
+              {devRelevance && (
+                <span style={{ color: catColor }}>{devRelevance}% Match</span>
+              )}
+            </div>
+          )}
+
         </div>
       </div>
     </Link>

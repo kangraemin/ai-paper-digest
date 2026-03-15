@@ -15,12 +15,12 @@ export function SourceTabs({ current, onChange }: SourceTabsProps) {
   const handleClick = (id: string) => { onChange(id); };
 
   return (
-    <div className="flex gap-6">
+    <div className="flex gap-4 sm:gap-6">
       {SOURCES.map(source => (
         <button
           key={source.id}
           onClick={() => handleClick(source.id)}
-          className={`flex flex-col items-center justify-center border-b-[2px] pb-2 font-medium text-[14px] transition-all ${
+          className={`flex flex-col items-center justify-center border-b-[2px] py-2 font-medium text-[14px] transition-all ${
             current === source.id
               ? 'border-b-white text-white'
               : 'border-b-transparent text-zinc-500 hover:text-zinc-200'

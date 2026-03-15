@@ -3,7 +3,7 @@ import { Bookmark } from 'lucide-react';
 
 export function Header() {
   return (
-    <header className="sticky top-0 z-50 flex items-center justify-between border-b border-zinc-800 bg-zinc-950/90 backdrop-blur-sm px-6 h-14 w-full">
+    <header className="sticky top-0 z-50 flex items-center justify-between border-b border-zinc-800 bg-zinc-950/90 backdrop-blur-sm px-4 sm:px-6 h-14 w-full">
       <Link href="/" className="font-mono text-sm font-medium tracking-tight">
         <span className="text-zinc-400">{'>'}</span> paper.digest_
       </Link>

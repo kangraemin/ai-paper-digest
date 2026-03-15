@@ -32,7 +32,7 @@ export function CategoryChips({ current, onChange }: CategoryChipsProps) {
   };
 
   return (
-    <div className="flex gap-2 overflow-x-auto pb-2">
+    <div className="flex gap-2 overflow-x-auto pb-2 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
       {CATEGORIES.map(cat => {
         const isActive = current === cat.id;
 

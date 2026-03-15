@@ -58,7 +58,7 @@ export default async function PaperDetail({ params }: Props) {
   const displayTitle = paper.titleKo || paper.title;
 
   return (
-    <article className="max-w-[768px] mx-auto pt-8">
+    <article className="max-w-[768px] mx-auto px-4 sm:px-6 pt-6 sm:pt-8">
       {/* Breadcrumbs */}
       <nav className="flex items-center gap-2 mb-6 font-mono text-[12px] text-zinc-500">
         <Link href="/" className="hover:text-zinc-100 transition-colors">Home</Link>
@@ -69,7 +69,7 @@ export default async function PaperDetail({ params }: Props) {
             <span>/</span>
           </>
         )}
-        <span className="text-zinc-100 truncate max-w-[200px]">{displayTitle}</span>
+        <span className="text-zinc-100 truncate max-w-[160px] sm:max-w-[300px]">{displayTitle}</span>
       </nav>
 
       {/* Title */}
