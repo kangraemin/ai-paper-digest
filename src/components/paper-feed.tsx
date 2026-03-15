@@ -32,17 +32,14 @@ function groupByDate(items: PaperListItem[]): Record<string, PaperListItem[]> {
 
 interface PaperFeedProps {
   initialPapers: PaperListItem[];
+  initialSource?: string;
+  initialCategory?: string;
 }
 
-function getInitialFilter(key: string): string {
-  if (typeof window === 'undefined') return 'all';
-  return new URLSearchParams(window.location.search).get(key) || 'all';
-}
-
-export function PaperFeed({ initialPapers }: PaperFeedProps) {
+export function PaperFeed({ initialPapers, initialSource = 'all', initialCategory = 'all' }: PaperFeedProps) {
   const [allPapers, setAllPapers] = useState(initialPapers);
-  const [source, setSource] = useState(() => getInitialFilter('source'));
-  const [category, setCategory] = useState(() => getInitialFilter('category'));
+  const [source, setSource] = useState(initialSource);
+  const [category, setCategory] = useState(initialCategory);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(initialPapers.length >= 20);
   const [loading, setLoading] = useState(false);
@@ -53,8 +50,8 @@ export function PaperFeed({ initialPapers }: PaperFeedProps) {
   useEffect(() => {
     if (isInitialRender.current) {
       isInitialRender.current = false;
-      // URL에 필터가 없는 초기 상태면 서버 렌더 데이터 그대로 사용
-      if (source === 'all' && category === 'all') return;
+      // 서버가 이미 올바른 필터로 렌더링했으므로 초기 fetch 스킵
+      return;
     }
     const params = new URLSearchParams();
     if (source !== 'all') params.set('source', source);
