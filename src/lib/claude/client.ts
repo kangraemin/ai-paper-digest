@@ -37,18 +37,22 @@ export async function summarizePaper(
     }
   }
 
-  let text = await runClaude(
+  const raw = await runClaude(
     SUMMARY_PROMPT.replace('{title}', title).replace('{content}', content)
   );
 
   // JSON 추출: 코드블록 처리
+  let text = raw.trim();
   if (text.includes('```')) {
     text = text.split('```')[1];
     if (text.startsWith('json')) text = text.slice(4);
     text = text.trim();
   }
   const jsonMatch = text.match(/\{[\s\S]*\}/);
-  if (!jsonMatch) throw new Error('Failed to parse summary response');
+  if (!jsonMatch) {
+    console.error(`[summarize] 파싱 실패. claude 응답:\n${raw.slice(0, 300)}`);
+    throw new Error('Failed to parse summary response');
+  }
   return JSON.parse(jsonMatch[0]);
 }
 
