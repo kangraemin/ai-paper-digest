@@ -15,7 +15,9 @@ async function main() {
 
     const existing = await db.select().from(papers).where(eq(papers.id, id)).limit(1);
     if (existing.length > 0) {
-      await db.update(papers).set({ citationCount: paper.citationCount }).where(eq(papers.id, id));
+      const updateFields: Record<string, unknown> = { citationCount: paper.citationCount };
+      if (paper.publicationDate) updateFields.publishedAt = `${paper.publicationDate}T00:00:00Z`;
+      await db.update(papers).set(updateFields).where(eq(papers.id, id));
       continue;
     }
 
@@ -26,7 +28,9 @@ async function main() {
       authors: JSON.stringify(paper.authors.map(a => a.name)),
       categories: JSON.stringify(paper.fieldsOfStudy ?? []),
       primaryCategory: paper.fieldsOfStudy?.[0] ?? 'other',
-      publishedAt: `${paper.year}-01-01T00:00:00Z`,
+      publishedAt: paper.publicationDate
+        ? `${paper.publicationDate}T00:00:00Z`
+        : `${paper.year}-01-01T00:00:00Z`,
       arxivUrl: arxivId ? `https://arxiv.org/abs/${arxivId}` : `https://www.semanticscholar.org/paper/${paper.paperId}`,
       pdfUrl: arxivId ? `https://arxiv.org/pdf/${arxivId}` : '',
       source: 'semantic_scholar',
