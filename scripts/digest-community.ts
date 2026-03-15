@@ -4,27 +4,7 @@ import { eq, isNull, and } from 'drizzle-orm';
 import { fetchContent } from '../src/lib/content-fetcher';
 import { fetchHNComments } from '../src/lib/hacker-news/client';
 import { COMMUNITY_DIGEST_PROMPT } from '../src/lib/claude/community-prompts';
-import { spawn } from 'child_process';
-
-function runClaude(prompt: string): Promise<string> {
-  return new Promise((resolve, reject) => {
-    const proc = spawn('claude', ['-p', '--model', 'sonnet'], {
-      stdio: ['pipe', 'pipe', 'pipe'],
-    });
-    let stdout = '';
-    let stderr = '';
-    proc.stdout.on('data', (d: Buffer) => { stdout += d.toString(); });
-    proc.stderr.on('data', (d: Buffer) => { stderr += d.toString(); });
-    proc.on('close', (code: number | null) => {
-      if (code === 0) resolve(stdout.trim());
-      else reject(new Error(`claude exited ${code}: ${stderr}`));
-    });
-    proc.on('error', reject);
-    proc.stdin.write(prompt);
-    proc.stdin.end();
-    setTimeout(() => { proc.kill(); reject(new Error('timeout')); }, 120000);
-  });
-}
+import { runClaude } from '../src/lib/claude/runner';
 
 function extractJson(text: string): string {
   if (text.includes('```')) {
@@ -67,7 +47,7 @@ export async function digestCommunity(): Promise<number> {
         .replace('{comments}', comments.length > 0 ? comments.join('\n---\n') : '(댓글 없음)');
 
       console.log('  🤖 정리 중...');
-      const raw = await runClaude(prompt);
+      const raw = await runClaude(prompt, { model: 'sonnet', timeout: 120000 });
       const result = JSON.parse(extractJson(raw));
 
       // 4. DB 업데이트
