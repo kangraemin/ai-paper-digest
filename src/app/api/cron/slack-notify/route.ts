@@ -48,7 +48,7 @@ function buildBlocks(paper: typeof papers.$inferSelect, siteUrl: string) {
   if (applies.length > 0) bodyParts.push(`*How to apply*\n${applies.map(a => `• ${a}`).join('\n')}`);
   if (audience) bodyParts.push(`*대상 독자*\n${audience}`);
 
-  const headerText = truncate(`${emoji} [${sourceLabel} · ${category}] ${title}`, 149);
+  const titleText = truncate(`${emoji} [${sourceLabel} · ${category}] ${title}`, 149);
 
   return {
     attachments: [
@@ -56,8 +56,11 @@ function buildBlocks(paper: typeof papers.$inferSelect, siteUrl: string) {
         color,
         blocks: [
           {
-            type: 'header',
-            text: { type: 'plain_text', text: headerText },
+            type: 'section',
+            text: {
+              type: 'mrkdwn',
+              text: `*<${pageUrl}|${titleText}>*`,
+            },
           },
           ...(bodyParts.length > 0
             ? [
@@ -70,10 +73,6 @@ function buildBlocks(paper: typeof papers.$inferSelect, siteUrl: string) {
                 },
               ]
             : []),
-          {
-            type: 'context',
-            elements: [{ type: 'mrkdwn', text: `<${pageUrl}|자세히 보기 →>` }],
-          },
         ],
       },
     ],
@@ -98,7 +97,7 @@ export async function GET(req: NextRequest) {
     .from(papers)
     .where(and(isNotNull(papers.summarizedAt), isNull(papers.slackNotifiedAt)))
     .orderBy(papers.summarizedAt)
-    .limit(10);
+    .limit(1);
 
   const results: { id: string; status: string; error?: string }[] = [];
 
