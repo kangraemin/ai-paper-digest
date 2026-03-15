@@ -1,14 +1,15 @@
 import { spawn } from 'child_process';
+import { tmpdir } from 'os';
 import { SUMMARY_PROMPT } from './prompts';
 import { fetchPdfText } from '../pdf-fetcher';
 import type { SummaryResult } from './types';
 
 function runClaude(prompt: string): Promise<string> {
   return new Promise((resolve, reject) => {
-    // 모든 훅 비활성화: --settings으로 각 hook 이벤트를 빈 배열로 덮어씀
-    const noHooks = JSON.stringify({ hooks: { Stop: [], SessionEnd: [], PostToolUse: [], UserPromptSubmit: [], SessionStart: [], PreToolUse: [] } });
-    const proc = spawn('claude', ['-p', '--model', 'sonnet', '--output-format', 'json', '--settings', noHooks], {
+    // cwd를 /tmp로 설정 → stop hook이 git repo를 찾지 못해 exit 0 처리
+    const proc = spawn('claude', ['-p', '--model', 'sonnet', '--output-format', 'json'], {
       stdio: ['pipe', 'pipe', 'pipe'],
+      cwd: tmpdir(),
     });
     let stdout = '';
     let stderr = '';
