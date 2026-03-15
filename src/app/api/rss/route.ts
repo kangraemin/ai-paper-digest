@@ -7,38 +7,8 @@ function escapeXml(s: string): string {
 }
 
 function buildDescription(p: typeof papers.$inferSelect): string {
-  const parts: string[] = [];
-
-  const badges: string[] = [];
-  if (p.isHot) badges.push('🔥');
-  if (p.aiCategory) badges.push(`[${p.aiCategory.toUpperCase()}]`);
-  if (p.source === 'hacker_news') badges.push('HN');
-  if (p.devRelevance) badges.push(`⚡ ${p.devRelevance}/5 Match`);
-  if (badges.length) parts.push(badges.join(' • '));
-
-  if (p.oneLiner) parts.push(p.oneLiner);
-
-  if (p.keyFindings) {
-    try {
-      const findings = JSON.parse(p.keyFindings as string);
-      if (Array.isArray(findings) && findings[0]) parts.push(`💡 ${findings[0]}`);
-    } catch {}
-  }
-
-  if (p.targetAudience) {
-    const short = (p.targetAudience as string).split(' ').slice(0, 10).join(' ');
-    parts.push(`👤 ${short}`);
-  }
-
-  if (p.tags) {
-    try {
-      const tagList = JSON.parse(p.tags as string);
-      if (Array.isArray(tagList) && tagList.length)
-        parts.push(`🏷 ${tagList.map((t: string) => '#' + t).join(' ')}`);
-    } catch {}
-  }
-
-  return parts.join('\n\n') || (p.oneLiner ?? p.abstract);
+  const text = p.oneLiner ?? p.abstract ?? '';
+  return `TL;DR — ${text}`;
 }
 
 export async function GET(req: Request) {
@@ -46,8 +16,8 @@ export async function GET(req: Request) {
   const category = searchParams.get('category');
 
   const items = category
-    ? await db.select().from(papers).where(and(isNotNull(papers.summarizedAt), eq(papers.aiCategory, category))).orderBy(desc(papers.publishedAt)).limit(50)
-    : await db.select().from(papers).where(isNotNull(papers.summarizedAt)).orderBy(desc(papers.publishedAt)).limit(50);
+    ? await db.select().from(papers).where(and(isNotNull(papers.summarizedAt), eq(papers.aiCategory, category))).orderBy(desc(papers.summarizedAt)).limit(50)
+    : await db.select().from(papers).where(isNotNull(papers.summarizedAt)).orderBy(desc(papers.summarizedAt)).limit(50);
 
   const siteUrl = new URL(req.url).origin;
 
@@ -66,7 +36,7 @@ export async function GET(req: Request) {
       <description>${escapeXml(buildDescription(p))}</description>
       <category>${p.aiCategory || 'other'}</category>
       <guid isPermaLink="false">${p.id}</guid>
-      <pubDate>${new Date(p.publishedAt).toUTCString()}</pubDate>
+      <pubDate>${new Date(p.summarizedAt!).toUTCString()}</pubDate>
     </item>`).join('')}
   </channel>
 </rss>`;

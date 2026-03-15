@@ -225,7 +225,8 @@ export default async function PaperDetail({ params }: Props) {
       {/* Related Resources */}
       {paper.relatedResources && (() => {
         try {
-          const resources = JSON.parse(paper.relatedResources) as string[];
+          const raw = JSON.parse(paper.relatedResources) as (string | { title?: string; url: string })[];
+          const resources = raw.map(r => typeof r === 'string' ? { title: r, url: r } : { title: r.title || r.url, url: r.url });
           if (resources.length === 0) return null;
           return (
             <section className="mb-10">
@@ -233,10 +234,10 @@ export default async function PaperDetail({ params }: Props) {
                 Related Resources
               </h3>
               <ul className="space-y-2">
-                {resources.map((url, i) => (
+                {resources.map((r, i) => (
                   <li key={i}>
-                    <a href={url} target="_blank" rel="noopener noreferrer" className="text-[13px] text-blue-400 hover:underline break-all">
-                      {url}
+                    <a href={r.url} target="_blank" rel="noopener noreferrer" className="text-[13px] text-blue-400 hover:underline break-all">
+                      {r.title}
                     </a>
                   </li>
                 ))}
