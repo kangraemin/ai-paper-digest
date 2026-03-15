@@ -16,5 +16,8 @@ export async function GET(req: NextRequest) {
     .where(and(isNotNull(papers.summarizedAt), sql`${papers.publishedAt} >= date('now', '-${sql.raw(String(days))} days')`))
     .groupBy(papers.aiCategory);
 
-  return NextResponse.json({ period, data: trendData });
+  return NextResponse.json(
+    { period, data: trendData },
+    { headers: { 'Cache-Control': 'public, s-maxage=3600, stale-while-revalidate=86400' } }
+  );
 }
