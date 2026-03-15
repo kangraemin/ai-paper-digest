@@ -1,43 +1,21 @@
 import { db } from "@/lib/db";
 import { papers } from "@/lib/db/schema";
 import { desc, and, eq, not, isNotNull } from "drizzle-orm";
-import { PaperCard } from "@/components/paper-card";
-import { SourceTabs } from "@/components/source-tabs";
-import { CategoryChips } from "@/components/category-chips";
+import { PaperFeed } from "@/components/paper-feed";
 import { NewsletterForm } from "@/components/newsletter-form";
-import { Suspense } from "react";
+import type { PaperListItem } from "@/lib/types";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 3600;
 
 interface Props {
   searchParams: Promise<{ category?: string; source?: string }>;
 }
 
-function formatDateHeader(dateStr: string): string {
-  const date = new Date(dateStr + 'T00:00:00');
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  const yesterday = new Date(today);
-  yesterday.setDate(yesterday.getDate() - 1);
+export default async function Home({ searchParams }: Props) {
+  const params = await searchParams;
+  const source = params.source;
+  const category = params.category;
 
-  if (date.toDateString() === today.toDateString()) return '오늘';
-  if (date.toDateString() === yesterday.toDateString()) return '어제';
-
-  const weekdays = ['일', '월', '화', '수', '목', '금', '토'];
-  return `${date.getMonth() + 1}월 ${date.getDate()}일 (${weekdays[date.getDay()]})`;
-}
-
-function groupByDate(items: (typeof papers.$inferSelect)[]): Record<string, (typeof papers.$inferSelect)[]> {
-  const groups: Record<string, (typeof papers.$inferSelect)[]> = {};
-  for (const item of items) {
-    const date = item.publishedAt.split('T')[0];
-    if (!groups[date]) groups[date] = [];
-    groups[date].push(item);
-  }
-  return groups;
-}
-
-async function TimelineFeed({ category, source }: { category?: string; source?: string }) {
   const conditions = [];
   conditions.push(isNotNull(papers.summarizedAt));
 
@@ -46,84 +24,36 @@ async function TimelineFeed({ category, source }: { category?: string; source?: 
   } else if (source === 'papers') {
     conditions.push(not(eq(papers.source, 'hacker_news')));
   }
-  // source === 'all' or undefined → no source filter
 
   if (category && category !== 'all') {
     conditions.push(eq(papers.aiCategory, category));
   }
 
-  const items = await db.select().from(papers)
+  const items: PaperListItem[] = await db.select({
+    id: papers.id,
+    title: papers.title,
+    titleKo: papers.titleKo,
+    oneLiner: papers.oneLiner,
+    aiCategory: papers.aiCategory,
+    devRelevance: papers.devRelevance,
+    targetAudience: papers.targetAudience,
+    tags: papers.tags,
+    source: papers.source,
+    isHot: papers.isHot,
+    publishedAt: papers.publishedAt,
+    authors: papers.authors,
+  }).from(papers)
     .where(and(...conditions))
     .orderBy(desc(papers.publishedAt))
-    .limit(100);
+    .limit(20);
 
-  if (items.length === 0) {
-    return (
-      <div className="py-20 text-center">
-        <p className="text-4xl mb-4">¯\_(ツ)_/¯</p>
-        <p className="text-zinc-400">오늘은 조용한 날이네요.</p>
-        <p className="text-sm text-zinc-500 mt-1">
-          {source === 'community' ? 'HN 수집을 실행하거나 내일 다시 확인해 주세요.' : '논문 수집을 실행하거나 내일 다시 확인해 주세요.'}
-        </p>
-      </div>
-    );
-  }
-
-  const grouped = groupByDate(items);
-
-  for (const date of Object.keys(grouped)) {
-    grouped[date].sort((a, b) => (b.devRelevance ?? 0) - (a.devRelevance ?? 0));
-  }
-
-  return (
-    <div className="space-y-8">
-      {Object.entries(grouped).map(([date, datePapers]) => (
-        <section key={date}>
-          <div className="sticky top-0 z-10 bg-zinc-950/95 backdrop-blur supports-[backdrop-filter]:bg-zinc-950/60 py-2 mb-4">
-            <h2 className="font-mono text-[12px] text-zinc-500 uppercase tracking-wider mb-1 flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-zinc-600 inline-block" />
-              {formatDateHeader(date)} · {datePapers.length}편
-            </h2>
-          </div>
-          <div className="space-y-3">
-            {datePapers.map(paper => (
-              <PaperCard
-                key={paper.id}
-                id={paper.id}
-                title={paper.title}
-                titleKo={paper.titleKo}
-                oneLiner={paper.oneLiner}
-                aiCategory={paper.aiCategory}
-                devRelevance={paper.devRelevance}
-                targetAudience={paper.targetAudience}
-                tags={paper.tags}
-                source={paper.source}
-                isHot={paper.isHot}
-                publishedAt={paper.publishedAt}
-                authors={paper.authors}
-              />
-            ))}
-          </div>
-        </section>
-      ))}
-    </div>
-  );
-}
-
-export default async function Home({ searchParams }: Props) {
-  const params = await searchParams;
   return (
     <div className="w-full max-w-[800px] flex flex-col px-4 sm:px-6 py-6">
-      {/* Filter section */}
-      <div className="mb-8 border-b border-zinc-800 pb-4">
-        <SourceTabs />
-        <div className="mt-4">
-          <CategoryChips />
-        </div>
-      </div>
-      <Suspense fallback={<div className="py-12 text-center text-zinc-400">로딩 중...</div>}>
-        <TimelineFeed category={params.category} source={params.source} />
-      </Suspense>
+      <PaperFeed
+        initialPapers={items}
+        initialSource={source || 'all'}
+        initialCategory={category || 'all'}
+      />
       <NewsletterForm />
     </div>
   );
