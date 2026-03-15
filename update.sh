@@ -44,6 +44,12 @@ if [ ! -f "$PACKAGE_DIR/agents/intent.md" ]; then
   git clone --depth 1 "${AI_BOUNCER_REPO:-https://github.com/kangraemin/ai-bouncer.git}" "$TMPDIR_UPDATE/ai-bouncer" -q
   PACKAGE_DIR="$TMPDIR_UPDATE/ai-bouncer"
   echo -e "${GREEN}✓${NC}  다운로드 완료"
+
+  # bootstrap: clone된 최신 update.sh로 재실행 (구 버전 코드 실행 방지)
+  if [ "${_UPDATE_BOOTSTRAPPED:-}" != "1" ] && [ -f "$PACKAGE_DIR/update.sh" ]; then
+    export _UPDATE_BOOTSTRAPPED=1
+    exec bash "$PACKAGE_DIR/update.sh" "$@"
+  fi
 fi
 
 # 설치 경로 감지: 로컬(.claude/) 우선, 글로벌(~/.claude/) fallback
@@ -354,6 +360,76 @@ print('\n')
 }
 PYTHON=$(command -v python3 2>/dev/null || command -v python 2>/dev/null || echo python3)
 _register_session_start "$TARGET_DIR/settings.json"
+
+# ── .gitignore managed block 동기화 ──────────────────────────
+if [ -n "$REPO_ROOT" ]; then
+  DOCS_GIT_TRACK=$(python3 -c "import json,sys; print(json.load(open(sys.argv[1])).get('docs_git_track', False))" "$CONFIG_FILE" 2>/dev/null || echo "False")
+
+  GITIGNORE_FILE="$REPO_ROOT/.gitignore"
+  GITIGNORE_START="# --- ai-bouncer start ---"
+  GITIGNORE_END="# --- ai-bouncer end ---"
+
+  # managed block 생성
+  GITIGNORE_BLOCK="${GITIGNORE_START}
+# ai-bouncer runtime artifacts
+.claude/ai-bouncer/.version-checked
+.claude/**/*.backup-*"
+
+  if [ "$DOCS_GIT_TRACK" = "False" ] || [ "$DOCS_GIT_TRACK" = "false" ]; then
+    GITIGNORE_BLOCK="${GITIGNORE_BLOCK}
+docs/"
+  fi
+
+  # bouncer installed files (manifest 기반 — 사용자 파일과 정확히 구분)
+  if [ -f "$MANIFEST" ]; then
+    MANIFEST_LINES=$(python3 -c "
+import json, sys, os
+files = json.load(open(sys.argv[1])).get('files', [])
+# 절대경로·비정상 경로 제외 (구버전 manifest 방어)
+valid = [f for f in files if f and not os.path.isabs(f)]
+print('\n'.join('.claude/' + f for f in valid))
+" "$MANIFEST" 2>/dev/null || echo "")
+    if [ -n "$MANIFEST_LINES" ]; then
+      GITIGNORE_BLOCK="${GITIGNORE_BLOCK}
+# ai-bouncer installed files
+${MANIFEST_LINES}
+update.sh
+uninstall.sh"
+    fi
+  fi
+
+  GITIGNORE_BLOCK="${GITIGNORE_BLOCK}
+${GITIGNORE_END}"
+
+  if [ -f "$GITIGNORE_FILE" ]; then
+    if grep -qF "$GITIGNORE_START" "$GITIGNORE_FILE"; then
+      # 기존 블록 교체
+      python3 - "$GITIGNORE_FILE" "$GITIGNORE_BLOCK" "$GITIGNORE_START" "$GITIGNORE_END" <<'PYEOF'
+import sys
+path = sys.argv[1]
+block = sys.argv[2]
+start = sys.argv[3]
+end = sys.argv[4]
+content = open(path, encoding='utf-8').read()
+s = content.find(start)
+e = content.find(end)
+if s != -1 and e != -1:
+    content = content[:s] + block + content[e + len(end):]
+open(path, 'w', encoding='utf-8').write(content)
+PYEOF
+      ok ".gitignore managed block 동기화됨"
+    else
+      # 기존 파일 끝에 append
+      printf '\n%s\n' "$GITIGNORE_BLOCK" >> "$GITIGNORE_FILE"
+      ok ".gitignore managed block 추가됨"
+    fi
+  else
+    # 신규 생성
+    printf '%s\n' "$GITIGNORE_BLOCK" > "$GITIGNORE_FILE"
+    ok ".gitignore 생성 + managed block 주입"
+  fi
+  UPDATED=$((UPDATED + 1))
+fi
 
 # 매니페스트 업데이트 (로컬 우선)
 MANIFEST="$BOUNCER_DATA_DIR/manifest.json"
