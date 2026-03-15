@@ -1,4 +1,4 @@
-import { spawn } from 'child_process';
+import { runClaude } from './runner';
 
 const PAPER_SCREEN_PROMPT = `You are a filter for an AI paper digest aimed at developers who build apps using GPT/Claude APIs.
 Decide if this paper is useful for such developers (NOT researchers, NOT ML engineers training models).
@@ -39,30 +39,10 @@ Title: {title}
 
 Answer in JSON only: {"pass": true/false, "reason": "one line explanation"}`;
 
-function runClaude(prompt: string): Promise<string> {
-  return new Promise((resolve, reject) => {
-    const proc = spawn('claude', ['-p', '--model', 'haiku'], {
-      stdio: ['pipe', 'pipe', 'pipe'],
-    });
-    let stdout = '';
-    let stderr = '';
-    proc.stdout.on('data', (d: Buffer) => { stdout += d.toString(); });
-    proc.stderr.on('data', (d: Buffer) => { stderr += d.toString(); });
-    proc.on('close', (code: number | null) => {
-      if (code === 0) resolve(stdout.trim());
-      else reject(new Error(`claude exited ${code}: ${stderr}`));
-    });
-    proc.on('error', reject);
-    proc.stdin.write(prompt);
-    proc.stdin.end();
-    setTimeout(() => { proc.kill(); reject(new Error('timeout')); }, 60000);
-  });
-}
-
 export async function screenPaper(title: string, abstract: string, source: 'paper' | 'hn' = 'paper'): Promise<{ pass: boolean; reason: string }> {
   const template = source === 'hn' ? HN_SCREEN_PROMPT : PAPER_SCREEN_PROMPT;
   const prompt = template.replace('{title}', title).replace('{abstract}', abstract);
-  let text = await runClaude(prompt);
+  let text = await runClaude(prompt, { model: 'haiku', timeout: 60000 });
 
   // JSON 추출: 코드블록, 또는 { } 매칭
   if (text.includes('```')) {
