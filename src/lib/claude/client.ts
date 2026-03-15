@@ -1,43 +1,7 @@
-import { spawn } from 'child_process';
-import { tmpdir } from 'os';
+import { runClaude } from './runner';
 import { SUMMARY_PROMPT } from './prompts';
 import { fetchPdfText } from '../pdf-fetcher';
 import type { SummaryResult } from './types';
-
-function runClaude(prompt: string): Promise<string> {
-  return new Promise((resolve, reject) => {
-    // cwd를 /tmp로 설정 → stop hook이 git repo를 찾지 못해 exit 0 처리
-    const proc = spawn('claude', ['-p', '--model', 'sonnet', '--output-format', 'json'], {
-      stdio: ['pipe', 'pipe', 'pipe'],
-      cwd: tmpdir(),
-    });
-    let stdout = '';
-    let stderr = '';
-    proc.stdout.on('data', (d: Buffer) => { stdout += d.toString(); });
-    proc.stderr.on('data', (d: Buffer) => { stderr += d.toString(); });
-    proc.on('close', (code: number | null) => {
-      if (code !== 0) {
-        reject(new Error(`claude exited ${code}: ${stderr}`));
-        return;
-      }
-      try {
-        const envelope = JSON.parse(stdout.trim());
-        if (envelope.is_error) {
-          reject(new Error(`claude error: ${envelope.result}`));
-          return;
-        }
-        resolve(envelope.result ?? '');
-      } catch {
-        // fallback: output-format json 파싱 실패 시 raw stdout 사용
-        resolve(stdout.trim());
-      }
-    });
-    proc.on('error', reject);
-    proc.stdin.write(prompt);
-    proc.stdin.end();
-    setTimeout(() => { proc.kill(); reject(new Error('timeout')); }, 120000);
-  });
-}
 
 export async function summarizePaper(
   title: string,
@@ -54,7 +18,8 @@ export async function summarizePaper(
   }
 
   const raw = await runClaude(
-    SUMMARY_PROMPT.replace('{title}', title).replace('{content}', content)
+    SUMMARY_PROMPT.replace('{title}', title).replace('{content}', content),
+    { model: 'sonnet', timeout: 120000, jsonOutput: true }
   );
 
   // JSON 추출: 코드블록/backtick 관계없이 outermost {} 탐색
