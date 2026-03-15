@@ -80,29 +80,31 @@ export default async function PaperDetail({ params }: Props) {
         <p className="text-[13px] text-zinc-500 mb-4">{paper.title}</p>
       )}
 
-      {/* Meta Row */}
-      <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-[13px] text-zinc-500 mb-8">
-        <span className="flex items-center gap-1.5">
+      {/* Meta Row — bullet을 항목과 묶어 flex wrap 시 orphan 방지 */}
+      <div className="flex flex-wrap items-center gap-y-2 text-[13px] text-zinc-500 mb-8">
+        <span className="flex items-center gap-1.5 mr-4">
           <Calendar size={16} />
           {new Date(paper.publishedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}
         </span>
-        <span className="text-zinc-700">&bull;</span>
-        <span className="flex items-center gap-1.5">
+        <span className="flex items-center gap-1.5 mr-4">
+          <span className="text-zinc-700">&bull;</span>
           <Users size={16} />
           {authorList.slice(0, 3).join(', ')}{authorList.length > 3 ? ` +${authorList.length - 3}` : ''}
         </span>
-        <span className="text-zinc-700">&bull;</span>
-        {paper.source === 'hacker_news' ? (
-          <Link href={paper.arxivUrl} target="_blank" className="flex items-center gap-1.5 text-blue-400 hover:underline">
-            <FileText size={16} />
-            View Original
-          </Link>
-        ) : (
-          <Link href={paper.pdfUrl || paper.arxivUrl} target="_blank" className="flex items-center gap-1.5 text-blue-400 hover:underline">
-            <FileText size={16} />
-            View PDF
-          </Link>
-        )}
+        <span className="flex items-center gap-1.5 mr-4">
+          <span className="text-zinc-700">&bull;</span>
+          {paper.source === 'hacker_news' ? (
+            <Link href={paper.arxivUrl} target="_blank" className="flex items-center gap-1.5 text-blue-400 hover:underline">
+              <FileText size={16} />
+              View Original
+            </Link>
+          ) : (
+            <Link href={paper.pdfUrl || paper.arxivUrl} target="_blank" className="flex items-center gap-1.5 text-blue-400 hover:underline">
+              <FileText size={16} />
+              View PDF
+            </Link>
+          )}
+        </span>
         <BookmarkButton paperId={paper.id} />
       </div>
 
