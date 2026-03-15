@@ -1,28 +1,18 @@
 'use client';
 
-import { useRouter, useSearchParams } from 'next/navigation';
-
 const SOURCES = [
   { id: 'all', label: 'All' },
   { id: 'papers', label: 'Papers' },
   { id: 'community', label: 'Community' },
 ];
 
-export function SourceTabs() {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const current = searchParams.get('source') || 'all';
+interface SourceTabsProps {
+  current: string;
+  onChange: (source: string) => void;
+}
 
-  const handleClick = (id: string) => {
-    const params = new URLSearchParams(searchParams.toString());
-    if (id === 'all') {
-      params.delete('source');
-    } else {
-      params.set('source', id);
-    }
-    params.delete('category');
-    router.push(`/?${params.toString()}`);
-  };
+export function SourceTabs({ current, onChange }: SourceTabsProps) {
+  const handleClick = (id: string) => { onChange(id); };
 
   return (
     <div className="flex gap-6">
