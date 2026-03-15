@@ -1,7 +1,5 @@
 'use client';
 
-import { useRouter, useSearchParams } from 'next/navigation';
-
 const CATEGORIES = [
   { id: 'all', label: 'All Topics', color: null },
   { id: 'prompting', label: 'Prompting', color: 'cat-prompting' },
@@ -23,19 +21,14 @@ const colorMap: Record<string, string> = {
   'cat-security': '#ef4444',
 };
 
-export function CategoryChips() {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const current = searchParams.get('category') || 'all';
+interface CategoryChipsProps {
+  current: string;
+  onChange: (category: string) => void;
+}
 
+export function CategoryChips({ current, onChange }: CategoryChipsProps) {
   const handleClick = (id: string) => {
-    const params = new URLSearchParams(searchParams.toString());
-    if (id === 'all') {
-      params.delete('category');
-    } else {
-      params.set('category', id);
-    }
-    router.push(`/?${params.toString()}`);
+    onChange(id);
   };
 
   return (
