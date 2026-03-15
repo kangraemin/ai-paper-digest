@@ -92,13 +92,13 @@ PYEOF
 for settings_file in "$HOME/.claude/settings.json" "$TARGET_DIR/settings.json"; do
   [ -f "$settings_file" ] || continue
   python3 -c "
-import json
-cfg = json.load(open('$settings_file'))
+import json, sys
+cfg = json.load(open(sys.argv[1]))
 for g in cfg.get('hooks', {}).get('Stop', []):
     for h in g.get('hooks', []):
         cmd = h.get('command', '')
         if cmd: print(cmd)
-" 2>/dev/null | while IFS= read -r hook_path; do
+" "$settings_file" 2>/dev/null | while IFS= read -r hook_path; do
     remove_bouncer_block "$hook_path"
   done
 done
@@ -114,11 +114,22 @@ settings_file = sys.argv[1]
 with open(settings_file) as f:
     cfg = json.load(f)
 
-BOUNCER_HOOKS = {
-    'plan-gate.sh', 'bash-gate.sh', 'bash-audit.sh',
-    'doc-reminder.sh', 'completion-gate.sh',
-    'subagent-track.sh', 'subagent-cleanup.sh',
-}
+import os as _os
+
+# hooks.json에서 동적으로 읽기, fallback으로 하드코딩
+_hooks_json = _os.path.join(_os.path.dirname(settings_file), 'hooks', 'hooks.json')
+if _os.path.exists(_hooks_json):
+    _manifest = json.load(open(_hooks_json))
+    BOUNCER_HOOKS = set()
+    for _entries in _manifest.values():
+        for _e in _entries:
+            BOUNCER_HOOKS.add(_e.get('file', ''))
+else:
+    BOUNCER_HOOKS = {
+        'plan-gate.sh', 'bash-gate.sh', 'bash-audit.sh',
+        'doc-reminder.sh', 'completion-gate.sh',
+        'subagent-track.sh', 'subagent-cleanup.sh',
+    }
 
 def is_bouncer_hook(group):
     for h in group.get('hooks', []):
@@ -130,7 +141,9 @@ def is_bouncer_hook(group):
     return False
 
 hooks = cfg.get('hooks', {})
-for hook_type in ['PreToolUse', 'PostToolUse', 'Stop', 'SubagentStart', 'SubagentStop']:
+BOUNCER_HOOKS.add('update-check.sh')
+
+for hook_type in ['PreToolUse', 'PostToolUse', 'Stop', 'SubagentStart', 'SubagentStop', 'SessionStart']:
     if hook_type in hooks:
         original = hooks[hook_type]
         filtered = [g for g in original if not is_bouncer_hook(g)]
@@ -194,6 +207,9 @@ open(claude_file, 'w', encoding='utf-8').write(new_content)
 print("  CLAUDE.md ai-bouncer 규칙 블록 제거됨")
 PYEOF
 fi
+
+# scripts/ 정리
+rm -rf "$TARGET_DIR/scripts"
 
 # 빈 디렉토리 정리
 for dir in "$TARGET_DIR/hooks/lib" "$TARGET_DIR/hooks" \

@@ -1,6 +1,6 @@
 {
-  "version": "9a8cac5",
-  "installed_at": "2026-03-14T17:07:05.963091",
+  "version": "fad3b89",
+  "installed_at": "2026-03-15T14:05:39.928556",
   "files": [
     "agents/dev.md",
     "agents/intent.md",
@@ -9,6 +9,7 @@
     "agents/verifier.md",
     "agents/guides/tc-guide.md",
     "skills/dev-bounce/SKILL.md",
+    "skills/update-bouncer/SKILL.md",
     "hooks/hooks.json",
     "hooks/plan-gate.sh",
     "hooks/bash-gate.sh",
@@ -17,6 +18,7 @@
     "hooks/completion-gate.sh",
     "hooks/subagent-track.sh",
     "hooks/subagent-cleanup.sh",
-    "hooks/lib/resolve-task.sh"
+    "hooks/lib/resolve-task.sh",
+    "scripts/update-check.sh"
   ]
 }
