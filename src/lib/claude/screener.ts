@@ -10,23 +10,30 @@ Abstract: {abstract}
 
 Answer in JSON only: {"pass": true/false, "reason": "one line explanation"}`;
 
-const HN_SCREEN_PROMPT = `You are a filter for an AI/dev news digest. The audience is developers who build software with AI (LLMs, APIs, agents).
+const HN_SCREEN_PROMPT = `You are a filter for an AI/dev digest. The audience is developers who BUILD software with AI.
 
-Pass if the post is about ANY of these:
-- AI tools, products, SDKs, APIs (GPT, Claude, Gemini, open-source LLMs, etc.)
-- Developer experience with AI (coding assistants, workflows, productivity)
-- AI engineering (RAG, agents, prompting, eval, deployment, fine-tuning)
-- AI industry news (launches, pricing, benchmarks, policy affecting developers)
-- Software engineering practices related to AI integration
-- Open source AI projects, models, frameworks
+The key question: "Will a developer learn something actionable from this post?"
 
-Reject ONLY if the post is clearly:
-- Non-tech (politics, finance, health with no AI angle)
-- Pure academic ML research with no practical application
+PASS if the post is:
+- Technical tutorial, guide, or deep dive on AI tools (Claude, GPT, Gemini, open-source LLMs)
+- Developer workflow or productivity with AI (coding assistants, agents, IDE integration)
+- AI engineering practice (RAG, prompting, eval, deployment, fine-tuning, embeddings)
+- Security vulnerability or incident affecting developer tools
+- Open source AI project with technical substance
+- Benchmark or comparison with technical analysis
+- Real-world experience report with lessons learned
+
+REJECT if the post is:
+- Pure news/announcement with no technical depth ("X raised $NB", "Y launched Z")
+- AI politics, regulation, policy, ethics debate
+- Opinion essay or hot take without technical content
+- CEO quotes, executive drama, company gossip
+- General AI hype or doom ("AI will replace X", "AI makes you Y")
+- Non-developer audience (business strategy, investing, legal)
 - Job postings or hiring threads
-- Unrelated to AI/software development entirely
+- Duplicate of another post
 
-When in doubt, PASS. We prefer more content over less.
+When in doubt, REJECT. Quality over quantity.
 
 Title: {title}
 
