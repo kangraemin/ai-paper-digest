@@ -3,6 +3,18 @@ import { papers } from '@/lib/db/schema';
 import { isNull, isNotNull, and, eq } from 'drizzle-orm';
 import { NextRequest, NextResponse } from 'next/server';
 
+const categoryColors: Record<string, string> = {
+  prompting: '#3b82f6',
+  rag: '#10b981',
+  agent: '#8b5cf6',
+  'fine-tuning': '#f97316',
+  finetuning: '#f97316',
+  eval: '#ec4899',
+  'cost-speed': '#14b8a6',
+  cost: '#14b8a6',
+  security: '#ef4444',
+};
+
 function parseJsonArray(value: string | null): string[] {
   if (!value) return [];
   try {
@@ -24,6 +36,7 @@ function buildBlocks(paper: typeof papers.$inferSelect, siteUrl: string) {
   const emoji = isCommunity ? '📰' : '📄';
   const sourceLabel = isCommunity ? '커뮤니티' : '논문';
   const pageUrl = `${siteUrl}/papers/${paper.id}`;
+  const color = categoryColors[category] ?? '#6b7280';
 
   const findings = parseJsonArray(paper.keyFindings).slice(0, 2);
   const applies = parseJsonArray(paper.howToApply).slice(0, 2);
@@ -35,37 +48,34 @@ function buildBlocks(paper: typeof papers.$inferSelect, siteUrl: string) {
   if (applies.length > 0) bodyParts.push(`*How to apply*\n${applies.map(a => `• ${a}`).join('\n')}`);
   if (audience) bodyParts.push(`*대상 독자*\n${audience}`);
 
+  const headerText = truncate(`${emoji} [${sourceLabel} · ${category}] ${title}`, 149);
+
   return {
-    blocks: [
+    attachments: [
       {
-        type: 'section',
-        text: {
-          type: 'mrkdwn',
-          text: `${emoji} *[${sourceLabel} · ${category}] ${title}*`,
-        },
-      },
-      ...(bodyParts.length > 0
-        ? [
-            {
-              type: 'section',
-              text: {
-                type: 'mrkdwn',
-                text: bodyParts.join('\n\n'),
-              },
-            },
-          ]
-        : []),
-      {
-        type: 'actions',
-        elements: [
+        color,
+        blocks: [
           {
-            type: 'button',
-            text: { type: 'plain_text', text: '자세히 보기' },
-            url: pageUrl,
+            type: 'header',
+            text: { type: 'plain_text', text: headerText },
+          },
+          ...(bodyParts.length > 0
+            ? [
+                {
+                  type: 'section',
+                  text: {
+                    type: 'mrkdwn',
+                    text: bodyParts.join('\n\n'),
+                  },
+                },
+              ]
+            : []),
+          {
+            type: 'context',
+            elements: [{ type: 'mrkdwn', text: `<${pageUrl}|자세히 보기 →>` }],
           },
         ],
       },
-      { type: 'divider' },
     ],
   };
 }
