@@ -4,5 +4,5 @@
   "commit_skill": true,
   "target_dir": "/Users/ram/programming/vibecoding/ai-paper/.claude",
   "enforcement_mode": "hooks",
-  "agent_mode": "team"
+  "agent_mode": "single"
 }

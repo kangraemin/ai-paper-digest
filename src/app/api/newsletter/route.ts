@@ -17,7 +17,7 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ error: '이미 구독 중입니다.' }, { status: 409 });
       }
       await db.update(subscribers)
-        .set({ isActive: true, unsubscribedAt: null })
+        .set({ isActive: true, unsubscribedAt: null, unsubscribeToken: existing[0].unsubscribeToken || crypto.randomUUID() })
         .where(eq(subscribers.email, email));
       return NextResponse.json({ message: '구독이 재활성화되었습니다.' });
     }
@@ -28,6 +28,7 @@ export async function POST(req: NextRequest) {
       email,
       isActive: true,
       subscribedAt: new Date().toISOString(),
+      unsubscribeToken: crypto.randomUUID(),
     });
 
     return NextResponse.json({ message: '구독이 완료되었습니다.' }, { status: 201 });

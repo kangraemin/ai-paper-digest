@@ -55,6 +55,7 @@ export const subscribers = sqliteTable('subscribers', {
   isActive: integer('is_active', { mode: 'boolean' }).default(true),
   subscribedAt: text('subscribed_at').notNull(),
   unsubscribedAt: text('unsubscribed_at'),
+  unsubscribeToken: text('unsubscribe_token').unique(),
 });
 
 export const trendSnapshots = sqliteTable('trend_snapshots', {
