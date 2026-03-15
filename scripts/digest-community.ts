@@ -8,7 +8,7 @@ import { spawn } from 'child_process';
 
 function runClaude(prompt: string): Promise<string> {
   return new Promise((resolve, reject) => {
-    const proc = spawn('claude', ['-p', '--model', 'opus'], {
+    const proc = spawn('claude', ['-p', '--model', 'sonnet'], {
       stdio: ['pipe', 'pipe', 'pipe'],
     });
     let stdout = '';
