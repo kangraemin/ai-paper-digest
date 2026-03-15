@@ -6,9 +6,30 @@ function escapeXml(s: string): string {
   return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
 
-function buildDescription(p: typeof papers.$inferSelect): string {
-  const text = p.oneLiner ?? p.abstract ?? '';
-  return `TL;DR — ${text}`;
+function parseBulletList(value: string | null): string[] {
+  if (!value) return [];
+  try { const arr = JSON.parse(value); if (Array.isArray(arr)) return arr; } catch {}
+  return value.split('\n').filter(l => l.trim()).map(l => l.replace(/^-\s*/, ''));
+}
+
+function buildDescription(p: typeof papers.$inferSelect, pageUrl: string): string {
+  const parts: string[] = [];
+
+  const tldr = p.oneLiner ?? p.abstract ?? '';
+  if (tldr) parts.push(`TL;DR\n${tldr}`);
+
+  const findings = parseBulletList(p.keyFindings);
+  if (findings.length > 0) {
+    parts.push(`Core Mechanics\n${findings.map(f => `- ${f}`).join('\n')}`);
+  }
+
+  const applies = parseBulletList(p.howToApply);
+  if (applies.length > 0) {
+    parts.push(`How to apply\n${applies.map(a => `- ${a}`).join('\n')}`);
+  }
+
+  parts.push(`더보기... ${pageUrl}`);
+  return parts.join('\n\n');
 }
 
 export async function GET(req: Request) {
@@ -32,8 +53,8 @@ export async function GET(req: Request) {
     ${items.map(p => `
     <item>
       <title>${escapeXml(p.titleKo || p.title)}</title>
-      <link>${p.arxivUrl}</link>
-      <description>${escapeXml(buildDescription(p))}</description>
+      <link>${siteUrl}/papers/${p.id}</link>
+      <description><![CDATA[${buildDescription(p, `${siteUrl}/papers/${p.id}`)}]]></description>
       <category>${p.aiCategory || 'other'}</category>
       <guid isPermaLink="false">${p.id}</guid>
       <pubDate>${new Date(p.summarizedAt!).toUTCString()}</pubDate>
