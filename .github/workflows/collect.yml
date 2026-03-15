@@ -57,3 +57,6 @@ jobs:
           TURSO_AUTH_TOKEN: ${{ secrets.TURSO_AUTH_TOKEN }}
           RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
           SITE_URL: ${{ secrets.SITE_URL }}
+
+      - name: Trigger Vercel redeploy (캐시 초기화)
+        run: curl -X POST "${{ secrets.VERCEL_DEPLOY_HOOK }}"
