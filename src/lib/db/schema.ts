@@ -32,6 +32,7 @@ export const papers = sqliteTable('papers', {
   citationCount: integer('citation_count'),
   collectedAt: text('collected_at').notNull(),
   summarizedAt: text('summarized_at'),
+  slackNotifiedAt: text('slack_notified_at'),
 }, (table) => [
   index('idx_published_at').on(table.publishedAt),
   index('idx_ai_category').on(table.aiCategory),
