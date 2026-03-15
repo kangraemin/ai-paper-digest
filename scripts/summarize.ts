@@ -1,6 +1,6 @@
 import { db } from '../src/lib/db';
 import { papers } from '../src/lib/db/schema';
-import { summarizeBatch } from '../src/lib/claude/client';
+import { summarizePaper } from '../src/lib/claude/client';
 import { eq, isNull } from 'drizzle-orm';
 
 async function main() {
@@ -12,32 +12,35 @@ async function main() {
   console.log(`📝 ${unsummarized.length} papers to summarize`);
   if (unsummarized.length === 0) return;
 
-  const results = await summarizeBatch(
-    unsummarized.map(p => ({ id: p.id, title: p.title, abstract: p.abstract, pdfUrl: p.pdfUrl ?? undefined })),
-    1
-  );
-
-  for (const [id, result] of results) {
-    await db.update(papers)
-      .set({
-        titleKo: result.titleKo,
-        oneLiner: result.oneLiner,
-        targetAudience: result.targetAudience,
-        keyFindings: JSON.stringify(result.keyFindings),
-        evidence: JSON.stringify(result.evidence),
-        howToApply: JSON.stringify(result.howToApply),
-        codeExample: result.codeExample,
-        relatedResources: JSON.stringify(result.relatedResources),
-        glossary: JSON.stringify(result.glossary),
-        tags: JSON.stringify(result.tags),
-        aiCategory: result.aiCategory,
-        devRelevance: result.devRelevance,
-        summarizedAt: new Date().toISOString(),
-      })
-      .where(eq(papers.id, id));
+  let done = 0;
+  for (const p of unsummarized) {
+    try {
+      const result = await summarizePaper(p.title, p.abstract, p.pdfUrl ?? undefined);
+      await db.update(papers)
+        .set({
+          titleKo: result.titleKo,
+          oneLiner: result.oneLiner,
+          targetAudience: result.targetAudience,
+          keyFindings: JSON.stringify(result.keyFindings),
+          evidence: JSON.stringify(result.evidence),
+          howToApply: JSON.stringify(result.howToApply),
+          codeExample: result.codeExample,
+          relatedResources: JSON.stringify(result.relatedResources),
+          glossary: JSON.stringify(result.glossary),
+          tags: JSON.stringify(result.tags),
+          aiCategory: result.aiCategory,
+          devRelevance: result.devRelevance,
+          summarizedAt: new Date().toISOString(),
+        })
+        .where(eq(papers.id, p.id));
+      done++;
+      console.log(`[${done}/${unsummarized.length}] ✅ ${p.title?.slice(0, 60)}`);
+    } catch (e) {
+      console.error(`❌ ${p.id}:`, e);
+    }
   }
 
-  console.log(`✅ Summarized ${results.size}/${unsummarized.length} papers`);
+  console.log(`✅ Done ${done}/${unsummarized.length}`);
 }
 
 main().catch(console.error);
