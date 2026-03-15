@@ -1,0 +1,28 @@
+name: Notify (Newsletter + Redeploy)
+on:
+  workflow_dispatch:
+  workflow_call:
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      - run: npm ci
+
+      - name: Send newsletter
+        continue-on-error: true
+        run: npx tsx scripts/send-newsletter.ts
+        env:
+          TURSO_DATABASE_URL: ${{ secrets.TURSO_DATABASE_URL }}
+          TURSO_AUTH_TOKEN: ${{ secrets.TURSO_AUTH_TOKEN }}
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          SITE_URL: ${{ secrets.SITE_URL }}
+
+      - name: Trigger Vercel redeploy (캐시 초기화)
+        run: curl -X POST "${{ secrets.VERCEL_DEPLOY_HOOK }}"
