@@ -1,3 +1,4 @@
+import type { Metadata } from 'next';
 import { db } from '@/lib/db';
 import { papers } from '@/lib/db/schema';
 import { eq } from 'drizzle-orm';
@@ -44,6 +45,27 @@ const categoryDisplayName: Record<string, string> = {
 
 interface Props {
   params: Promise<{ id: string }>;
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { id } = await params;
+  const result = await db.select({
+    title: papers.title,
+    titleKo: papers.titleKo,
+    oneLiner: papers.oneLiner,
+    abstract: papers.abstract,
+  }).from(papers).where(eq(papers.id, id)).limit(1);
+
+  if (result.length === 0) return {};
+  const paper = result[0];
+  const title = paper.titleKo || paper.title;
+  const description = paper.oneLiner || paper.abstract?.slice(0, 160) || '';
+
+  return {
+    title,
+    description,
+    openGraph: { title, description, type: 'article' },
+  };
 }
 
 export default async function PaperDetail({ params }: Props) {

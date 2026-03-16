@@ -8,6 +8,7 @@ const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 const mono = JetBrains_Mono({ subsets: ["latin"], variable: "--font-mono" });
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://ai-paper-delta.vercel.app'),
   title: {
     default: "AI Paper Digest",
     template: "%s | AI Paper Digest",
