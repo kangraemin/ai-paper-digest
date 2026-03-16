@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { Bookmark } from 'lucide-react';
 import { ThemeToggle } from '@/components/theme-toggle';
+import { HeaderSearch } from '@/components/header-search';
 
 export function Header() {
   return (
@@ -10,6 +11,7 @@ export function Header() {
       </Link>
       <div className="flex items-center gap-2">
         <ThemeToggle />
+        <HeaderSearch />
         <Link
           href="/bookmarks"
           className="flex items-center justify-center rounded-sm h-8 w-8 bg-card hover:bg-accent text-muted-foreground hover:text-foreground border border-border transition-colors"
