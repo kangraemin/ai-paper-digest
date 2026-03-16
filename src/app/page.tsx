@@ -1,3 +1,4 @@
+import { Suspense } from 'react';
 import { db } from "@/lib/db";
 import { papers } from "@/lib/db/schema";
 import { desc, isNotNull, eq, not, and } from "drizzle-orm";
@@ -9,7 +10,7 @@ export const revalidate = 3600;
 export default async function Home({
   searchParams,
 }: {
-  searchParams: Promise<{ source?: string; category?: string }>;
+  searchParams: Promise<{ source?: string; category?: string; q?: string }>;
 }) {
   const params = await searchParams;
   const sourceFilter = params.source || 'all';
@@ -45,11 +46,13 @@ export default async function Home({
 
   return (
     <div className="w-full max-w-[800px] flex flex-col px-4 sm:px-6 py-6">
-      <PaperFeed
-        initialPapers={items}
-        initialSource={sourceFilter}
-        initialCategory={categoryFilter}
-      />
+      <Suspense fallback={null}>
+        <PaperFeed
+          initialPapers={items}
+          initialSource={sourceFilter}
+          initialCategory={categoryFilter}
+        />
+      </Suspense>
     </div>
   );
 }

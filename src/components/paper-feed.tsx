@@ -1,10 +1,11 @@
 'use client';
 
 import { useState, useEffect, useCallback, useRef } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { SourceTabs } from './source-tabs';
 import { CategoryChips } from './category-chips';
 import { PaperCard } from './paper-card';
-import { SearchBar } from './search-bar';
+
 import type { PaperListItem } from '@/lib/types';
 
 declare global {
@@ -51,7 +52,8 @@ export function PaperFeed({ initialPapers, initialSource = 'all', initialCategor
   const [hasMore, setHasMore] = useState(initialPapers.length >= 20);
   const [loading, setLoading] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
+  const searchParams = useSearchParams();
+  const searchQuery = searchParams.get('q') ?? '';
   const [searchResults, setSearchResults] = useState<PaperListItem[]>([]);
   const [searching, setSearching] = useState(false);
   const [searchPage, setSearchPage] = useState(1);
@@ -150,9 +152,7 @@ export function PaperFeed({ initialPapers, initialSource = 'all', initialCategor
   return (
     <>
       <div className="mb-8 border-b border-border pb-4">
-        <div className="mb-4">
-          <SearchBar value={searchQuery} onChange={setSearchQuery} />
-        </div>
+
         <SourceTabs current={source} onChange={(s) => { setSource(s); setCategory('all'); }} />
         <div className="mt-4">
           <CategoryChips current={category} onChange={setCategory} />
