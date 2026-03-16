@@ -84,72 +84,72 @@ export default function BookmarksPage() {
       <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
         <div>
           <div className="flex items-center gap-2 mb-2">
-            <Bookmark size={18} className="text-zinc-400" />
-            <h1 className="text-zinc-50 text-2xl font-semibold tracking-[-0.02em]">Bookmarks</h1>
+            <Bookmark size={18} className="text-muted-foreground" />
+            <h1 className="text-foreground text-2xl font-semibold tracking-[-0.02em]">Bookmarks</h1>
           </div>
-          <p className="text-zinc-400 text-sm font-mono">
+          <p className="text-muted-foreground text-sm font-mono">
             {papers.length} saved papers
           </p>
         </div>
         {/* Filter */}
         <div className="relative w-full sm:w-64">
-          <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500" />
+          <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
           <input
             type="text"
             value={filter}
             onChange={e => { setFilter(e.target.value); setPage(0); }}
             placeholder="Filter bookmarks..."
-            className="w-full h-8 bg-zinc-900 border border-zinc-800 rounded-sm pl-9 pr-3 text-[13px] text-zinc-50 placeholder-zinc-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors font-mono"
+            className="w-full h-8 bg-card border border-border rounded-sm pl-9 pr-3 text-[13px] text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors font-mono"
           />
         </div>
       </div>
 
       {loading ? (
-        <p className="text-zinc-400 py-12 text-center">로딩 중...</p>
+        <p className="text-muted-foreground py-12 text-center">로딩 중...</p>
       ) : papers.length === 0 ? (
-        <p className="py-12 text-center text-zinc-400">북마크한 항목이 없습니다.</p>
+        <p className="py-12 text-center text-muted-foreground">북마크한 항목이 없습니다.</p>
       ) : (
         <>
           {/* Table */}
-          <div className="w-full border border-zinc-800 rounded-sm bg-zinc-900/50 overflow-hidden">
+          <div className="w-full border border-border rounded-sm bg-card/50 overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full text-left border-collapse" style={{ tableLayout: 'fixed' }}>
                 <thead>
-                  <tr className="border-b border-zinc-800 bg-zinc-900/80">
-                    <th className="w-[50%] px-4 py-3 text-[12px] font-mono font-medium text-zinc-500 uppercase tracking-wider">Title</th>
-                    <th className="w-[20%] px-4 py-3 text-[12px] font-mono font-medium text-zinc-500 uppercase tracking-wider">Category</th>
-                    <th className="hidden sm:table-cell w-[15%] px-4 py-3 text-[12px] font-mono font-medium text-zinc-500 uppercase tracking-wider">Added</th>
-                    <th className="hidden md:table-cell w-[10%] px-4 py-3 text-[12px] font-mono font-medium text-zinc-500 uppercase tracking-wider text-right">Rel</th>
+                  <tr className="border-b border-border bg-card/80">
+                    <th className="w-[50%] px-4 py-3 text-[12px] font-mono font-medium text-muted-foreground uppercase tracking-wider">Title</th>
+                    <th className="w-[20%] px-4 py-3 text-[12px] font-mono font-medium text-muted-foreground uppercase tracking-wider">Category</th>
+                    <th className="hidden sm:table-cell w-[15%] px-4 py-3 text-[12px] font-mono font-medium text-muted-foreground uppercase tracking-wider">Added</th>
+                    <th className="hidden md:table-cell w-[10%] px-4 py-3 text-[12px] font-mono font-medium text-muted-foreground uppercase tracking-wider text-right">Rel</th>
                     <th className="w-[5%] px-4 py-3"></th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-zinc-800/50">
+                <tbody className="divide-y divide-border/50">
                   {paginated.map(paper => {
                     const catColor = paper.aiCategory ? (categoryColorMap[paper.aiCategory] ?? '#888') : '#888';
                     const catName = paper.aiCategory ? (categoryDisplayName[paper.aiCategory] ?? paper.aiCategory) : '-';
                     return (
-                      <tr key={paper.id} className="group h-10 hover:bg-zinc-800/50 transition-colors">
+                      <tr key={paper.id} className="group h-10 hover:bg-accent/50 transition-colors">
                         <td className="px-4 py-2 truncate">
-                          <Link href={`/papers/${paper.id}`} className="text-[14px] text-zinc-50 font-medium hover:underline">
+                          <Link href={`/papers/${paper.id}`} className="text-[14px] text-foreground font-medium hover:underline">
                             {paper.titleKo || paper.title}
                           </Link>
                         </td>
                         <td className="px-4 py-2 truncate">
                           <div className="inline-flex items-center gap-1.5">
                             <div className="size-1.5 rounded-full" style={{ backgroundColor: catColor }} />
-                            <span className="text-[12px] font-mono text-zinc-400 group-hover:text-zinc-300">{catName}</span>
+                            <span className="text-[12px] font-mono text-muted-foreground group-hover:text-foreground/80">{catName}</span>
                           </div>
                         </td>
-                        <td className="hidden sm:table-cell px-4 py-2 text-[12px] font-mono text-zinc-500">
+                        <td className="hidden sm:table-cell px-4 py-2 text-[12px] font-mono text-muted-foreground">
                           {paper.publishedAt.split('T')[0]}
                         </td>
-                        <td className="hidden md:table-cell px-4 py-2 text-[12px] font-mono text-zinc-400 text-right">
+                        <td className="hidden md:table-cell px-4 py-2 text-[12px] font-mono text-muted-foreground text-right">
                           {paper.devRelevance != null ? `${paper.devRelevance}%` : '-'}
                         </td>
                         <td className="px-4 py-2 text-right">
                           <button
                             onClick={(e) => { e.preventDefault(); toggle(paper.id); }}
-                            className="opacity-0 group-hover:opacity-100 text-zinc-500 hover:text-zinc-50 transition-all p-1"
+                            className="opacity-0 group-hover:opacity-100 text-muted-foreground hover:text-foreground transition-all p-1"
                             title="Remove bookmark"
                           >
                             <BookmarkMinus size={16} />
@@ -166,21 +166,21 @@ export default function BookmarksPage() {
           {/* Pagination */}
           {totalPages > 1 && (
             <div className="flex items-center justify-between mt-4 px-2">
-              <span className="text-[12px] font-mono text-zinc-500">
+              <span className="text-[12px] font-mono text-muted-foreground">
                 Showing {page * PAGE_SIZE + 1}-{Math.min((page + 1) * PAGE_SIZE, filtered.length)} of {filtered.length}
               </span>
               <div className="flex gap-2">
                 <button
                   onClick={() => setPage(p => Math.max(0, p - 1))}
                   disabled={page === 0}
-                  className="text-[12px] font-mono text-zinc-500 hover:text-zinc-50 transition-colors disabled:opacity-50"
+                  className="text-[12px] font-mono text-muted-foreground hover:text-foreground transition-colors disabled:opacity-50"
                 >
                   Prev
                 </button>
                 <button
                   onClick={() => setPage(p => Math.min(totalPages - 1, p + 1))}
                   disabled={page >= totalPages - 1}
-                  className="text-[12px] font-mono text-zinc-400 hover:text-zinc-50 transition-colors disabled:opacity-50"
+                  className="text-[12px] font-mono text-muted-foreground hover:text-foreground transition-colors disabled:opacity-50"
                 >
                   Next
                 </button>

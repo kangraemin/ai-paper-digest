@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
 import { GoogleAnalytics } from "@next/third-parties/google";
+import { ThemeProvider } from "next-themes";
 import { Header } from "@/components/header";
 import "./globals.css";
 
@@ -36,10 +37,12 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="ko" className="dark" suppressHydrationWarning>
+    <html lang="ko" suppressHydrationWarning>
       <body className={`${inter.variable} ${mono.variable} font-sans antialiased bg-background text-foreground min-h-screen flex flex-col`}>
-        <Header />
-        <main className="flex-1 flex flex-col items-center w-full">{children}</main>
+        <ThemeProvider attribute="class" defaultTheme="dark" disableTransitionOnChange>
+          <Header />
+          <main className="flex-1 flex flex-col items-center w-full">{children}</main>
+        </ThemeProvider>
       </body>
       <GoogleAnalytics gaId="G-6N6MYM10K5" />
     </html>

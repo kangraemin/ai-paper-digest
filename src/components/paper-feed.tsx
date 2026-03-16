@@ -131,7 +131,7 @@ export function PaperFeed({ initialPapers, initialSource = 'all', initialCategor
 
   return (
     <>
-      <div className="mb-8 border-b border-zinc-800 pb-4">
+      <div className="mb-8 border-b border-border pb-4">
         <div className="mb-4">
           <SearchBar value={searchQuery} onChange={setSearchQuery} />
         </div>
@@ -181,16 +181,16 @@ export function PaperFeed({ initialPapers, initialSource = 'all', initialCategor
         // 기존 일반 모드
         loading ? (
         <div className="py-12 flex flex-col items-center gap-3">
-          <div className="w-48 h-1 bg-zinc-800 rounded-full overflow-hidden">
-            <div className="h-full bg-zinc-400 rounded-full animate-[loading-bar_1.2s_ease-in-out_infinite]" />
+          <div className="w-48 h-1 bg-muted rounded-full overflow-hidden">
+            <div className="h-full bg-muted-foreground rounded-full animate-[loading-bar_1.2s_ease-in-out_infinite]" />
           </div>
-          <p className="text-sm text-zinc-500">로딩 중...</p>
+          <p className="text-sm text-muted-foreground">로딩 중...</p>
         </div>
       ) : allPapers.length === 0 ? (
         <div className="py-20 text-center">
           <p className="text-4xl mb-4">¯\_(ツ)_/¯</p>
-          <p className="text-zinc-400">오늘은 조용한 날이네요.</p>
-          <p className="text-sm text-zinc-500 mt-1">
+          <p className="text-muted-foreground">오늘은 조용한 날이네요.</p>
+          <p className="text-sm text-muted-foreground mt-1">
             {source === 'community' ? 'HN 수집을 실행하거나 내일 다시 확인해 주세요.' : '논문 수집을 실행하거나 내일 다시 확인해 주세요.'}
           </p>
         </div>
@@ -198,9 +198,9 @@ export function PaperFeed({ initialPapers, initialSource = 'all', initialCategor
         <div className="space-y-8">
           {Object.entries(grouped).map(([date, datePapers]) => (
             <section key={date}>
-              <div className="sticky top-0 z-10 bg-zinc-950/95 backdrop-blur supports-[backdrop-filter]:bg-zinc-950/60 py-2 mb-4">
-                <h2 className="font-mono text-[12px] text-zinc-500 uppercase tracking-wider mb-1 flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-zinc-600 inline-block" />
+              <div className="sticky top-0 z-10 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 py-2 mb-4">
+                <h2 className="font-mono text-[12px] text-muted-foreground uppercase tracking-wider mb-1 flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-muted-foreground inline-block" />
                   {formatDateHeader(date)} · {datePapers.length}편
                 </h2>
               </div>
@@ -231,12 +231,12 @@ export function PaperFeed({ initialPapers, initialSource = 'all', initialCategor
               <button
                 onClick={loadMore}
                 disabled={loadingMore}
-                className="px-6 py-2 rounded-lg border border-zinc-700 text-zinc-300 hover:bg-zinc-800 transition-colors disabled:opacity-50"
+                className="px-6 py-2 rounded-lg border border-border text-foreground/80 hover:bg-accent transition-colors disabled:opacity-50"
               >
                 {loadingMore ? (
                   <span className="flex items-center gap-2">
-                    <span className="w-16 h-1 bg-zinc-700 rounded-full overflow-hidden inline-block">
-                      <span className="block h-full bg-zinc-400 rounded-full animate-[loading-bar_1.2s_ease-in-out_infinite]" />
+                    <span className="w-16 h-1 bg-muted rounded-full overflow-hidden inline-block">
+                      <span className="block h-full bg-muted-foreground rounded-full animate-[loading-bar_1.2s_ease-in-out_infinite]" />
                     </span>
                     로딩 중...
                   </span>

@@ -27,10 +27,6 @@ interface CategoryChipsProps {
 }
 
 export function CategoryChips({ current, onChange }: CategoryChipsProps) {
-  const handleClick = (id: string) => {
-    onChange(id);
-  };
-
   return (
     <div className="flex gap-2 overflow-x-auto pb-2 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
       {CATEGORIES.map(cat => {
@@ -40,11 +36,11 @@ export function CategoryChips({ current, onChange }: CategoryChipsProps) {
           return (
             <button
               key={cat.id}
-              onClick={() => handleClick(cat.id)}
+              onClick={() => onChange(cat.id)}
               className={`flex h-7 shrink-0 items-center justify-center rounded-full px-3 font-mono text-[12px] transition-colors border ${
                 isActive
-                  ? 'border-zinc-600 bg-zinc-800 text-white'
-                  : 'border-zinc-800 bg-zinc-900 hover:bg-zinc-700 text-zinc-300'
+                  ? 'border-border bg-secondary text-foreground'
+                  : 'border-border bg-card hover:bg-accent text-foreground/70'
               }`}
             >
               {cat.label}
@@ -57,7 +53,7 @@ export function CategoryChips({ current, onChange }: CategoryChipsProps) {
         return (
           <button
             key={cat.id}
-            onClick={() => handleClick(cat.id)}
+            onClick={() => onChange(cat.id)}
             style={{
               borderColor: `${hex}30`,
               backgroundColor: isActive ? `${hex}33` : `${hex}1a`,

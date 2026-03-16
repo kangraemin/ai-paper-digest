@@ -15,7 +15,7 @@ export function CopyButton({ text }: { text: string }) {
   return (
     <button
       onClick={handleCopy}
-      className="flex items-center gap-1.5 text-zinc-500 hover:text-zinc-100 transition-colors"
+      className="flex items-center gap-1.5 text-muted-foreground hover:text-foreground transition-colors"
       aria-label="Copy code"
     >
       {copied ? <Check size={16} /> : <Copy size={16} />}

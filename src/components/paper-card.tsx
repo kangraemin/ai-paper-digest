@@ -39,14 +39,14 @@ interface PaperCardProps {
   authors: string;
 }
 
-export function PaperCard({ id, title, titleKo, oneLiner, aiCategory, devRelevance, targetAudience, source }: PaperCardProps) {
+export function PaperCard({ id, title, titleKo, oneLiner, aiCategory, source }: PaperCardProps) {
   const catColor = aiCategory ? (categoryColorMap[aiCategory] ?? '#888') : '#888';
   const catName = aiCategory ? (categoryDisplayName[aiCategory] ?? aiCategory) : null;
 
   return (
     <Link href={`/papers/${id}`} className="group block w-full">
       <div
-        className="bg-zinc-900 border border-zinc-800 border-l-[3px] rounded-sm hover:bg-zinc-800/50 transition-colors p-4"
+        className="bg-card border-y border-r border-border border-l-[3px] rounded-sm hover:bg-accent transition-colors p-4"
         style={{ borderLeftColor: catColor }}
       >
         <div className="flex flex-col gap-2">
@@ -69,17 +69,18 @@ export function PaperCard({ id, title, titleKo, oneLiner, aiCategory, devRelevan
 
           {/* Title + description */}
           <div>
-            <h3 className="text-[16px] font-semibold text-zinc-100 tracking-[-0.02em] leading-tight mb-1">
+            <h3
+              className="text-[16px] font-semibold tracking-[-0.02em] leading-tight mb-1 text-foreground group-hover:[color:var(--cat-color)] transition-colors"
+              style={{ '--cat-color': catColor } as React.CSSProperties}
+            >
               {titleKo || title}
             </h3>
             {oneLiner && (
-              <p className="text-[14px] text-zinc-400 leading-relaxed line-clamp-2">
+              <p className="text-[14px] text-muted-foreground leading-relaxed line-clamp-2">
                 {oneLiner}
               </p>
             )}
           </div>
-
-
         </div>
       </div>
     </Link>
