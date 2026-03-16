@@ -145,19 +145,19 @@ export function PaperFeed({ initialPapers, initialSource = 'all', initialCategor
         // 검색 모드
         searching ? (
           <div className="py-12 flex flex-col items-center gap-3">
-            <div className="w-48 h-1 bg-zinc-800 rounded-full overflow-hidden">
-              <div className="h-full bg-zinc-400 rounded-full animate-[loading-bar_1.2s_ease-in-out_infinite]" />
+            <div className="w-48 h-1 bg-muted rounded-full overflow-hidden">
+              <div className="h-full bg-muted-foreground rounded-full animate-[loading-bar_1.2s_ease-in-out_infinite]" />
             </div>
-            <p className="text-sm text-zinc-500">검색 중...</p>
+            <p className="text-sm text-muted-foreground">검색 중...</p>
           </div>
         ) : searchResults.length === 0 ? (
           <div className="py-20 text-center">
             <p className="text-4xl mb-4">🔍</p>
-            <p className="text-zinc-400">&apos;{searchQuery}&apos;에 대한 검색 결과가 없습니다.</p>
+            <p className="text-muted-foreground">&apos;{searchQuery}&apos;에 대한 검색 결과가 없습니다.</p>
           </div>
         ) : (
           <div className="space-y-3">
-            <p className="text-xs text-zinc-500 mb-4">{searchResults.length}개의 검색 결과</p>
+            <p className="text-xs text-muted-foreground mb-4">{searchResults.length}개의 검색 결과</p>
             {searchResults.map(paper => (
               <PaperCard
                 key={paper.id}
