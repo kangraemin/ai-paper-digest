@@ -54,20 +54,27 @@ export function PaperFeed({ initialPapers, initialSource = 'all', initialCategor
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<PaperListItem[]>([]);
   const [searching, setSearching] = useState(false);
+  const [searchPage, setSearchPage] = useState(1);
+  const [searchHasMore, setSearchHasMore] = useState(false);
+  const [searchLoadingMore, setSearchLoadingMore] = useState(false);
   const isInitialRender = useRef(true);
 
   // 검색 debounce
   useEffect(() => {
     if (!searchQuery.trim()) {
       setSearchResults([]);
+      setSearchPage(1);
+      setSearchHasMore(false);
       return;
     }
     const timer = setTimeout(async () => {
       setSearching(true);
       try {
-        const res = await fetch(`/api/search?q=${encodeURIComponent(searchQuery)}`);
+        const res = await fetch(`/api/search?q=${encodeURIComponent(searchQuery)}&limit=20&page=1`);
         const data = await res.json();
         setSearchResults(data.papers);
+        setSearchPage(1);
+        setSearchHasMore(data.papers.length === 20 && data.total > 20);
         if (typeof window !== 'undefined' && window.gtag) {
           window.gtag('event', 'search', {
             search_term: searchQuery,
@@ -80,6 +87,17 @@ export function PaperFeed({ initialPapers, initialSource = 'all', initialCategor
     }, 300);
     return () => clearTimeout(timer);
   }, [searchQuery]);
+
+  const loadMoreSearch = useCallback(async () => {
+    setSearchLoadingMore(true);
+    const nextPage = searchPage + 1;
+    const res = await fetch(`/api/search?q=${encodeURIComponent(searchQuery)}&limit=20&page=${nextPage}`);
+    const data = await res.json();
+    setSearchResults(prev => [...prev, ...data.papers]);
+    setSearchPage(nextPage);
+    setSearchHasMore(data.papers.length === 20 && (searchResults.length + data.papers.length) < data.total);
+    setSearchLoadingMore(false);
+  }, [searchPage, searchQuery, searchResults.length]);
 
   // 필터 변경 시 fetch
   useEffect(() => {
@@ -175,6 +193,24 @@ export function PaperFeed({ initialPapers, initialSource = 'all', initialCategor
                 authors={paper.authors}
               />
             ))}
+            {searchHasMore && (
+              <div className="text-center py-4">
+                <button
+                  onClick={loadMoreSearch}
+                  disabled={searchLoadingMore}
+                  className="px-6 py-2 rounded-lg border border-border text-foreground/80 hover:bg-accent transition-colors disabled:opacity-50"
+                >
+                  {searchLoadingMore ? (
+                    <span className="flex items-center gap-2">
+                      <span className="w-16 h-1 bg-muted rounded-full overflow-hidden inline-block">
+                        <span className="block h-full bg-muted-foreground rounded-full animate-[loading-bar_1.2s_ease-in-out_infinite]" />
+                      </span>
+                      로딩 중...
+                    </span>
+                  ) : '더 보기'}
+                </button>
+              </div>
+            )}
           </div>
         )
       ) : (
