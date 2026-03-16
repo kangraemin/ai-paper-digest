@@ -176,22 +176,34 @@ export function PaperFeed({ initialPapers, initialSource = 'all', initialCategor
         ) : (
           <div className="space-y-3">
             <p className="text-xs text-muted-foreground mb-4">{searchResults.length}개의 검색 결과</p>
-            {searchResults.map(paper => (
-              <PaperCard
-                key={paper.id}
-                id={paper.id}
-                title={paper.title}
-                titleKo={paper.titleKo}
-                oneLiner={paper.oneLiner}
-                aiCategory={paper.aiCategory}
-                devRelevance={paper.devRelevance}
-                targetAudience={paper.targetAudience}
-                tags={paper.tags}
-                source={paper.source}
-                isHot={paper.isHot}
-                publishedAt={paper.publishedAt}
-                authors={paper.authors}
-              />
+            {Object.entries(groupByDate(searchResults)).map(([date, datePapers]) => (
+              <section key={date}>
+                <div className="sticky top-0 z-10 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 py-2 mb-4">
+                  <h2 className="font-mono text-[12px] text-muted-foreground uppercase tracking-wider mb-1 flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full bg-muted-foreground inline-block" />
+                    {formatDateHeader(date)} · {datePapers.length}편
+                  </h2>
+                </div>
+                <div className="space-y-3">
+                  {datePapers.map(paper => (
+                    <PaperCard
+                      key={paper.id}
+                      id={paper.id}
+                      title={paper.title}
+                      titleKo={paper.titleKo}
+                      oneLiner={paper.oneLiner}
+                      aiCategory={paper.aiCategory}
+                      devRelevance={paper.devRelevance}
+                      targetAudience={paper.targetAudience}
+                      tags={paper.tags}
+                      source={paper.source}
+                      isHot={paper.isHot}
+                      publishedAt={paper.publishedAt}
+                      authors={paper.authors}
+                    />
+                  ))}
+                </div>
+              </section>
             ))}
             {searchHasMore && (
               <div className="text-center py-4">
