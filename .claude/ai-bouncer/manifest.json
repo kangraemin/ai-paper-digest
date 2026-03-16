@@ -1,5 +1,5 @@
 {
-  "version": "ff55dbe",
+  "version": "799c834",
   "installed_at": "2026-03-15T15:12:48.855096",
   "files": [
     "agents/dev.md",
@@ -21,5 +21,5 @@
     "hooks/lib/resolve-task.sh",
     "scripts/update-check.sh"
   ],
-  "updated_at": "2026-03-15T21:08:08.782112"
+  "updated_at": "2026-03-16T10:15:00.000000"
 }
