@@ -13,8 +13,11 @@ async function main() {
   const screenResults = await screenBatch(
     fetched.map(p => ({ id: p.id, title: p.title, abstract: p.abstract }))
   );
-  const passed = fetched.filter(p => screenResults.get(p.id)?.pass);
-  console.log(`[스크리닝] ${fetched.length}편 중 ${passed.length}편 통과`);
+  const passed = fetched
+    .filter(p => screenResults.get(p.id)?.pass)
+    .sort((a, b) => (screenResults.get(b.id)?.score ?? 0) - (screenResults.get(a.id)?.score ?? 0))
+    .slice(0, 3);
+  console.log(`[스크리닝] ${fetched.length}편 중 ${passed.length}편 통과 (상위 3개)`);
 
   let newCount = 0;
   for (const paper of passed) {

@@ -16,8 +16,11 @@ async function main() {
     3,
     'hn'
   );
-  const passed = stories.filter(s => screenResults.get(`hn_${s.id}`)?.pass);
-  console.log(`[스크리닝] ${stories.length}편 중 ${passed.length}편 통과`);
+  const passed = stories
+    .filter(s => screenResults.get(`hn_${s.id}`)?.pass)
+    .sort((a, b) => (screenResults.get(`hn_${b.id}`)?.score ?? 0) - (screenResults.get(`hn_${a.id}`)?.score ?? 0))
+    .slice(0, 3);
+  console.log(`[스크리닝] ${stories.length}편 중 ${passed.length}편 통과 (상위 3개)`);
 
   let newCount = 0;
   for (const story of passed) {

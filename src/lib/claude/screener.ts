@@ -1,14 +1,29 @@
 import { runClaude } from './runner';
 
-const PAPER_SCREEN_PROMPT = `You are a filter for an AI paper digest aimed at developers who build apps using GPT/Claude APIs.
-Decide if this paper is useful for such developers (NOT researchers, NOT ML engineers training models).
-Papers about prompting, RAG, agents, tool use, fine-tuning, eval, inference optimization, code generation are useful.
-Papers about model architecture, pure theory, math proofs, specialized domains (medical, legal, robotics) are NOT useful.
+const PAPER_SCREEN_PROMPT = `You are a filter for an AI digest aimed at people who use Claude/Gemini/ChatGPT daily — NOT researchers, NOT ML engineers.
+
+PASS only if the paper is about:
+- Prompting techniques usable right now (chain-of-thought, few-shot, system prompt design)
+- Practical workflows for AI-assisted coding or writing
+- Security issues directly affecting Claude/Gemini users (prompt injection, jailbreaks)
+- Findings that change HOW someone should prompt or use AI tools
+- Agent/tool-use patterns a regular user can apply without infrastructure
+
+REJECT everything else, including:
+- Fine-tuning, RLHF, model training
+- RAG or vector database infrastructure
+- Inference optimization, serving, scaling
+- New model architecture or theory
+- Benchmarks that don't give actionable advice
+- Domain-specific applications (medical, legal, robotics, finance)
+- Multi-agent orchestration frameworks
+
+If PASS, also rate score 1-10 (10 = a regular user can apply this tomorrow, 1 = barely passes).
 
 Title: {title}
 Abstract: {abstract}
 
-Answer in JSON only: {"pass": true/false, "reason": "one line explanation"}`;
+Answer in JSON only: {"pass": true/false, "score": 1-10, "reason": "one line explanation"}`;
 
 const HN_SCREEN_PROMPT = `You are a filter for an AI/dev digest. The audience is developers who BUILD software with AI.
 
@@ -39,7 +54,7 @@ Title: {title}
 
 Answer in JSON only: {"pass": true/false, "reason": "one line explanation"}`;
 
-export async function screenPaper(title: string, abstract: string, source: 'paper' | 'hn' = 'paper'): Promise<{ pass: boolean; reason: string }> {
+export async function screenPaper(title: string, abstract: string, source: 'paper' | 'hn' = 'paper'): Promise<{ pass: boolean; score: number; reason: string }> {
   const template = source === 'hn' ? HN_SCREEN_PROMPT : PAPER_SCREEN_PROMPT;
   const prompt = template.replace('{title}', title).replace('{abstract}', abstract);
   let text = await runClaude(prompt, { model: 'haiku', timeout: 60000 });
@@ -52,18 +67,19 @@ export async function screenPaper(title: string, abstract: string, source: 'pape
   }
   const jsonMatch = text.match(/\{[\s\S]*?"pass"[\s\S]*?\}/);
   if (jsonMatch) {
-    return JSON.parse(jsonMatch[0]);
+    const result = JSON.parse(jsonMatch[0]);
+    return { pass: result.pass, score: result.score ?? 5, reason: result.reason };
   }
   // fallback: pass 못 찾으면 탈락 처리
-  return { pass: false, reason: 'Failed to parse screening response' };
+  return { pass: false, score: 0, reason: 'Failed to parse screening response' };
 }
 
 export async function screenBatch(
   papers: { id: string; title: string; abstract: string }[],
   concurrency = 3,
   source: 'paper' | 'hn' = 'paper'
-): Promise<Map<string, { pass: boolean; reason: string }>> {
-  const results = new Map<string, { pass: boolean; reason: string }>();
+): Promise<Map<string, { pass: boolean; score: number; reason: string }>> {
+  const results = new Map<string, { pass: boolean; score: number; reason: string }>();
   for (let i = 0; i < papers.length; i += concurrency) {
     const batch = papers.slice(i, i + concurrency);
     const settled = await Promise.allSettled(
@@ -71,7 +87,7 @@ export async function screenBatch(
     );
     for (const result of settled) {
       if (result.status === 'fulfilled') {
-        results.set(result.value.id, { pass: result.value.pass, reason: result.value.reason });
+        results.set(result.value.id, { pass: result.value.pass, score: result.value.score, reason: result.value.reason });
       }
     }
     console.log(`  스크리닝 ${Math.min(i + concurrency, papers.length)}/${papers.length}`);
