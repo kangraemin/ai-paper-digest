@@ -26,6 +26,7 @@ export const metadata: Metadata = {
   },
   verification: {
     google: '0UASLKq0AblFh-moSdGr8iXj6vzkBqHzqRtQsiFiamA',
+    other: { 'naver-site-verification': '2e4d659c76c39edf9217174dfc71064db3d4809a' },
   },
 };
 
