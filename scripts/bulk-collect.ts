@@ -2,12 +2,14 @@ import { db } from '../src/lib/db';
 import { papers } from '../src/lib/db/schema';
 import { fetchAllPapersForYear } from '../src/lib/semantic-scholar/client';
 import { fetchHNStoriesAlgolia } from '../src/lib/hacker-news/client';
+import { fetchRedditAI } from '../src/lib/reddit/client';
 import { screenBatch } from '../src/lib/claude/screener';
 import { eq } from 'drizzle-orm';
 
 const args = process.argv.slice(2);
 const s2Only = args.includes('--s2-only');
 const hnOnly = args.includes('--hn-only');
+const redditOnly = args.includes('--reddit-only');
 const dryRun = args.includes('--dry-run');
 
 const S2_YEARS = [
@@ -146,14 +148,69 @@ async function collectHN() {
   console.log(`  ✅ HN: ${passed.length}편 중 ${newCount}편 신규 저장`);
 }
 
+async function collectReddit() {
+  console.log('🔴 Reddit 벌크 수집 시작...');
+
+  const posts = await fetchRedditAI();
+  console.log(`  수집: ${posts.length}편`);
+
+  // 스크리닝
+  console.log('  🔍 스크리닝...');
+  const screenResults = await screenBatch(
+    posts.map(p => ({ id: `reddit_${p.subreddit}_${p.id}`, title: p.title, abstract: p.selftext || p.title })),
+    3,
+    'reddit'
+  );
+  const passed = posts
+    .filter(p => screenResults.get(`reddit_${p.subreddit}_${p.id}`)?.pass)
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 4);
+  console.log(`  스크리닝 통과: ${passed.length}편`);
+
+  if (dryRun) {
+    console.log(`  [dry-run] DB 저장 스킵`);
+    return;
+  }
+
+  // DB 저장
+  let newCount = 0;
+  for (const post of passed) {
+    const id = `reddit_${post.subreddit}_${post.id}`;
+    const existing = await db.select().from(papers).where(eq(papers.id, id)).limit(1);
+    if (existing.length > 0) continue;
+
+    const hotScore = Math.min(Math.floor(post.score / 10), 100);
+    await db.insert(papers).values({
+      id,
+      title: post.title,
+      abstract: post.selftext || post.title,
+      authors: JSON.stringify([post.author]),
+      categories: JSON.stringify([`reddit_${post.subreddit}`]),
+      primaryCategory: `reddit_${post.subreddit}`,
+      publishedAt: new Date(post.created_utc * 1000).toISOString(),
+      arxivUrl: post.url || `https://www.reddit.com${post.permalink}`,
+      pdfUrl: '',
+      source: 'reddit',
+      hotScore,
+      isHot: hotScore >= 70,
+      collectedAt: new Date().toISOString(),
+    }).onConflictDoNothing();
+    newCount++;
+  }
+
+  console.log(`  ✅ Reddit: ${passed.length}편 중 ${newCount}편 신규 저장`);
+}
+
 async function main() {
   console.log('🚀 벌크 수집 시작');
   if (dryRun) console.log('  [dry-run 모드]');
   if (s2Only) console.log('  [S2 전용]');
   if (hnOnly) console.log('  [HN 전용]');
+  if (redditOnly) console.log('  [Reddit 전용]');
 
-  if (!hnOnly) await collectS2();
-  if (!s2Only) await collectHN();
+  if (!hnOnly && !redditOnly) await collectS2();
+  if (!s2Only && !redditOnly) await collectHN();
+  if (!s2Only && !hnOnly) await collectReddit();
 
   // 수집 후 자동 요약
   if (!dryRun) {
