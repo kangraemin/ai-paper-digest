@@ -54,8 +54,29 @@ Title: {title}
 
 Answer in JSON only: {"pass": true/false, "reason": "one line explanation"}`;
 
-export async function screenPaper(title: string, abstract: string, source: 'paper' | 'hn' = 'paper'): Promise<{ pass: boolean; score: number; reason: string }> {
-  const template = source === 'hn' ? HN_SCREEN_PROMPT : PAPER_SCREEN_PROMPT;
+const REDDIT_SCREEN_PROMPT = `You are a filter for an AI digest aimed at people who use Claude/Gemini/ChatGPT daily — general users, not engineers.
+
+PASS only if the post is:
+- A practical tip or workflow a regular AI user can apply immediately
+- Real user experience with AI tools (prompting techniques, workflows, productivity)
+- Useful comparison or guide about AI assistants (Claude, ChatGPT, Gemini)
+- Actionable advice on getting better results from AI tools
+
+REJECT if the post is:
+- Meme, joke, screenshot with no substance, or reaction post
+- Pure news or announcement repost with no technical insight
+- AI politics, regulation, or ethics debate
+- Rant, complaint, or drama without actionable content
+- "AI will replace X" opinion pieces or doom/hype posts
+- Low-effort question that can be answered by reading the docs
+- Duplicate or repost
+
+Title: {title}
+
+Answer in JSON only: {"pass": true/false, "reason": "one line explanation"}`;
+
+export async function screenPaper(title: string, abstract: string, source: 'paper' | 'hn' | 'reddit' = 'paper'): Promise<{ pass: boolean; score: number; reason: string }> {
+  const template = source === 'reddit' ? REDDIT_SCREEN_PROMPT : source === 'hn' ? HN_SCREEN_PROMPT : PAPER_SCREEN_PROMPT;
   const prompt = template.replace('{title}', title).replace('{abstract}', abstract);
   let text = await runClaude(prompt, { model: 'haiku', timeout: 60000 });
 
@@ -77,7 +98,7 @@ export async function screenPaper(title: string, abstract: string, source: 'pape
 export async function screenBatch(
   papers: { id: string; title: string; abstract: string }[],
   concurrency = 3,
-  source: 'paper' | 'hn' = 'paper'
+  source: 'paper' | 'hn' | 'reddit' = 'paper'
 ): Promise<Map<string, { pass: boolean; score: number; reason: string }>> {
   const results = new Map<string, { pass: boolean; score: number; reason: string }>();
   for (let i = 0; i < papers.length; i += concurrency) {
