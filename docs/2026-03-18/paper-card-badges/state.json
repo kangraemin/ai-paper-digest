@@ -1,5 +1,5 @@
 {
-  "workflow_phase": "verification",
+  "workflow_phase": "done",
   "mode": "normal",
   "planning": {
     "no_question_streak": 0
@@ -23,7 +23,7 @@
     }
   },
   "verification": {
-    "rounds_passed": 0
+    "rounds_passed": 3
   },
   "task_dir": "docs/2026-03-18/paper-card-badges",
   "active_file": "docs/2026-03-18/paper-card-badges/.active"
