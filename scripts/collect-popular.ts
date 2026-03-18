@@ -1,6 +1,7 @@
 import { db } from '../src/lib/db';
 import { papers } from '../src/lib/db/schema';
 import { fetchPopularPapers } from '../src/lib/semantic-scholar/client';
+import { screenBatch } from '../src/lib/claude/screener';
 import { eq } from 'drizzle-orm';
 
 async function main() {
@@ -8,8 +9,24 @@ async function main() {
   const popular = await fetchPopularPapers(5);
   console.log(`Found ${popular.length} popular papers`);
 
+  console.log('🔍 Screening papers...');
+  const screenResults = await screenBatch(
+    popular.map(p => ({
+      id: p.externalIds?.ArXiv ?? p.paperId,
+      title: p.title,
+      abstract: p.abstract ?? p.title,
+    }))
+  );
+  const passed = popular
+    .filter(p => {
+      const id = p.externalIds?.ArXiv ?? p.paperId;
+      return screenResults.get(id)?.pass;
+    })
+    .slice(0, 3);
+  console.log(`[스크리닝] ${popular.length}편 중 ${passed.length}편 통과 (상위 3개)`);
+
   let newCount = 0;
-  for (const paper of popular) {
+  for (const paper of passed) {
     const arxivId = paper.externalIds?.ArXiv;
     const id = arxivId ?? paper.paperId;
 
@@ -42,7 +59,7 @@ async function main() {
     newCount++;
   }
 
-  console.log(`✅ Popular: ${popular.length} papers, ${newCount} new`);
+  console.log(`✅ Popular: ${passed.length} papers, ${newCount} new`);
 }
 
 main().catch(console.error);
