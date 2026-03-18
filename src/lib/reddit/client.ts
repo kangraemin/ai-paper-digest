@@ -3,11 +3,9 @@ import { XMLParser } from 'fast-xml-parser';
 const USER_AGENT = 'AI-Paper-Digest/1.0';
 
 const DEFAULT_SUBREDDITS = [
-  { sub: 'ChatGPT', limit: 30 },
-  { sub: 'ClaudeAI', limit: 30 },
-  { sub: 'GoogleGeminiAI', limit: 30 },
-  { sub: 'MachineLearning', limit: 20 },
-  { sub: 'artificial', limit: 20 },
+  { sub: 'ChatGPT', limit: 50 },
+  { sub: 'ClaudeAI', limit: 50 },
+  { sub: 'MachineLearning', limit: 50 },
 ];
 
 export interface RedditPost {
