@@ -121,7 +121,7 @@ export default async function PaperDetail({ params }: Props) {
         </span>
         <span className="flex items-center gap-1.5 mr-4">
           <span className="text-muted-foreground">&bull;</span>
-          {paper.source === 'hacker_news' ? (
+          {(paper.source === 'hacker_news' || paper.source === 'reddit') ? (
             <Link href={paper.arxivUrl} target="_blank" className="flex items-center gap-1.5 text-blue-400 hover:underline">
               <FileText size={16} />
               View Original
