@@ -1,7 +1,7 @@
 import { Suspense } from 'react';
 import { db } from "@/lib/db";
 import { papers } from "@/lib/db/schema";
-import { desc, isNotNull, eq, not, and } from "drizzle-orm";
+import { desc, isNotNull, eq, inArray, notInArray, and } from "drizzle-orm";
 import { PaperFeed } from "@/components/paper-feed";
 import type { PaperListItem } from "@/lib/types";
 
@@ -17,10 +17,12 @@ export default async function Home({
   const categoryFilter = params.category || 'all';
 
   const conditions = [isNotNull(papers.summarizedAt)];
+  const communitySources = ['hacker_news', 'reddit'];
+  const paperSources = ['arxiv', 'semantic_scholar', 'papers_with_code'];
   if (sourceFilter === 'community') {
-    conditions.push(eq(papers.source, 'hacker_news'));
+    conditions.push(inArray(papers.source, communitySources));
   } else if (sourceFilter === 'papers') {
-    conditions.push(not(eq(papers.source, 'hacker_news')));
+    conditions.push(inArray(papers.source, paperSources));
   }
   if (categoryFilter && categoryFilter !== 'all') {
     conditions.push(eq(papers.aiCategory, categoryFilter));
