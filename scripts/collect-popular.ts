@@ -53,7 +53,7 @@ async function main() {
       source: 'semantic_scholar',
       citationCount: paper.citationCount,
       venue: paper.venue ?? null,
-      affiliations: JSON.stringify(paper.authors.flatMap(a => a.affiliations ?? [])),
+      affiliations: JSON.stringify([...new Set(paper.authors.flatMap(a => a.affiliations ?? []))]),
       hotScore: 80,
       isHot: true,
       collectedAt: new Date().toISOString(),
