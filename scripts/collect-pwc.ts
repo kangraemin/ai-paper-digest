@@ -28,7 +28,9 @@ async function main() {
       id: p.id,
       title: p.title,
       abstract: p.summary ?? p.title,
-    }))
+    })),
+    3,
+    'hn'
   );
 
   const passed = hfPapers
