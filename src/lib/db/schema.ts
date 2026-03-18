@@ -30,6 +30,8 @@ export const papers = sqliteTable('papers', {
   isHot: integer('is_hot', { mode: 'boolean' }).default(false),
   source: text('source').default('arxiv'),
   citationCount: integer('citation_count'),
+  venue: text('venue'),
+  affiliations: text('affiliations'),
   collectedAt: text('collected_at').notNull(),
   summarizedAt: text('summarized_at'),
   slackNotifiedAt: text('slack_notified_at'),
