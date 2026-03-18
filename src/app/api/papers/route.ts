@@ -1,6 +1,6 @@
 import { db } from '@/lib/db';
 import { papers } from '@/lib/db/schema';
-import { desc, eq, not, and, gte, lt, sql, isNotNull } from 'drizzle-orm';
+import { desc, eq, inArray, and, gte, lt, sql, isNotNull } from 'drizzle-orm';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(req: NextRequest) {
@@ -15,10 +15,12 @@ export async function GET(req: NextRequest) {
   const conditions = [];
   conditions.push(isNotNull(papers.summarizedAt));
 
+  const communitySources = ['hacker_news', 'reddit'];
+  const paperSources = ['arxiv', 'semantic_scholar', 'papers_with_code'];
   if (source === 'community') {
-    conditions.push(eq(papers.source, 'hacker_news'));
+    conditions.push(inArray(papers.source, communitySources));
   } else if (source === 'papers') {
-    conditions.push(not(eq(papers.source, 'hacker_news')));
+    conditions.push(inArray(papers.source, paperSources));
   }
 
   if (date) {
