@@ -2,12 +2,12 @@ import { db } from '../src/lib/db';
 import { papers } from '../src/lib/db/schema';
 import { summarizePaper } from '../src/lib/claude/client';
 import { sendSlackNotification } from '../src/lib/slack/notify';
-import { eq, isNull } from 'drizzle-orm';
+import { eq, isNull, notInArray } from 'drizzle-orm';
 
 async function main() {
   const unsummarized = await db.select()
     .from(papers)
-    .where(isNull(papers.summarizedAt))
+    .where(isNull(papers.summarizedAt) && notInArray(papers.source, ['hacker_news', 'reddit']))
     .limit(200);
 
   console.log(`📝 ${unsummarized.length} papers to summarize`);

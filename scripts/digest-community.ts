@@ -1,9 +1,9 @@
 import { db } from '../src/lib/db';
 import { papers } from '../src/lib/db/schema';
-import { eq, isNull, and } from 'drizzle-orm';
+import { eq, inArray, isNull, and } from 'drizzle-orm';
 import { fetchContent } from '../src/lib/content-fetcher';
 import { fetchHNComments } from '../src/lib/hacker-news/client';
-import { COMMUNITY_DIGEST_PROMPT } from '../src/lib/claude/community-prompts';
+import { COMMUNITY_DIGEST_PROMPT, REDDIT_DIGEST_PROMPT } from '../src/lib/claude/community-prompts';
 import { runClaude } from '../src/lib/claude/runner';
 
 function extractJson(text: string): string {
@@ -20,7 +20,7 @@ export async function digestCommunity(): Promise<number> {
   console.log('📰 Digesting community content...');
 
   const items = await db.select().from(papers)
-    .where(and(eq(papers.source, 'hacker_news'), isNull(papers.summarizedAt)))
+    .where(and(inArray(papers.source, ['hacker_news', 'reddit']), isNull(papers.summarizedAt)))
     .limit(10);
 
   console.log(`Found ${items.length} undigested community items`);
@@ -34,13 +34,17 @@ export async function digestCommunity(): Promise<number> {
       const content = await fetchContent(item.arxivUrl);
       console.log(`  원문: ${content.length}자`);
 
-      // 2. HN 댓글 수집
-      const hnId = parseInt(item.id.replace('hn_', ''));
-      const comments = await fetchHNComments(hnId, 15);
-      console.log(`  댓글: ${comments.length}개`);
+      // 2. 댓글 수집 (HN만)
+      let comments: string[] = [];
+      if (item.source === 'hacker_news') {
+        const hnId = parseInt(item.id.replace('hn_', ''));
+        comments = await fetchHNComments(hnId, 15);
+        console.log(`  댓글: ${comments.length}개`);
+      }
 
       // 3. claude -p로 정리
-      const prompt = COMMUNITY_DIGEST_PROMPT
+      const template = item.source === 'reddit' ? REDDIT_DIGEST_PROMPT : COMMUNITY_DIGEST_PROMPT;
+      const prompt = template
         .replace('{title}', item.title)
         .replace('{url}', item.arxivUrl)
         .replace('{content}', content || '(원문을 가져올 수 없습니다)')
