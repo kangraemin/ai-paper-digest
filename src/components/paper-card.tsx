@@ -30,6 +30,7 @@ const sourceLabel: Record<string, string> = {
   reddit: 'Reddit',
   arxiv: 'arXiv',
   semantic_scholar: 'S2',
+  papers_with_code: 'PWC',
 };
 
 interface PaperCardProps {
@@ -73,7 +74,7 @@ export function PaperCard({ id, title, titleKo, oneLiner, aiCategory, source, au
               </span>
             )}
             {srcLabel && (
-              <span className="font-mono text-[11px] text-muted-foreground">
+              <span className="font-mono text-[11px] px-1.5 py-0.5 rounded-sm bg-muted text-muted-foreground">
                 {srcLabel}
               </span>
             )}
