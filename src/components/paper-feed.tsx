@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 import { SourceTabs } from './source-tabs';
 import { CategoryChips } from './category-chips';
 import { PaperCard } from './paper-card';
@@ -53,6 +53,7 @@ export function PaperFeed({ initialPapers, initialSource = 'all', initialCategor
   const [loading, setLoading] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
   const searchParams = useSearchParams();
+  const router = useRouter();
   const searchQuery = searchParams.get('q') ?? '';
   const [searchResults, setSearchResults] = useState<PaperListItem[]>([]);
   const [searching, setSearching] = useState(false);
@@ -111,7 +112,7 @@ export function PaperFeed({ initialPapers, initialSource = 'all', initialCategor
     const params = new URLSearchParams();
     if (source !== 'all') params.set('source', source);
     if (category !== 'all') params.set('category', category);
-    window.history.replaceState(null, '', params.toString() ? `/?${params}` : '/');
+    router.replace(params.toString() ? `/?${params}` : '/', { scroll: false });
 
     setLoading(true);
     setPage(1);
@@ -122,7 +123,7 @@ export function PaperFeed({ initialPapers, initialSource = 'all', initialCategor
         setHasMore(data.hasMore);
         setLoading(false);
       });
-  }, [source, category]);
+  }, [source, category, router]);
 
   // Load More
   const loadMore = useCallback(async () => {
@@ -200,6 +201,8 @@ export function PaperFeed({ initialPapers, initialSource = 'all', initialCategor
                       isHot={paper.isHot}
                       publishedAt={paper.publishedAt}
                       authors={paper.authors}
+                      venue={paper.venue}
+                      affiliations={paper.affiliations}
                     />
                   ))}
                 </div>
@@ -268,6 +271,8 @@ export function PaperFeed({ initialPapers, initialSource = 'all', initialCategor
                     isHot={paper.isHot}
                     publishedAt={paper.publishedAt}
                     authors={paper.authors}
+                    venue={paper.venue}
+                    affiliations={paper.affiliations}
                   />
                 ))}
               </div>

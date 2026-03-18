@@ -11,4 +11,6 @@ export type PaperListItem = {
   isHot: boolean | null;
   publishedAt: string;
   authors: string;
+  venue: string | null;
+  affiliations: string | null;
 };

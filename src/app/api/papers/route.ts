@@ -48,6 +48,8 @@ export async function GET(req: NextRequest) {
       isHot: papers.isHot,
       publishedAt: papers.publishedAt,
       authors: papers.authors,
+      venue: papers.venue,
+      affiliations: papers.affiliations,
     })
       .from(papers)
       .where(where)

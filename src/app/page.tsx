@@ -39,6 +39,8 @@ export default async function Home({
     isHot: papers.isHot,
     publishedAt: papers.publishedAt,
     authors: papers.authors,
+    venue: papers.venue,
+    affiliations: papers.affiliations,
   }).from(papers)
     .where(and(...conditions))
     .orderBy(desc(papers.publishedAt))
