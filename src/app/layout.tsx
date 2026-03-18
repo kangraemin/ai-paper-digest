@@ -18,6 +18,8 @@ export const metadata: Metadata = {
   openGraph: {
     title: "AI Paper Digest",
     description: "매일 업데이트되는 AI/LLM 논문 한글 요약",
+    url: 'https://ai-paper-delta.vercel.app',
+    siteName: 'AI Paper Digest',
     type: "website",
     locale: "ko_KR",
   },

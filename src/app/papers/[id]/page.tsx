@@ -64,7 +64,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title,
     description,
-    openGraph: { title, description, type: 'article' },
+    openGraph: {
+      title,
+      description,
+      type: 'article',
+      url: `https://ai-paper-delta.vercel.app/papers/${id}`,
+      siteName: 'AI Paper Digest',
+    },
   };
 }
 
