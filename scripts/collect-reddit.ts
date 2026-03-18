@@ -18,9 +18,13 @@ async function main() {
   );
   const passed = posts
     .filter(p => screenResults.get(`reddit_${p.subreddit}_${p.id}`)?.pass)
-    .sort((a, b) => b.score - a.score)
-    .slice(0, 4);
-  console.log(`[스크리닝] ${posts.length}편 중 ${passed.length}편 통과 (상위 4개)`);
+    .sort((a, b) => {
+      const sa = screenResults.get(`reddit_${a.subreddit}_${a.id}`)?.score ?? 0;
+      const sb = screenResults.get(`reddit_${b.subreddit}_${b.id}`)?.score ?? 0;
+      return sb - sa;
+    })
+    .slice(0, 5);
+  console.log(`[스크리닝] ${posts.length}편 중 ${passed.length}편 통과 (상위 5개)`);
 
   let newCount = 0;
   for (const post of passed) {
@@ -28,7 +32,7 @@ async function main() {
     const existing = await db.select().from(papers).where(eq(papers.id, id)).limit(1);
     if (existing.length > 0) continue;
 
-    const hotScore = Math.min(Math.floor(post.score / 10), 100);
+    const hotScore = Math.min((screenResults.get(id)?.score ?? 5) * 10, 100);
     await db.insert(papers).values({
       id,
       title: post.title,

@@ -1,5 +1,14 @@
-const USER_AGENT = 'AI-Paper-Digest/1.0 (by /u/ai_paper_bot)';
-const SUBREDDITS = ['MachineLearning', 'LocalLLaMA', 'ChatGPT', 'ClaudeAI', 'artificial'];
+import { XMLParser } from 'fast-xml-parser';
+
+const USER_AGENT = 'AI-Paper-Digest/1.0';
+
+const DEFAULT_SUBREDDITS = [
+  { sub: 'ChatGPT', limit: 30 },
+  { sub: 'ClaudeAI', limit: 30 },
+  { sub: 'GoogleGeminiAI', limit: 30 },
+  { sub: 'MachineLearning', limit: 20 },
+  { sub: 'artificial', limit: 20 },
+];
 
 export interface RedditPost {
   id: string;
@@ -14,49 +23,19 @@ export interface RedditPost {
   selftext: string;
 }
 
-async function getAccessToken(): Promise<string> {
-  const clientId = process.env.REDDIT_CLIENT_ID;
-  const clientSecret = process.env.REDDIT_CLIENT_SECRET;
-
-  if (!clientId || !clientSecret) {
-    throw new Error('REDDIT_CLIENT_ID / REDDIT_CLIENT_SECRET 환경변수 필요');
-  }
-
-  const res = await fetch('https://www.reddit.com/api/v1/access_token', {
-    method: 'POST',
-    headers: {
-      'Authorization': 'Basic ' + Buffer.from(`${clientId}:${clientSecret}`).toString('base64'),
-      'Content-Type': 'application/x-www-form-urlencoded',
-      'User-Agent': USER_AGENT,
-    },
-    body: 'grant_type=client_credentials',
-  });
-
-  if (!res.ok) throw new Error(`Reddit OAuth 토큰 발급 실패: ${res.status}`);
-  const data = await res.json();
-  return data.access_token as string;
-}
-
 export async function fetchRedditAI(
-  subreddits = SUBREDDITS,
-  opts?: { minScore?: number; timeframe?: 'week' | 'month' }
+  subreddits = DEFAULT_SUBREDDITS,
+  opts?: { timeframe?: 'week' | 'month' }
 ): Promise<RedditPost[]> {
-  const minScore = opts?.minScore ?? 50;
   const timeframe = opts?.timeframe ?? 'week';
   const allPosts: RedditPost[] = [];
+  const parser = new XMLParser({ ignoreAttributes: false, attributeNamePrefix: '@_' });
 
-  const token = await getAccessToken();
-
-  for (const sub of subreddits) {
+  for (const { sub, limit } of subreddits) {
     try {
       const res = await fetch(
-        `https://oauth.reddit.com/r/${sub}/top?t=${timeframe}&limit=25`,
-        {
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'User-Agent': USER_AGENT,
-          },
-        }
+        `https://www.reddit.com/r/${sub}/top.rss?t=${timeframe}&limit=${limit}`,
+        { headers: { 'User-Agent': USER_AGENT } }
       );
 
       if (!res.ok) {
@@ -64,29 +43,39 @@ export async function fetchRedditAI(
         continue;
       }
 
-      const data = await res.json();
-      const posts: RedditPost[] = (data?.data?.children ?? [])
-        .map((child: { data: Record<string, unknown> }) => ({
-          id: child.data.id as string,
-          title: child.data.title as string,
-          url: child.data.url as string,
-          score: child.data.score as number,
-          author: child.data.author as string,
-          created_utc: child.data.created_utc as number,
-          num_comments: child.data.num_comments as number,
-          permalink: child.data.permalink as string,
-          subreddit: child.data.subreddit as string,
-          selftext: child.data.selftext as string,
-        }))
-        .filter((post: RedditPost) => post.score >= minScore);
+      const xml = await res.text();
+      const parsed = parser.parse(xml);
+      const entries: Record<string, unknown>[] = ([] as Record<string, unknown>[]).concat(parsed?.feed?.entry ?? []);
+
+      const posts: RedditPost[] = entries.map((entry) => {
+        const links: unknown[] = ([] as unknown[]).concat(entry.link ?? []);
+        const altLink = links.find((l: unknown) => (l as Record<string, string>)['@_rel'] === 'alternate') as Record<string, string> | undefined;
+        const permalink = altLink?.['@_href'] ?? '';
+        const id = String(entry.id ?? '').split('_').pop() ?? '';
+        const authorName = String((entry.author as Record<string, string>)?.name ?? '').replace('/u/', '');
+        const updated = String(entry.updated ?? '');
+
+        return {
+          id,
+          title: String(entry.title ?? ''),
+          url: permalink,
+          score: 0,
+          author: authorName,
+          created_utc: updated ? Math.floor(new Date(updated).getTime() / 1000) : 0,
+          num_comments: 0,
+          permalink: permalink.replace('https://www.reddit.com', ''),
+          subreddit: sub,
+          selftext: '',
+        };
+      });
 
       allPosts.push(...posts);
-      console.log(`  [Reddit] r/${sub}: ${posts.length}건 (score >= ${minScore})`);
+      console.log(`  [Reddit] r/${sub}: ${posts.length}건`);
     } catch (err) {
       console.warn(`[Reddit] r/${sub} error:`, err);
     }
 
-    if (sub !== subreddits[subreddits.length - 1]) {
+    if (sub !== subreddits[subreddits.length - 1].sub) {
       await new Promise(r => setTimeout(r, 500));
     }
   }
