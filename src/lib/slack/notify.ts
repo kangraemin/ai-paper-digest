@@ -36,12 +36,21 @@ export interface PaperForSlack {
   targetAudience?: string | null;
 }
 
+function getSourceLabel(source: string | null | undefined): string {
+  switch (source) {
+    case 'hacker_news': return 'Hacker News';
+    case 'reddit': return 'Reddit';
+    case 'arxiv': return '논문 (arXiv)';
+    case 'semantic_scholar': return '논문 (인기)';
+    case 'papers_with_code': return '논문 (PWC)';
+    default: return '논문';
+  }
+}
+
 export function buildSlackPayload(paper: PaperForSlack, siteUrl: string) {
   const title = paper.titleKo || paper.title;
   const category = paper.aiCategory || 'AI';
-  const isCommunity = paper.source === 'hacker_news';
-  const emoji = isCommunity ? '📰' : '📄';
-  const sourceLabel = isCommunity ? '커뮤니티' : '논문';
+  const sourceLabel = getSourceLabel(paper.source);
   const pageUrl = `${siteUrl}/papers/${paper.id}`;
   const color = categoryColors[category] ?? '#6b7280';
 
@@ -55,7 +64,7 @@ export function buildSlackPayload(paper: PaperForSlack, siteUrl: string) {
   if (applies.length > 0) bodyParts.push(`*How to apply*\n${applies.map(a => `• ${a}`).join('\n')}`);
   if (audience) bodyParts.push(`*대상 독자*\n${audience}`);
 
-  const headerText = truncate(`${emoji} [${sourceLabel} · ${category}] ${title}`, 149);
+  const headerText = truncate(`[${category}][${sourceLabel}] ${title}`, 149);
 
   return {
     attachments: [
