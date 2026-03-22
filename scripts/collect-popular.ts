@@ -9,34 +9,41 @@ async function main() {
   const popular = await fetchPopularPapers(5);
   console.log(`Found ${popular.length} popular papers`);
 
+  // 스크리닝 전 분리: 기존 논문은 citationCount 업데이트, 신규만 스크리닝
+  const newPapers = [];
+  for (const p of popular) {
+    const id = p.externalIds?.ArXiv ?? p.paperId;
+    const existing = await db.select().from(papers).where(eq(papers.id, id)).limit(1);
+    if (existing.length > 0) {
+      const updateFields: Record<string, unknown> = { citationCount: p.citationCount };
+      if (p.publicationDate) updateFields.publishedAt = `${p.publicationDate}T00:00:00Z`;
+      await db.update(papers).set(updateFields).where(eq(papers.id, id));
+    } else {
+      newPapers.push(p);
+    }
+  }
+  console.log(`[중복제거] ${popular.length}개 중 ${newPapers.length}개 신규`);
+
   console.log('🔍 Screening papers...');
   const screenResults = await screenBatch(
-    popular.map(p => ({
+    newPapers.map(p => ({
       id: p.externalIds?.ArXiv ?? p.paperId,
       title: p.title,
       abstract: p.abstract ?? p.title,
     }))
   );
-  const passed = popular
+  const passed = newPapers
     .filter(p => {
       const id = p.externalIds?.ArXiv ?? p.paperId;
       return screenResults.get(id)?.pass;
     })
     .slice(0, 3);
-  console.log(`[스크리닝] ${popular.length}편 중 ${passed.length}편 통과 (상위 3개)`);
+  console.log(`[스크리닝] ${newPapers.length}편 중 ${passed.length}편 통과 (상위 3개)`);
 
   let newCount = 0;
   for (const paper of passed) {
     const arxivId = paper.externalIds?.ArXiv;
     const id = arxivId ?? paper.paperId;
-
-    const existing = await db.select().from(papers).where(eq(papers.id, id)).limit(1);
-    if (existing.length > 0) {
-      const updateFields: Record<string, unknown> = { citationCount: paper.citationCount };
-      if (paper.publicationDate) updateFields.publishedAt = `${paper.publicationDate}T00:00:00Z`;
-      await db.update(papers).set(updateFields).where(eq(papers.id, id));
-      continue;
-    }
 
     await db.insert(papers).values({
       id,

@@ -22,9 +22,17 @@ async function main() {
   const hfPapers: HfPaper[] = await res.json();
   console.log(`Found ${hfPapers.length} papers`);
 
+  // 스크리닝 전 중복 제거
+  const newHfPapers = [];
+  for (const p of hfPapers) {
+    const existing = await db.select().from(papers).where(eq(papers.id, p.id)).limit(1);
+    if (existing.length === 0) newHfPapers.push(p);
+  }
+  console.log(`[중복제거] ${hfPapers.length}개 중 ${newHfPapers.length}개 신규`);
+
   console.log('🔍 Screening papers...');
   const screenResults = await screenBatch(
-    hfPapers.map(p => ({
+    newHfPapers.map(p => ({
       id: p.id,
       title: p.title,
       abstract: p.summary ?? p.title,
@@ -33,19 +41,14 @@ async function main() {
     'hn'
   );
 
-  const passed = hfPapers
+  const passed = newHfPapers
     .filter(p => screenResults.get(p.id)?.pass)
     .slice(0, 3);
-  console.log(`[스크리닝] ${hfPapers.length}편 중 ${passed.length}편 통과 (상위 3개)`);
+  console.log(`[스크리닝] ${newHfPapers.length}편 중 ${passed.length}편 통과 (상위 3개)`);
 
   let newCount = 0;
   for (const paper of passed) {
     const id = paper.id;
-    const existing = await db.select().from(papers).where(eq(papers.id, id)).limit(1);
-    if (existing.length > 0) {
-      console.log(`  이미 존재: ${id}`);
-      continue;
-    }
 
     const hotScore = Math.min((screenResults.get(id)?.score ?? 5) * 10, 100);
 
