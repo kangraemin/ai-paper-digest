@@ -1,24 +1,34 @@
 import { runClaude } from './runner';
 
-const PAPER_SCREEN_PROMPT = `You are a filter for an AI digest aimed at people who use Claude/Gemini/ChatGPT daily — NOT researchers, NOT ML engineers.
+const PAPER_SCREEN_PROMPT = `You are a strict filter for an AI digest. The audience is software developers who build products with AI.
 
-PASS only if the paper is about:
-- Prompting techniques usable right now (chain-of-thought, few-shot, system prompt design)
-- Practical workflows for AI-assisted coding or writing
-- Security issues directly affecting Claude/Gemini users (prompt injection, jailbreaks)
-- Findings that change HOW someone should prompt or use AI tools
-- Agent/tool-use patterns a regular user can apply without infrastructure
+PASS ONLY if the paper directly enables a developer to improve their prompting, AI workflows, or agent design TODAY. The bar is high.
+
+PASS only if ALL of these are true:
+- The technique/finding is immediately applicable without model training or infra setup
+- A developer can change their prompting or tool usage based on this paper
+- The insight is non-obvious and not already common knowledge
+
+PASS examples:
+- Novel prompting technique with clear before/after results
+- Security vulnerability a developer must defend against (prompt injection, jailbreak)
+- Agent design pattern a developer can implement this week
+- Finding that changes how developers should structure AI workflows
 
 REJECT everything else, including:
-- Fine-tuning, RLHF, model training
-- RAG or vector database infrastructure
-- Inference optimization, serving, scaling
-- New model architecture or theory
-- Benchmarks that don't give actionable advice
-- Domain-specific applications (medical, legal, robotics, finance)
-- Multi-agent orchestration frameworks
+- Fine-tuning, RLHF, model training, model architecture
+- RAG infrastructure, vector databases, embedding optimization
+- Inference optimization, serving, scaling, hardware
+- Benchmarks and evaluations without actionable takeaways
+- Domain-specific applications (medical, legal, robotics, finance, education)
+- Theoretical analysis, mathematical proofs, formal verification
+- Datasets, data collection, annotation methodology
+- Multi-modal research (vision, audio, video) unless directly about prompting
+- Any paper where the main contribution requires compute > a single API call
 
-If PASS, also rate score 1-10 (10 = a regular user can apply this tomorrow, 1 = barely passes).
+When in doubt, REJECT. Only 1 in 10 papers should pass.
+
+Rate score 1-10 only if PASS (10 = apply tomorrow, 7 = apply this week, below 7 = borderline).
 
 Title: {title}
 Abstract: {abstract}
@@ -50,9 +60,11 @@ REJECT if the post is:
 
 When in doubt, REJECT. Quality over quantity.
 
+Rate score 1-10 if PASS (10 = apply tomorrow, 6 = interesting but less urgent).
+
 Title: {title}
 
-Answer in JSON only: {"pass": true/false, "reason": "one line explanation"}`;
+Answer in JSON only: {"pass": true/false, "score": 1-10, "reason": "one line explanation"}`;
 
 const REDDIT_SCREEN_PROMPT = `You are a filter for an AI digest aimed at people who use Claude/Gemini/ChatGPT daily — general users, not engineers.
 
@@ -71,9 +83,11 @@ REJECT if the post is:
 - Low-effort question that can be answered by reading the docs
 - Duplicate or repost
 
+Rate score 1-10 if PASS (10 = apply tomorrow, 6 = useful but less urgent).
+
 Title: {title}
 
-Answer in JSON only: {"pass": true/false, "reason": "one line explanation"}`;
+Answer in JSON only: {"pass": true/false, "score": 1-10, "reason": "one line explanation"}`;
 
 export async function screenPaper(title: string, abstract: string, source: 'paper' | 'hn' | 'reddit' = 'paper'): Promise<{ pass: boolean; score: number; reason: string }> {
   const template = source === 'reddit' ? REDDIT_SCREEN_PROMPT : source === 'hn' ? HN_SCREEN_PROMPT : PAPER_SCREEN_PROMPT;

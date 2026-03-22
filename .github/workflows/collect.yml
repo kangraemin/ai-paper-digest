@@ -16,29 +16,15 @@ jobs:
           cache: 'npm'
       - run: npm ci
 
-      - name: Collect papers from arXiv
-        run: npx tsx scripts/collect.ts
+      - name: Collect papers (arXiv + HuggingFace)
+        run: npx tsx scripts/collect-papers.ts
         env:
           TURSO_DATABASE_URL: ${{ secrets.TURSO_DATABASE_URL }}
           TURSO_AUTH_TOKEN: ${{ secrets.TURSO_AUTH_TOKEN }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
 
-      - name: Collect AI stories from Hacker News
-        run: npx tsx scripts/collect-hn.ts
-        env:
-          TURSO_DATABASE_URL: ${{ secrets.TURSO_DATABASE_URL }}
-          TURSO_AUTH_TOKEN: ${{ secrets.TURSO_AUTH_TOKEN }}
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-
-      - name: Collect AI posts from Reddit
-        run: npx tsx scripts/collect-reddit.ts
-        env:
-          TURSO_DATABASE_URL: ${{ secrets.TURSO_DATABASE_URL }}
-          TURSO_AUTH_TOKEN: ${{ secrets.TURSO_AUTH_TOKEN }}
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-
-      - name: Collect trending papers from Papers With Code
-        run: npx tsx scripts/collect-pwc.ts
+      - name: Collect community (HN + Reddit)
+        run: npx tsx scripts/collect-community.ts
         env:
           TURSO_DATABASE_URL: ${{ secrets.TURSO_DATABASE_URL }}
           TURSO_AUTH_TOKEN: ${{ secrets.TURSO_AUTH_TOKEN }}
