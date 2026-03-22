@@ -1,9 +1,9 @@
 import { db } from '../src/lib/db';
-import { papers } from '../src/lib/db/schema';
+import { papers, screenedItems } from '../src/lib/db/schema';
 import { fetchHNTopAI } from '../src/lib/hacker-news/client';
 import { fetchRedditAI } from '../src/lib/reddit/client';
 import { screenBatch } from '../src/lib/claude/screener';
-import { eq } from 'drizzle-orm';
+import { eq, inArray, sql } from 'drizzle-orm';
 
 const MIN_SCORE = 6;
 const MAX_POSTS = 10;
@@ -13,9 +13,12 @@ type ScoredReddit = { source: 'reddit'; post: Awaited<ReturnType<typeof fetchRed
 type Scored = ScoredHN | ScoredReddit;
 
 async function main() {
+  // 15일 지난 스크리닝 캐시 정리
+  await db.delete(screenedItems).where(sql`screened_at < datetime('now', '-15 days')`);
+
   // === Hacker News ===
   console.log('📰 Fetching AI stories from Hacker News...');
-  const stories = await fetchHNTopAI(30);
+  const stories = await fetchHNTopAI(100);
   console.log(`HN: ${stories.length}개 fetch`);
 
   const newStories = [];
@@ -39,12 +42,44 @@ async function main() {
   }
   console.log(`[중복제거] Reddit ${posts.length}개 중 ${newPosts.length}개 신규`);
 
+  // === 스크리닝 캐시 체크 ===
+  const allIds = [
+    ...newStories.map(s => `hn_${s.id}`),
+    ...newPosts.map(p => `reddit_${p.subreddit}_${p.id}`),
+  ];
+  const cachedScreenings = allIds.length > 0
+    ? await db.select().from(screenedItems).where(inArray(screenedItems.id, allIds))
+    : [];
+  const cachedIds = new Set(cachedScreenings.map(r => r.id));
+
+  const toScreenHN = newStories.filter(s => !cachedIds.has(`hn_${s.id}`));
+  const toScreenReddit = newPosts.filter(p => !cachedIds.has(`reddit_${p.subreddit}_${p.id}`));
+  console.log(`[스크리닝캐시] HN ${newStories.length}개 중 ${toScreenHN.length}개 신규 스크리닝`);
+  console.log(`[스크리닝캐시] Reddit ${newPosts.length}개 중 ${toScreenReddit.length}개 신규 스크리닝`);
+
   // === 스크리닝 ===
   console.log('🔍 Screening community posts...');
   const [hnResults, redditResults] = await Promise.all([
-    screenBatch(newStories.map(s => ({ id: `hn_${s.id}`, title: s.title, abstract: s.title })), 3, 'hn'),
-    screenBatch(newPosts.map(p => ({ id: `reddit_${p.subreddit}_${p.id}`, title: p.title, abstract: p.selftext || p.title })), 3, 'reddit'),
+    screenBatch(toScreenHN.map(s => ({ id: `hn_${s.id}`, title: s.title, abstract: s.title })), 3, 'hn'),
+    screenBatch(toScreenReddit.map(p => ({ id: `reddit_${p.subreddit}_${p.id}`, title: p.title, abstract: p.selftext || p.title })), 3, 'reddit'),
   ]);
+
+  // 스크리닝 결과 캐시 저장
+  const now = new Date().toISOString();
+  for (const [id, result] of hnResults) {
+    await db.insert(screenedItems).values({ id, pass: result.pass, score: result.score, screenedAt: now }).onConflictDoNothing();
+  }
+  for (const [id, result] of redditResults) {
+    await db.insert(screenedItems).values({ id, pass: result.pass, score: result.score, screenedAt: now }).onConflictDoNothing();
+  }
+
+  // 캐시된 결과도 합산
+  for (const cached of cachedScreenings) {
+    if (cached.pass) {
+      hnResults.set(cached.id, { pass: true, score: cached.score, reason: 'cached' });
+      redditResults.set(cached.id, { pass: true, score: cached.score, reason: 'cached' });
+    }
+  }
 
   // === score ≥ MIN_SCORE 필터 + 합산 정렬 ===
   const candidates: Scored[] = [

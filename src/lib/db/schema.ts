@@ -61,6 +61,13 @@ export const subscribers = sqliteTable('subscribers', {
   unsubscribeToken: text('unsubscribe_token').unique(),
 });
 
+export const screenedItems = sqliteTable('screened_items', {
+  id: text('id').primaryKey(),
+  pass: integer('pass', { mode: 'boolean' }).notNull(),
+  score: integer('score').notNull().default(0),
+  screenedAt: text('screened_at').notNull(),
+});
+
 export const trendSnapshots = sqliteTable('trend_snapshots', {
   id: text('id').primaryKey(),
   weekStart: text('week_start').notNull(),

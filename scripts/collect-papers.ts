@@ -1,9 +1,9 @@
 import { db } from '../src/lib/db';
-import { papers } from '../src/lib/db/schema';
+import { papers, screenedItems } from '../src/lib/db/schema';
 import { fetchRecentPapers } from '../src/lib/arxiv/client';
 import { calculateHotScore } from '../src/lib/hot-scorer';
 import { screenBatch } from '../src/lib/claude/screener';
-import { eq } from 'drizzle-orm';
+import { eq, inArray, sql } from 'drizzle-orm';
 
 const HF_API = 'https://huggingface.co/api/papers?limit=40';
 const MIN_SCORE = 7;
@@ -23,6 +23,9 @@ type ScoredHf = { source: 'hugging_face'; paper: HfPaper; score: number };
 type Scored = ScoredArxiv | ScoredHf;
 
 async function main() {
+  // 15일 지난 스크리닝 캐시 정리
+  await db.delete(screenedItems).where(sql`screened_at < datetime('now', '-15 days')`);
+
   // === arXiv ===
   console.log('📄 Fetching papers from arXiv...');
   const arxivFetched = await fetchRecentPapers(100);
@@ -54,12 +57,41 @@ async function main() {
   const dedupedHf = newHf.filter(p => !arxivIds.has(p.id));
   console.log(`[소스간중복제거] HuggingFace ${newHf.length}개 → ${dedupedHf.length}개`);
 
+  // === 스크리닝 캐시 체크 ===
+  const allCandidateIds = [...newArxiv.map(p => p.id), ...dedupedHf.map(p => p.id)];
+  const cachedScreenings = allCandidateIds.length > 0
+    ? await db.select().from(screenedItems).where(inArray(screenedItems.id, allCandidateIds))
+    : [];
+  const cachedIds = new Set(cachedScreenings.map(r => r.id));
+
+  const toScreenArxiv = newArxiv.filter(p => !cachedIds.has(p.id));
+  const toScreenHf = dedupedHf.filter(p => !cachedIds.has(p.id));
+  console.log(`[스크리닝캐시] arXiv ${newArxiv.length}개 중 ${toScreenArxiv.length}개 신규 스크리닝`);
+  console.log(`[스크리닝캐시] HF ${dedupedHf.length}개 중 ${toScreenHf.length}개 신규 스크리닝`);
+
   // === 스크리닝 ===
   console.log('🔍 Screening papers...');
   const [arxivResults, hfResults] = await Promise.all([
-    screenBatch(newArxiv.map(p => ({ id: p.id, title: p.title, abstract: p.abstract }))),
-    screenBatch(dedupedHf.map(p => ({ id: p.id, title: p.title, abstract: p.summary ?? p.title }))),
+    screenBatch(toScreenArxiv.map(p => ({ id: p.id, title: p.title, abstract: p.abstract }))),
+    screenBatch(toScreenHf.map(p => ({ id: p.id, title: p.title, abstract: p.summary ?? p.title }))),
   ]);
+
+  // 스크리닝 결과 캐시 저장
+  const now = new Date().toISOString();
+  for (const [id, result] of arxivResults) {
+    await db.insert(screenedItems).values({ id, pass: result.pass, score: result.score, screenedAt: now }).onConflictDoNothing();
+  }
+  for (const [id, result] of hfResults) {
+    await db.insert(screenedItems).values({ id, pass: result.pass, score: result.score, screenedAt: now }).onConflictDoNothing();
+  }
+
+  // 캐시된 결과도 합산 (pass인 것만)
+  for (const cached of cachedScreenings) {
+    if (cached.pass) {
+      arxivResults.set(cached.id, { pass: true, score: cached.score, reason: 'cached' });
+      hfResults.set(cached.id, { pass: true, score: cached.score, reason: 'cached' });
+    }
+  }
 
   // === score ≥ MIN_SCORE 필터 + 합산 정렬 ===
   const candidates: Scored[] = [
