@@ -59,7 +59,7 @@ async function main() {
       publishedAt: paper.publishedAt,
       arxivUrl: `https://arxiv.org/abs/${id}`,
       pdfUrl: `https://arxiv.org/pdf/${id}`,
-      source: 'papers_with_code',
+      source: 'hugging_face',
       hotScore,
       isHot: hotScore >= 70,
       collectedAt: new Date().toISOString(),

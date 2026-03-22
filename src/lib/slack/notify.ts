@@ -42,7 +42,7 @@ function getSourceLabel(source: string | null | undefined): string {
     case 'reddit': return 'Reddit';
     case 'arxiv': return '논문 (arXiv)';
     case 'semantic_scholar': return '논문 (인기)';
-    case 'papers_with_code': return '논문 (PWC)';
+    case 'hugging_face': return '논문 (HuggingFace)';
     default: return '논문';
   }
 }

@@ -30,7 +30,7 @@ const sourceLabel: Record<string, string> = {
   reddit: 'Reddit',
   arxiv: 'arXiv',
   semantic_scholar: 'S2',
-  papers_with_code: 'PWC',
+  hugging_face: 'HuggingFace',
 };
 
 interface PaperCardProps {
