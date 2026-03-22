@@ -38,6 +38,8 @@ npm run dev       # http://localhost:3000
 | `ANTHROPIC_API_KEY` | ✅ | Claude API 키 |
 | `TURSO_DATABASE_URL` | ✅ | Turso DB URL |
 | `TURSO_AUTH_TOKEN` | ✅ | Turso 인증 토큰 |
+| `SLACK_WEBHOOK_URL` | ❌ | 요약 완료 시 Slack 알림 |
+| `SITE_URL` | ❌ | 배포된 사이트 URL |
 | `RESEND_API_KEY` | ❌ | 뉴스레터 이메일 발송 |
 
 ## Paper Pipeline
@@ -72,7 +74,7 @@ npx tsx scripts/summarize.ts          # 요약 생성
 |------|------|
 | Framework | Next.js 15, React 19, TypeScript 5 |
 | AI | Anthropic SDK — Claude Sonnet / Haiku |
-| Database | SQLite + Drizzle ORM + LibSQL |
+| Database | Turso + Drizzle ORM + LibSQL |
 | Styling | Tailwind CSS v4 + shadcn/ui |
 | Email | Resend |
 
