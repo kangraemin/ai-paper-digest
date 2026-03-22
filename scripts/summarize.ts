@@ -8,7 +8,7 @@ async function main() {
   const unsummarized = await db.select()
     .from(papers)
     .where(isNull(papers.summarizedAt))
-    .limit(200);
+    .limit(5);
 
   console.log(`📝 ${unsummarized.length} papers to summarize`);
   if (unsummarized.length === 0) return;
