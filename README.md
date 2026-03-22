@@ -13,7 +13,7 @@
 
 ## Features
 
-- **자동 수집** — arXiv, Hacker News, Reddit, Semantic Scholar, Papers with Code에서 매일 수집
+- **자동 수집** — arXiv, HuggingFace, Hacker News, Reddit에서 매일 수집 (Claude 스크리닝 캐시로 API 비용 절감)
 - **AI 요약** — Claude가 TL;DR · 핵심 메커니즘 · 실험 결과 · 적용 가이드 · 코드 예시 생성
 - **개발자 관련도** — 논문마다 실무 적용 가능성 0–100% 점수화
 - **카테고리 필터** — Prompting / RAG / Agent / Fine-tuning / Eval / Cost-Speed / Security
@@ -36,23 +36,34 @@ npm run dev       # http://localhost:3000
 | 변수 | 필수 | 설명 |
 |------|:----:|------|
 | `ANTHROPIC_API_KEY` | ✅ | Claude API 키 |
-| `DATABASE_URL` | ✅ | LibSQL 경로 (기본값: `file:./papers.db`) |
+| `TURSO_DATABASE_URL` | ✅ | Turso DB URL |
+| `TURSO_AUTH_TOKEN` | ✅ | Turso 인증 토큰 |
 | `RESEND_API_KEY` | ❌ | 뉴스레터 이메일 발송 |
 
 ## Paper Pipeline
 
+매일 UTC 22:00 (KST 07:00) 자동 실행:
+
 ```
-arXiv / HN / Reddit / Semantic Scholar / Papers with Code
-    └─ 키워드 필터링 (Claude Haiku)
-           └─ 요약 생성 (Claude Sonnet)
-                  └─ SQLite 저장 → UI
+논문 (arXiv 100개 + HuggingFace 40개)
+    └─ DB 중복 제거 + 스크리닝 캐시 체크
+           └─ Claude 스크리닝 (score ≥ 7)
+                  └─ 합산 top 5 저장
+
+커뮤니티 (HN 100개 + Reddit 150개)
+    └─ DB 중복 제거 + 스크리닝 캐시 체크
+           └─ Claude 스크리닝 (score ≥ 6)
+                  └─ 합산 top 10 저장
+
+요약 (Claude Sonnet) → Slack 알림 → Vercel 리디플로이
 ```
 
 수동 실행:
 
 ```bash
-npx tsx scripts/collect.ts    # 논문 수집
-npx tsx scripts/summarize.ts  # 요약 생성
+npx tsx scripts/collect-papers.ts     # 논문 수집 (arXiv + HuggingFace)
+npx tsx scripts/collect-community.ts  # 커뮤니티 수집 (HN + Reddit)
+npx tsx scripts/summarize.ts          # 요약 생성
 ```
 
 ## Tech Stack
