@@ -9,25 +9,31 @@ async function main() {
   const stories = await fetchHNTopAI(30);
   console.log(`Found ${stories.length} AI-related HN stories`);
 
+  // 스크리닝 전 중복 제거
+  const newStories = [];
+  for (const s of stories) {
+    const id = `hn_${s.id}`;
+    const existing = await db.select().from(papers).where(eq(papers.id, id)).limit(1);
+    if (existing.length === 0) newStories.push(s);
+  }
+  console.log(`[중복제거] ${stories.length}개 중 ${newStories.length}개 신규`);
+
   // Claude 스크리닝 (기존 screener 재사용)
   console.log('🔍 Screening stories...');
   const screenResults = await screenBatch(
-    stories.map(s => ({ id: `hn_${s.id}`, title: s.title, abstract: s.title })),
+    newStories.map(s => ({ id: `hn_${s.id}`, title: s.title, abstract: s.title })),
     3,
     'hn'
   );
-  const passed = stories
+  const passed = newStories
     .filter(s => screenResults.get(`hn_${s.id}`)?.pass)
     .sort((a, b) => (screenResults.get(`hn_${b.id}`)?.score ?? 0) - (screenResults.get(`hn_${a.id}`)?.score ?? 0))
     .slice(0, 3);
-  console.log(`[스크리닝] ${stories.length}편 중 ${passed.length}편 통과 (상위 3개)`);
+  console.log(`[스크리닝] ${newStories.length}편 중 ${passed.length}편 통과 (상위 3개)`);
 
   let newCount = 0;
   for (const story of passed) {
     const id = `hn_${story.id}`;
-    const existing = await db.select().from(papers).where(eq(papers.id, id)).limit(1);
-    if (existing.length > 0) continue;
-
     const hotScore = Math.min(Math.floor(story.score / 5), 100);
     await db.insert(papers).values({
       id,
