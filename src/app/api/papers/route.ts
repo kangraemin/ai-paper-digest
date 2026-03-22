@@ -16,7 +16,7 @@ export async function GET(req: NextRequest) {
   conditions.push(isNotNull(papers.summarizedAt));
 
   const communitySources = ['hacker_news', 'reddit'];
-  const paperSources = ['arxiv', 'semantic_scholar', 'hugging_face'];
+  const paperSources = ['arxiv', 'hugging_face'];
   if (source === 'community') {
     conditions.push(inArray(papers.source, communitySources));
   } else if (source === 'papers') {

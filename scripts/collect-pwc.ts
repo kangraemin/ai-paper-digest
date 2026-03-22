@@ -3,7 +3,7 @@ import { papers } from '../src/lib/db/schema';
 import { screenBatch } from '../src/lib/claude/screener';
 import { eq } from 'drizzle-orm';
 
-const HF_API = 'https://huggingface.co/api/papers?limit=10';
+const HF_API = 'https://huggingface.co/api/papers?limit=40';
 
 interface HfPaper {
   id: string;
@@ -43,7 +43,7 @@ async function main() {
 
   const passed = newHfPapers
     .filter(p => screenResults.get(p.id)?.pass)
-    .slice(0, 3);
+    .slice(0, 5);
   console.log(`[스크리닝] ${newHfPapers.length}편 중 ${passed.length}편 통과 (상위 3개)`);
 
   let newCount = 0;

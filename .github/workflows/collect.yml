@@ -23,12 +23,6 @@ jobs:
           TURSO_AUTH_TOKEN: ${{ secrets.TURSO_AUTH_TOKEN }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
 
-      - name: Collect popular papers from Semantic Scholar
-        run: npx tsx scripts/collect-popular.ts
-        env:
-          TURSO_DATABASE_URL: ${{ secrets.TURSO_DATABASE_URL }}
-          TURSO_AUTH_TOKEN: ${{ secrets.TURSO_AUTH_TOKEN }}
-
       - name: Collect AI stories from Hacker News
         run: npx tsx scripts/collect-hn.ts
         env:

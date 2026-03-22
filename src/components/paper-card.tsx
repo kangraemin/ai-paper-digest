@@ -29,7 +29,6 @@ const sourceLabel: Record<string, string> = {
   hacker_news: 'HN',
   reddit: 'Reddit',
   arxiv: 'arXiv',
-  semantic_scholar: 'S2',
   hugging_face: 'HuggingFace',
 };
 

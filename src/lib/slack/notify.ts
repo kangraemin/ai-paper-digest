@@ -41,8 +41,7 @@ function getSourceLabel(source: string | null | undefined): string {
     case 'hacker_news': return 'Hacker News';
     case 'reddit': return 'Reddit';
     case 'arxiv': return '논문 (arXiv)';
-    case 'semantic_scholar': return '논문 (인기)';
-    case 'hugging_face': return '논문 (HuggingFace)';
+case 'hugging_face': return '논문 (HuggingFace)';
     default: return '논문';
   }
 }
