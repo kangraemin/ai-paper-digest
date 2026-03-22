@@ -23,7 +23,7 @@
 ## Quick Start
 
 ```bash
-git clone https://github.com/your-username/ai-paper-digest.git
+git clone https://github.com/kangraemin/ai-paper-digest.git
 cd ai-paper-digest
 npm install
 cp .env.example .env.local
