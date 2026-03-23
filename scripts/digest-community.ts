@@ -1,6 +1,7 @@
 import { db } from '../src/lib/db';
 import { papers } from '../src/lib/db/schema';
 import { eq, inArray, isNull, and } from 'drizzle-orm';
+import { sendSlackNotification } from '../src/lib/slack/notify';
 import { fetchContent } from '../src/lib/content-fetcher';
 import { fetchHNComments } from '../src/lib/hacker-news/client';
 import { COMMUNITY_DIGEST_PROMPT, REDDIT_DIGEST_PROMPT } from '../src/lib/claude/community-prompts';
@@ -73,6 +74,13 @@ export async function digestCommunity(): Promise<number> {
 
       successCount++;
       console.log(`  ✅ 완료`);
+
+      const webhookUrl = process.env.SLACK_WEBHOOK_URL;
+      const siteUrl = process.env.SITE_URL || 'https://ai-paper-delta.vercel.app';
+      if (webhookUrl) {
+        const updatedItem = { ...item, ...result, keyFindings: JSON.stringify(result.keyFindings), howToApply: JSON.stringify(result.howToApply) };
+        await sendSlackNotification(updatedItem, webhookUrl, siteUrl);
+      }
     } catch (err) {
       console.error(`  ❌ 실패: ${item.id}`, (err as Error).message);
     }
