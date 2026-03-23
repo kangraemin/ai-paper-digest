@@ -21,7 +21,8 @@ export async function GET(req: NextRequest) {
 
   const data = await response.json();
   if (!data.ok) {
-    return NextResponse.redirect(new URL('/install?error=oauth_failed', req.url));
+    const errCode = data.error || 'oauth_failed';
+    return NextResponse.redirect(new URL(`/install?error=${encodeURIComponent(errCode)}`, req.url));
   }
 
   const { team, incoming_webhook } = data;
