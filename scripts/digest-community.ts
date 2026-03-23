@@ -33,7 +33,22 @@ export async function digestCommunity(): Promise<number> {
       console.log(`\n📄 ${item.title}`);
 
       // 1. 원문 크롤링
-      const content = await fetchContent(item.arxivUrl);
+      let content = '';
+      if (item.source === 'reddit') {
+        // Reddit JSON API로 본문 가져오기
+        try {
+          const jsonUrl = item.arxivUrl.replace(/\/$/, '') + '.json';
+          const res = await fetch(jsonUrl, { headers: { 'User-Agent': 'AI-Paper-Digest/1.0' } });
+          if (res.ok) {
+            const data = await res.json();
+            const post = data[0]?.data?.children?.[0]?.data;
+            content = post?.selftext || post?.title || '';
+          }
+        } catch {}
+        if (!content) content = await fetchContent(item.arxivUrl);
+      } else {
+        content = await fetchContent(item.arxivUrl);
+      }
       console.log(`  원문: ${content.length}자`);
 
       // 2. 댓글 수집 (HN만)
