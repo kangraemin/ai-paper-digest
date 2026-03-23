@@ -48,19 +48,20 @@ npm run dev                   # http://localhost:3000
 
 매일 KST 07:00 자동 실행:
 
-```
-논문  arXiv 100개 + HuggingFace 40개  →  score ≥ 7  →  top 5
-커뮤  HN 100개 + Reddit 150개         →  score ≥ 6  →  top 10
-                        ↓
-              Claude 한국어 요약 → Slack → Vercel 리디플로이
-```
+| 단계 | 스크립트 | 소스 | 스크리닝 | 결과 |
+|------|----------|------|----------|------|
+| 수집 | `collect-papers.ts` | arXiv 100개 + HuggingFace 40개 | score ≥ 7 | 최대 5개 저장 |
+| 수집 | `collect-community.ts` | HN 100개 + Reddit 150개 | score ≥ 6 | 최대 10개 저장 |
+| 요약 + 슬랙 | `digest-community.ts` | 커뮤니티 (원문 + 댓글 최대 15개) | — | 최대 10개 → Slack |
+| 요약 + 슬랙 | `summarize.ts` | 논문 | — | 최대 5개 → Slack |
 
 수동 실행:
 
 ```bash
 npx tsx scripts/collect-papers.ts     # 논문 수집
 npx tsx scripts/collect-community.ts  # 커뮤니티 수집
-npx tsx scripts/summarize.ts          # 요약 생성
+npx tsx scripts/digest-community.ts   # 커뮤니티 요약 + Slack
+npx tsx scripts/summarize.ts          # 논문 요약 + Slack
 ```
 
 ## Tech Stack
