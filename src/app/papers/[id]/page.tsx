@@ -280,7 +280,7 @@ export default async function PaperDetail({ params }: Props) {
       })()}
 
       {/* Collapsible Abstract */}
-      {paper.source !== 'hacker_news' && paper.abstract && (
+      {!['hacker_news', 'reddit'].includes(paper.source ?? '') && paper.abstract && (
         <section className="mb-10">
           <details className="group">
             <summary className="flex items-center justify-between text-[14px] font-semibold text-muted-foreground hover:text-foreground uppercase tracking-wide cursor-pointer">
