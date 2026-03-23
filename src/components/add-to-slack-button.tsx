@@ -10,20 +10,16 @@ export function AddToSlackButton() {
   const installUrl = `https://slack.com/oauth/v2/authorize?client_id=${clientId}&scope=${SLACK_SCOPE}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}`;
 
   return (
-    <a href={installUrl} title="Add to Slack">
-      <picture>
-        <source
-          media="(prefers-color-scheme: dark)"
-          srcSet="https://platform.slack-edge.com/img/add_to_slack_black.png 1x, https://platform.slack-edge.com/img/add_to_slack_black@2x.png 2x"
-        />
-        <img
-          alt="Add to Slack"
-          height="32"
-          width="111"
-          src="https://platform.slack-edge.com/img/add_to_slack.png"
-          srcSet="https://platform.slack-edge.com/img/add_to_slack.png 1x, https://platform.slack-edge.com/img/add_to_slack@2x.png 2x"
-        />
-      </picture>
+    <a href={installUrl} title="Add to Slack" className="flex items-center">
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        alt="Add to Slack"
+        height="32"
+        width="111"
+        src="https://platform.slack-edge.com/img/add_to_slack.png"
+        srcSet="https://platform.slack-edge.com/img/add_to_slack.png 1x, https://platform.slack-edge.com/img/add_to_slack@2x.png 2x"
+        className="dark:invert"
+      />
     </a>
   );
 }
