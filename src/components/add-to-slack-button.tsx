@@ -11,13 +11,19 @@ export function AddToSlackButton() {
 
   return (
     <a href={installUrl} title="Add to Slack">
-      <img
-        alt="Add to Slack"
-        height="32"
-        width="111"
-        src="https://platform.slack-edge.com/img/add_to_slack.png"
-        srcSet="https://platform.slack-edge.com/img/add_to_slack.png 1x, https://platform.slack-edge.com/img/add_to_slack@2x.png 2x"
-      />
+      <picture>
+        <source
+          media="(prefers-color-scheme: dark)"
+          srcSet="https://platform.slack-edge.com/img/add_to_slack_black.png 1x, https://platform.slack-edge.com/img/add_to_slack_black@2x.png 2x"
+        />
+        <img
+          alt="Add to Slack"
+          height="32"
+          width="111"
+          src="https://platform.slack-edge.com/img/add_to_slack.png"
+          srcSet="https://platform.slack-edge.com/img/add_to_slack.png 1x, https://platform.slack-edge.com/img/add_to_slack@2x.png 2x"
+        />
+      </picture>
     </a>
   );
 }
