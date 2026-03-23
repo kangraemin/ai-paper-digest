@@ -1,3 +1,5 @@
+export const revalidate = 0;
+
 import type { Metadata } from 'next';
 import { db } from '@/lib/db';
 import { papers } from '@/lib/db/schema';
