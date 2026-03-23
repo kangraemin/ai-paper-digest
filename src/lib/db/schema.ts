@@ -1,4 +1,5 @@
 import { sqliteTable, text, integer, index } from 'drizzle-orm/sqlite-core';
+import { sql } from 'drizzle-orm';
 
 export const papers = sqliteTable('papers', {
   id: text('id').primaryKey(),
@@ -74,4 +75,12 @@ export const trendSnapshots = sqliteTable('trend_snapshots', {
   category: text('category').notNull(),
   paperCount: integer('paper_count').notNull(),
   topKeywords: text('top_keywords'), // JSON array
+});
+
+export const slackWorkspaces = sqliteTable('slack_workspaces', {
+  id: integer('id').primaryKey({ autoIncrement: true }),
+  teamId: text('team_id').notNull().unique(),
+  teamName: text('team_name').notNull(),
+  webhookUrl: text('webhook_url').notNull(),
+  createdAt: integer('created_at', { mode: 'timestamp' }).notNull().default(sql`(unixepoch())`),
 });

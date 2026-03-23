@@ -1,5 +1,5 @@
 import { db } from '../src/lib/db';
-import { papers } from '../src/lib/db/schema';
+import { papers, slackWorkspaces } from '../src/lib/db/schema';
 import { summarizePaper } from '../src/lib/claude/client';
 import { sendSlackNotification } from '../src/lib/slack/notify';
 import { eq, isNull } from 'drizzle-orm';
@@ -37,11 +37,15 @@ async function main() {
       done++;
       console.log(`[${done}/${unsummarized.length}] ✅ ${p.title?.slice(0, 60)}`);
 
-      const webhookUrl = process.env.SLACK_WEBHOOK_URL;
       const siteUrl = process.env.SITE_URL || 'https://ai-paper-delta.vercel.app';
-      if (webhookUrl) {
+      const workspaces = await db.select().from(slackWorkspaces);
+      const fallbackUrl = process.env.SLACK_WEBHOOK_URL;
+      const urls = workspaces.length > 0
+        ? workspaces.map((w) => w.webhookUrl)
+        : fallbackUrl ? [fallbackUrl] : [];
+      if (urls.length > 0) {
         const updatedPaper = { ...p, ...result, keyFindings: JSON.stringify(result.keyFindings), howToApply: JSON.stringify(result.howToApply), summarizedAt: new Date().toISOString() };
-        await sendSlackNotification(updatedPaper, webhookUrl, siteUrl);
+        await Promise.all(urls.map((url) => sendSlackNotification(updatedPaper, url, siteUrl)));
       }
     } catch (e) {
       console.error(`❌ ${p.id}:`, e);

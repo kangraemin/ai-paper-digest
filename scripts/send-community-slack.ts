@@ -1,5 +1,5 @@
 import { db } from '../src/lib/db';
-import { papers } from '../src/lib/db/schema';
+import { papers, slackWorkspaces } from '../src/lib/db/schema';
 import { sendSlackNotification } from '../src/lib/slack/notify';
 import { and, inArray, isNotNull, gte } from 'drizzle-orm';
 
@@ -20,12 +20,17 @@ async function main() {
     console.log(`  - ${r.id} | ${r.title?.slice(0, 60)}`);
   }
 
-  const webhookUrl = process.env.SLACK_WEBHOOK_URL!;
   const siteUrl = process.env.SITE_URL || 'https://ai-paper-delta.vercel.app';
+  const workspaces = await db.select().from(slackWorkspaces);
+  const fallbackUrl = process.env.SLACK_WEBHOOK_URL;
+  const urls = workspaces.length > 0
+    ? workspaces.map((w) => w.webhookUrl)
+    : fallbackUrl ? [fallbackUrl] : [];
 
   for (const paper of rows) {
-    const ok = await sendSlackNotification(paper, webhookUrl, siteUrl);
-    console.log(`슬랙 전송 ${ok ? '✅' : '❌'}: ${paper.title?.slice(0, 50)}`);
+    const results = await Promise.all(urls.map((url) => sendSlackNotification(paper, url, siteUrl)));
+    const allOk = results.every(Boolean);
+    console.log(`슬랙 전송 ${allOk ? '✅' : '❌'}: ${paper.title?.slice(0, 50)}`);
   }
 }
 
