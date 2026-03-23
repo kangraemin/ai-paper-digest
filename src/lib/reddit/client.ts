@@ -48,7 +48,8 @@ export async function fetchRedditAI(
       const posts: RedditPost[] = entries.map((entry) => {
         const links: unknown[] = ([] as unknown[]).concat(entry.link ?? []);
         const altLink = links.find((l: unknown) => (l as Record<string, string>)['@_rel'] === 'alternate') as Record<string, string> | undefined;
-        const permalink = altLink?.['@_href'] ?? '';
+        const firstLink = links[0] as Record<string, string> | undefined;
+        const permalink = altLink?.['@_href'] ?? firstLink?.['@_href'] ?? String((entry.link as Record<string, string>)?.['@_href'] ?? entry.link ?? '');
         const id = String(entry.id ?? '').split('_').pop() ?? '';
         const authorName = String((entry.author as Record<string, string>)?.name ?? '').replace('/u/', '');
         const updated = String(entry.updated ?? '');
