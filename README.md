@@ -17,7 +17,7 @@
 
 ## What It Does
 
-- **자동 수집** — arXiv · HuggingFace · Hacker News · Reddit에서 매일 최대 15개 선별
+- **자동 수집** — arXiv · HuggingFace · Hacker News · Reddit에서 매일 최대 15개 선별 (HN · Reddit 댓글 최대 15개 포함)
 - **엄격한 스크리닝** — Claude가 품질 점수화 (논문 score ≥ 7, 커뮤니티 score ≥ 6)
 - **한국어 요약** — TL;DR · 핵심 발견 · 적용 가이드 · 코드 예시까지 자동 생성
 - **스크리닝 캐시** — 이미 평가한 항목 재스크리닝 방지 (15일 TTL)
