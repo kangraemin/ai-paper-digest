@@ -4,6 +4,7 @@ import { eq, inArray, isNull, and } from 'drizzle-orm';
 import { sendSlackNotification } from '../src/lib/slack/notify';
 import { fetchContent } from '../src/lib/content-fetcher';
 import { fetchHNComments } from '../src/lib/hacker-news/client';
+import { fetchRedditComments } from '../src/lib/reddit/client';
 import { COMMUNITY_DIGEST_PROMPT, REDDIT_DIGEST_PROMPT } from '../src/lib/claude/community-prompts';
 import { runClaude } from '../src/lib/claude/runner';
 
@@ -40,6 +41,9 @@ export async function digestCommunity(): Promise<number> {
       if (item.source === 'hacker_news') {
         const hnId = parseInt(item.id.replace('hn_', ''));
         comments = await fetchHNComments(hnId, 15);
+        console.log(`  댓글: ${comments.length}개`);
+      } else if (item.source === 'reddit') {
+        comments = await fetchRedditComments(item.arxivUrl, 15);
         console.log(`  댓글: ${comments.length}개`);
       }
 

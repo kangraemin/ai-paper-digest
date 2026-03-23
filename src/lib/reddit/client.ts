@@ -80,3 +80,23 @@ export async function fetchRedditAI(
 
   return allPosts;
 }
+
+export async function fetchRedditComments(permalink: string, limit = 10): Promise<string[]> {
+  try {
+    const url = `https://www.reddit.com${permalink}.json?limit=${limit}&depth=1`;
+    const res = await fetch(url, { headers: { 'User-Agent': USER_AGENT } });
+    if (!res.ok) return [];
+
+    const data = await res.json();
+    const comments = data[1]?.data?.children ?? [];
+
+    return comments
+      .filter((c: { kind: string; data: { body?: string; stickied?: boolean } }) =>
+        c.kind === 't1' && c.data.body && c.data.body !== '[deleted]' && c.data.body !== '[removed]' && !c.data.stickied
+      )
+      .map((c: { data: { body: string } }) => c.data.body)
+      .slice(0, limit);
+  } catch {
+    return [];
+  }
+}
