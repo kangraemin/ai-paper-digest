@@ -42,5 +42,12 @@ export async function GET(req: NextRequest) {
       set: { botToken: access_token, channelId: incoming_webhook.channel_id, webhookUrl: incoming_webhook.url, lang: langPref },
     });
 
+  // 봇을 채널에 자동 입장
+  await fetch('https://slack.com/api/conversations.join', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${access_token}` },
+    body: JSON.stringify({ channel: incoming_webhook.channel_id }),
+  });
+
   return NextResponse.redirect(new URL('/install?success=true', req.url));
 }
