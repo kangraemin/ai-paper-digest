@@ -50,7 +50,7 @@ next-env.d.ts
 .claude/ai-bouncer/manifest.json
 .claude/**/*.backup-*
 .claude/settings.json
-docs/
+.ai-bouncer-tasks/
 # ai-bouncer installed files
 .claude/agents/dev.md
 .claude/agents/intent.md
