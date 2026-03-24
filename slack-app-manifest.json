@@ -25,6 +25,7 @@
                 "files:read",
                 "users:read",
                 "commands",
+                "incoming-webhook",
                 "links:read",
                 "links:write"
             ]
