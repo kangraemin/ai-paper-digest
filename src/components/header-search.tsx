@@ -2,8 +2,10 @@
 import { useState, useRef, useEffect } from 'react';
 import { Search, X } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import type { Lang } from '@/lib/i18n';
+import { t } from '@/lib/i18n';
 
-export function HeaderSearch() {
+export function HeaderSearch({ lang }: { lang: Lang }) {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
@@ -18,7 +20,7 @@ export function HeaderSearch() {
     setQuery(val);
     if (timerRef.current) clearTimeout(timerRef.current);
     timerRef.current = setTimeout(() => {
-      const url = val.trim() ? `/?q=${encodeURIComponent(val)}` : '/';
+      const url = val.trim() ? `/${lang}?q=${encodeURIComponent(val)}` : `/${lang}`;
       router.replace(url, { scroll: false });
     }, 300);
   };
@@ -27,7 +29,7 @@ export function HeaderSearch() {
     setOpen(false);
     setQuery('');
     if (timerRef.current) clearTimeout(timerRef.current);
-    router.replace('/', { scroll: false });
+    router.replace(`/${lang}`, { scroll: false });
   };
 
   if (open) {
@@ -38,7 +40,7 @@ export function HeaderSearch() {
           type="text"
           value={query}
           onChange={e => handleChange(e.target.value)}
-          placeholder="검색..."
+          placeholder={t('search.placeholder', lang)}
           className="w-40 sm:w-56 bg-card border border-border rounded-sm px-3 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-ring"
         />
         <button

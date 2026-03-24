@@ -22,13 +22,13 @@ async function main() {
 
   const siteUrl = process.env.SITE_URL || 'https://ai-paper-delta.vercel.app';
   const workspaces = await db.select().from(slackWorkspaces);
-  const fallbackUrl = process.env.SLACK_WEBHOOK_URL;
-  const urls = workspaces.length > 0
-    ? workspaces.map((w) => w.webhookUrl)
-    : fallbackUrl ? [fallbackUrl] : [];
 
   for (const paper of rows) {
-    const results = await Promise.all(urls.map((url) => sendSlackNotification(paper, url, siteUrl)));
+    const results = await Promise.all(
+      workspaces
+        .filter((w) => w.botToken && w.channelId)
+        .map((w) => sendSlackNotification(paper, w.botToken, w.channelId, siteUrl, w.lang ?? 'ko'))
+    );
     const allOk = results.every(Boolean);
     console.log(`슬랙 전송 ${allOk ? '✅' : '❌'}: ${paper.title?.slice(0, 50)}`);
   }

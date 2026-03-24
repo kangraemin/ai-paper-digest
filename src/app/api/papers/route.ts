@@ -42,6 +42,7 @@ export async function GET(req: NextRequest) {
       title: papers.title,
       titleKo: papers.titleKo,
       oneLiner: papers.oneLiner,
+      oneLinerEn: papers.oneLinerEn,
       aiCategory: papers.aiCategory,
       devRelevance: papers.devRelevance,
       targetAudience: papers.targetAudience,

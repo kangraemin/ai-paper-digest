@@ -25,13 +25,20 @@ export async function GET(req: NextRequest) {
     return NextResponse.redirect(new URL(`/install?error=${encodeURIComponent(errCode)}`, req.url));
   }
 
-  const { team, incoming_webhook } = data;
+  const { team, access_token, incoming_webhook } = data;
+  const langPref = req.nextUrl.searchParams.get('state') || 'ko';
   await db
     .insert(slackWorkspaces)
-    .values({ teamId: team.id, teamName: team.name, webhookUrl: incoming_webhook.url })
+    .values({
+      teamId: team.id,
+      teamName: team.name,
+      botToken: access_token,
+      channelId: incoming_webhook.channel_id,
+      lang: langPref,
+    })
     .onConflictDoUpdate({
       target: slackWorkspaces.teamId,
-      set: { webhookUrl: incoming_webhook.url },
+      set: { botToken: access_token, channelId: incoming_webhook.channel_id, lang: langPref },
     });
 
   return NextResponse.redirect(new URL('/install?success=true', req.url));
