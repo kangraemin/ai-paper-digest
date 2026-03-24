@@ -1,0 +1,39 @@
+{
+    "display_information": {
+        "name": "paper.digest"
+    },
+    "features": {
+        "bot_user": {
+            "display_name": "paper.digest",
+            "always_online": false
+        }
+    },
+    "oauth_config": {
+        "redirect_urls": [
+            "https://ai-paper-delta.vercel.app/api/slack/callback"
+        ],
+        "scopes": {
+            "bot": [
+                "chat:write",
+                "chat:write.customize",
+                "channels:read",
+                "channels:join",
+                "groups:read",
+                "reactions:write",
+                "reactions:read",
+                "files:write",
+                "files:read",
+                "users:read",
+                "commands",
+                "links:read",
+                "links:write"
+            ]
+        },
+        "pkce_enabled": false
+    },
+    "settings": {
+        "org_deploy_enabled": false,
+        "socket_mode_enabled": false,
+        "token_rotation_enabled": false
+    }
+}

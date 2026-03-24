@@ -3,7 +3,7 @@
 import type { Lang } from '@/lib/i18n';
 
 const REDIRECT_URI = 'https://ai-paper-delta.vercel.app/api/slack/callback';
-const SLACK_SCOPE = 'chat:write,chat:write.customize,channels:read,channels:join,groups:read,reactions:write,reactions:read,files:write,files:read,users:read,im:write,im:read,commands';
+const SLACK_SCOPE = 'chat:write,chat:write.customize,channels:read,channels:join,groups:read,reactions:write,reactions:read,files:write,files:read,users:read,commands,links:read,links:write';
 
 export function AddToSlackButton({ lang }: { lang: Lang }) {
   const clientId = process.env.NEXT_PUBLIC_SLACK_CLIENT_ID;
