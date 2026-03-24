@@ -8,10 +8,13 @@ import type { PaperListItem } from "@/lib/types";
 export const revalidate = 3600;
 
 export default async function Home({
+  params: routeParams,
   searchParams,
 }: {
+  params: Promise<{ lang: string }>;
   searchParams: Promise<{ source?: string; category?: string; q?: string }>;
 }) {
+  const { lang } = await routeParams;
   const params = await searchParams;
   const sourceFilter = params.source || 'all';
   const categoryFilter = params.category || 'all';
@@ -56,6 +59,7 @@ export default async function Home({
           initialPapers={items}
           initialSource={sourceFilter}
           initialCategory={categoryFilter}
+          lang={lang as 'ko' | 'en'}
         />
       </Suspense>
     </div>

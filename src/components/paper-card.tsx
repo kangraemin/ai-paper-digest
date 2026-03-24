@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { computeBadges } from '@/lib/badges';
+import type { Lang } from '@/lib/i18n';
 
 const categoryColorMap: Record<string, string> = {
   prompting: '#3b82f6',
@@ -37,6 +38,7 @@ interface PaperCardProps {
   title: string;
   titleKo: string | null;
   oneLiner: string | null;
+  oneLinerEn: string | null;
   aiCategory: string | null;
   devRelevance: number | null;
   targetAudience: string | null;
@@ -47,16 +49,17 @@ interface PaperCardProps {
   authors: string;
   venue: string | null;
   affiliations: string | null;
+  lang: Lang;
 }
 
-export function PaperCard({ id, title, titleKo, oneLiner, aiCategory, source, authors, venue, affiliations }: PaperCardProps) {
+export function PaperCard({ id, title, titleKo, oneLiner, oneLinerEn, aiCategory, source, authors, venue, affiliations, lang }: PaperCardProps) {
   const catColor = aiCategory ? (categoryColorMap[aiCategory] ?? '#888') : '#888';
   const catName = aiCategory ? (categoryDisplayName[aiCategory] ?? aiCategory) : null;
   const srcLabel = source ? (sourceLabel[source] ?? null) : null;
   const badges = computeBadges({ authors, affiliations, venue });
 
   return (
-    <Link href={`/papers/${id}`} className="group block w-full">
+    <Link href={`/${lang}/papers/${id}`} className="group block w-full">
       <div
         className="bg-card border-y border-r border-border border-l-[3px] rounded-sm hover:bg-accent transition-colors p-4"
         style={{ borderLeftColor: catColor }}
@@ -90,11 +93,11 @@ export function PaperCard({ id, title, titleKo, oneLiner, aiCategory, source, au
               className="text-[16px] font-semibold tracking-[-0.02em] leading-tight mb-1 text-foreground group-hover:[color:var(--cat-color)] transition-colors"
               style={{ '--cat-color': catColor } as React.CSSProperties}
             >
-              {titleKo || title}
+              {lang === 'en' ? (title) : (titleKo || title)}
             </h3>
-            {oneLiner && (
+            {(lang === 'en' ? (oneLinerEn || oneLiner) : oneLiner) && (
               <p className="text-[14px] text-muted-foreground leading-relaxed line-clamp-2">
-                {oneLiner}
+                {lang === 'en' ? (oneLinerEn || oneLiner) : oneLiner}
               </p>
             )}
           </div>

@@ -7,6 +7,8 @@ import { CategoryChips } from './category-chips';
 import { PaperCard } from './paper-card';
 
 import type { PaperListItem } from '@/lib/types';
+import type { Lang } from '@/lib/i18n';
+import { t } from '@/lib/i18n';
 
 declare global {
   interface Window {
@@ -14,17 +16,21 @@ declare global {
   }
 }
 
-function formatDateHeader(dateStr: string): string {
+function formatDateHeader(dateStr: string, lang: Lang): string {
   const date = new Date(dateStr + 'T00:00:00');
   const today = new Date();
   today.setHours(0, 0, 0, 0);
   const yesterday = new Date(today);
   yesterday.setDate(yesterday.getDate() - 1);
 
-  if (date.toDateString() === today.toDateString()) return '오늘';
-  if (date.toDateString() === yesterday.toDateString()) return '어제';
+  if (date.toDateString() === today.toDateString()) return t('date.today', lang);
+  if (date.toDateString() === yesterday.toDateString()) return t('date.yesterday', lang);
 
-  const weekdays = ['일', '월', '화', '수', '목', '금', '토'];
+  const weekdays = t('date.weekdays', lang).split(',');
+  if (lang === 'en') {
+    const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    return `${weekdays[date.getDay()]}, ${months[date.getMonth()]} ${date.getDate()}`;
+  }
   return `${date.getMonth() + 1}월 ${date.getDate()}일 (${weekdays[date.getDay()]})`;
 }
 
@@ -42,9 +48,10 @@ interface PaperFeedProps {
   initialPapers: PaperListItem[];
   initialSource?: string;
   initialCategory?: string;
+  lang?: Lang;
 }
 
-export function PaperFeed({ initialPapers, initialSource = 'all', initialCategory = 'all' }: PaperFeedProps) {
+export function PaperFeed({ initialPapers, initialSource = 'all', initialCategory = 'all', lang = 'ko' }: PaperFeedProps) {
   const [allPapers, setAllPapers] = useState(initialPapers);
   const [source, setSource] = useState(initialSource);
   const [category, setCategory] = useState(initialCategory);
@@ -167,22 +174,22 @@ export function PaperFeed({ initialPapers, initialSource = 'all', initialCategor
             <div className="w-48 h-1 bg-muted rounded-full overflow-hidden">
               <div className="h-full bg-muted-foreground rounded-full animate-[loading-bar_1.2s_ease-in-out_infinite]" />
             </div>
-            <p className="text-sm text-muted-foreground">검색 중...</p>
+            <p className="text-sm text-muted-foreground">{t('feed.searching', lang)}</p>
           </div>
         ) : searchResults.length === 0 ? (
           <div className="py-20 text-center">
             <p className="text-4xl mb-4">🔍</p>
-            <p className="text-muted-foreground">&apos;{searchQuery}&apos;에 대한 검색 결과가 없습니다.</p>
+            <p className="text-muted-foreground">{t('feed.noResults', lang, { q: searchQuery })}</p>
           </div>
         ) : (
           <div className="space-y-3">
-            <p className="text-xs text-muted-foreground mb-4">{searchResults.length}개의 검색 결과</p>
+            <p className="text-xs text-muted-foreground mb-4">{t('feed.searchResults', lang, { n: String(searchResults.length) })}</p>
             {Object.entries(groupByDate(searchResults)).map(([date, datePapers]) => (
               <section key={date}>
                 <div className="sticky top-0 z-10 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 py-2 mb-4">
                   <h2 className="font-mono text-[12px] text-muted-foreground uppercase tracking-wider mb-1 flex items-center gap-2">
                     <span className="w-2 h-2 rounded-full bg-muted-foreground inline-block" />
-                    {formatDateHeader(date)} · {datePapers.length}편
+                    {formatDateHeader(date, lang)} · {t('feed.count', lang, { n: String(datePapers.length) })}
                   </h2>
                 </div>
                 <div className="space-y-3">
@@ -193,6 +200,7 @@ export function PaperFeed({ initialPapers, initialSource = 'all', initialCategor
                       title={paper.title}
                       titleKo={paper.titleKo}
                       oneLiner={paper.oneLiner}
+                      oneLinerEn={paper.oneLinerEn ?? null}
                       aiCategory={paper.aiCategory}
                       devRelevance={paper.devRelevance}
                       targetAudience={paper.targetAudience}
@@ -203,6 +211,7 @@ export function PaperFeed({ initialPapers, initialSource = 'all', initialCategor
                       authors={paper.authors}
                       venue={paper.venue}
                       affiliations={paper.affiliations}
+                      lang={lang}
                     />
                   ))}
                 </div>
@@ -220,9 +229,9 @@ export function PaperFeed({ initialPapers, initialSource = 'all', initialCategor
                       <span className="w-16 h-1 bg-muted rounded-full overflow-hidden inline-block">
                         <span className="block h-full bg-muted-foreground rounded-full animate-[loading-bar_1.2s_ease-in-out_infinite]" />
                       </span>
-                      로딩 중...
+                      {t('feed.loading', lang)}
                     </span>
-                  ) : '더 보기'}
+                  ) : t('feed.loadMore', lang)}
                 </button>
               </div>
             )}
@@ -235,14 +244,14 @@ export function PaperFeed({ initialPapers, initialSource = 'all', initialCategor
           <div className="w-48 h-1 bg-muted rounded-full overflow-hidden">
             <div className="h-full bg-muted-foreground rounded-full animate-[loading-bar_1.2s_ease-in-out_infinite]" />
           </div>
-          <p className="text-sm text-muted-foreground">로딩 중...</p>
+          <p className="text-sm text-muted-foreground">{t('feed.loading', lang)}</p>
         </div>
       ) : allPapers.length === 0 ? (
         <div className="py-20 text-center">
           <p className="text-4xl mb-4">¯\_(ツ)_/¯</p>
-          <p className="text-muted-foreground">오늘은 조용한 날이네요.</p>
+          <p className="text-muted-foreground">{t('feed.emptyDay', lang)}</p>
           <p className="text-sm text-muted-foreground mt-1">
-            {source === 'community' ? 'HN 수집을 실행하거나 내일 다시 확인해 주세요.' : '논문 수집을 실행하거나 내일 다시 확인해 주세요.'}
+            {source === 'community' ? t('feed.emptyCommunity', lang) : t('feed.emptyPapers', lang)}
           </p>
         </div>
       ) : (
@@ -252,7 +261,7 @@ export function PaperFeed({ initialPapers, initialSource = 'all', initialCategor
               <div className="sticky top-0 z-10 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 py-2 mb-4">
                 <h2 className="font-mono text-[12px] text-muted-foreground uppercase tracking-wider mb-1 flex items-center gap-2">
                   <span className="w-2 h-2 rounded-full bg-muted-foreground inline-block" />
-                  {formatDateHeader(date)} · {datePapers.length}편
+                  {formatDateHeader(date, lang)} · {t('feed.count', lang, { n: String(datePapers.length) })}
                 </h2>
               </div>
               <div className="space-y-3">
@@ -263,6 +272,7 @@ export function PaperFeed({ initialPapers, initialSource = 'all', initialCategor
                     title={paper.title}
                     titleKo={paper.titleKo}
                     oneLiner={paper.oneLiner}
+                    oneLinerEn={paper.oneLinerEn ?? null}
                     aiCategory={paper.aiCategory}
                     devRelevance={paper.devRelevance}
                     targetAudience={paper.targetAudience}
@@ -273,6 +283,7 @@ export function PaperFeed({ initialPapers, initialSource = 'all', initialCategor
                     authors={paper.authors}
                     venue={paper.venue}
                     affiliations={paper.affiliations}
+                    lang={lang}
                   />
                 ))}
               </div>
@@ -293,7 +304,7 @@ export function PaperFeed({ initialPapers, initialSource = 'all', initialCategor
                     </span>
                     로딩 중...
                   </span>
-                ) : '더 보기'}
+                ) : t('feed.loadMore', lang)}
               </button>
             </div>
           )}

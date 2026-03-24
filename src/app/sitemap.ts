@@ -2,6 +2,7 @@ import { MetadataRoute } from 'next'
 import { db } from '@/lib/db'
 import { papers } from '@/lib/db/schema'
 import { isNotNull, desc } from 'drizzle-orm'
+import { SUPPORTED_LANGS } from '@/lib/i18n'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const BASE = 'https://ai-paper-delta.vercel.app'
@@ -12,15 +13,24 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     .where(isNotNull(papers.summarizedAt))
     .orderBy(desc(papers.publishedAt))
 
-  const paperUrls: MetadataRoute.Sitemap = rows.map((p) => ({
-    url: `${BASE}/papers/${p.id}`,
-    lastModified: new Date(p.publishedAt),
-    changeFrequency: 'monthly',
-    priority: 0.8,
-  }))
+  const entries: MetadataRoute.Sitemap = []
 
-  return [
-    { url: BASE, lastModified: new Date(), changeFrequency: 'daily', priority: 1 },
-    ...paperUrls,
-  ]
+  for (const lang of SUPPORTED_LANGS) {
+    entries.push({
+      url: `${BASE}/${lang}`,
+      lastModified: new Date(),
+      changeFrequency: 'daily',
+      priority: 1,
+    })
+    for (const p of rows) {
+      entries.push({
+        url: `${BASE}/${lang}/papers/${p.id}`,
+        lastModified: new Date(p.publishedAt),
+        changeFrequency: 'monthly',
+        priority: 0.8,
+      })
+    }
+  }
+
+  return entries
 }

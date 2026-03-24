@@ -7,6 +7,8 @@ import { eq } from 'drizzle-orm';
 import { notFound } from 'next/navigation';
 import { BookmarkButton } from '@/components/bookmark-button';
 import { CopyButton } from '@/components/copy-button';
+import { getLocalizedField } from '@/lib/i18n';
+import type { Lang } from '@/lib/i18n';
 import Link from 'next/link';
 import { Calendar, Users, FileText, Zap, ChevronDown } from 'lucide-react';
 
@@ -46,11 +48,11 @@ const categoryDisplayName: Record<string, string> = {
 };
 
 interface Props {
-  params: Promise<{ id: string }>;
+  params: Promise<{ lang: string; id: string }>;
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { id } = await params;
+  const { id, lang } = await params;
   const result = await db.select({
     title: papers.title,
     titleKo: papers.titleKo,
@@ -60,7 +62,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   if (result.length === 0) return {};
   const paper = result[0];
-  const title = paper.titleKo || paper.title;
+  const title = lang === 'en' ? paper.title : (paper.titleKo || paper.title);
   const description = paper.oneLiner || paper.abstract?.slice(0, 160) || '';
 
   return {
@@ -70,14 +72,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       title,
       description,
       type: 'article',
-      url: `https://ai-paper-delta.vercel.app/papers/${id}`,
+      url: `https://ai-paper-delta.vercel.app/${lang}/papers/${id}`,
       siteName: 'AI Paper Digest',
+      locale: lang === 'en' ? 'en_US' : 'ko_KR',
     },
   };
 }
 
 export default async function PaperDetail({ params }: Props) {
-  const { id } = await params;
+  const { id, lang: langParam } = await params;
+  const lang = langParam as Lang;
   const result = await db.select().from(papers).where(eq(papers.id, id)).limit(1);
 
   if (result.length === 0) notFound();
@@ -85,13 +89,14 @@ export default async function PaperDetail({ params }: Props) {
   const authorList = JSON.parse(paper.authors) as string[];
   const catColor = paper.aiCategory ? (categoryColorMap[paper.aiCategory] ?? '#888') : '#888';
   const catName = paper.aiCategory ? (categoryDisplayName[paper.aiCategory] ?? paper.aiCategory) : null;
-  const displayTitle = paper.titleKo || paper.title;
+  const displayTitle = lang === 'en' ? paper.title : (paper.titleKo || paper.title);
+  const lf = (ko: string | null, en: string | null) => getLocalizedField(ko, en, lang);
 
   return (
     <article className="w-full max-w-[768px] mx-auto px-4 sm:px-6 pt-6 sm:pt-8">
       {/* Breadcrumbs */}
       <nav className="flex items-center gap-2 mb-6 font-mono text-[12px] text-muted-foreground">
-        <Link href="/" className="hover:text-foreground transition-colors">Home</Link>
+        <Link href={`/${lang}`} className="hover:text-foreground transition-colors">Home</Link>
         <span>/</span>
         {catName && (
           <>
@@ -106,8 +111,10 @@ export default async function PaperDetail({ params }: Props) {
       <h1 className="text-foreground text-[24px] md:text-[28px] font-semibold leading-tight tracking-tight mb-4">
         {displayTitle}
       </h1>
-      {paper.titleKo && (
-        <p className="text-[13px] text-muted-foreground mb-4">{paper.title}</p>
+      {lang === 'en' ? (
+        paper.titleKo && <p className="text-[13px] text-muted-foreground mb-4">{paper.titleKo}</p>
+      ) : (
+        paper.titleKo && <p className="text-[13px] text-muted-foreground mb-4">{paper.title}</p>
       )}
 
       {/* Meta Row */}
@@ -139,36 +146,36 @@ export default async function PaperDetail({ params }: Props) {
       </div>
 
       {/* TL;DR Highlight */}
-      {paper.oneLiner && (
+      {lf(paper.oneLiner, paper.oneLinerEn) && (
         <section className="mb-10 bg-highlight-bg border-l-[3px] border-highlight-border rounded-r-sm p-4">
           <div className="flex gap-3 items-start">
             <Zap className="text-amber-500 mt-0.5 shrink-0" size={20} />
             <div>
               <h3 className="font-mono text-[11px] uppercase tracking-wide text-amber-500/80 mb-1">TL;DR Highlight</h3>
-              <p className="text-[15px] text-foreground leading-relaxed font-medium">{paper.oneLiner}</p>
+              <p className="text-[15px] text-foreground leading-relaxed font-medium">{lf(paper.oneLiner, paper.oneLinerEn)}</p>
             </div>
           </div>
         </section>
       )}
 
       {/* Who Should Read */}
-      {paper.targetAudience && (
+      {lf(paper.targetAudience, paper.targetAudienceEn) && (
         <section className="mb-10">
           <h3 className="text-[14px] font-semibold text-foreground uppercase tracking-wide border-b border-border pb-2 mb-4">
             Who Should Read
           </h3>
-          <p className="text-[14px] text-muted-foreground leading-relaxed">{paper.targetAudience}</p>
+          <p className="text-[14px] text-muted-foreground leading-relaxed">{lf(paper.targetAudience, paper.targetAudienceEn)}</p>
         </section>
       )}
 
       {/* Key Points */}
-      {paper.keyFindings && (
+      {lf(paper.keyFindings, paper.keyFindingsEn) && (
         <section className="mb-10">
           <h3 className="text-[14px] font-semibold text-foreground uppercase tracking-wide border-b border-border pb-2 mb-4">
             Core Mechanics
           </h3>
           <ul className="space-y-2">
-            {parseBulletList(paper.keyFindings).map((line, i) => (
+            {parseBulletList(lf(paper.keyFindings, paper.keyFindingsEn)!).map((line, i) => (
               <li key={i} className="text-[14px] text-muted-foreground leading-relaxed pl-4 relative before:content-['•'] before:absolute before:left-0 before:text-muted-foreground">
                 {line}
               </li>
@@ -178,13 +185,13 @@ export default async function PaperDetail({ params }: Props) {
       )}
 
       {/* Evidence */}
-      {paper.evidence && (
+      {lf(paper.evidence, paper.evidenceEn) && (
         <section className="mb-10">
           <h3 className="text-[14px] font-semibold text-foreground uppercase tracking-wide border-b border-border pb-2 mb-4">
             Evidence
           </h3>
           <ul className="space-y-2">
-            {parseBulletList(paper.evidence).map((line, i) => (
+            {parseBulletList(lf(paper.evidence, paper.evidenceEn)!).map((line, i) => (
               <li key={i} className="text-[14px] text-muted-foreground leading-relaxed pl-4 relative before:content-['•'] before:absolute before:left-0 before:text-muted-foreground">
                 {line}
               </li>
@@ -194,13 +201,13 @@ export default async function PaperDetail({ params }: Props) {
       )}
 
       {/* How to Apply */}
-      {paper.howToApply && (
+      {lf(paper.howToApply, paper.howToApplyEn) && (
         <section className="mb-10">
           <h3 className="text-[14px] font-semibold text-foreground uppercase tracking-wide border-b border-border pb-2 mb-4">
             How to Apply
           </h3>
           <ul className="space-y-2">
-            {parseBulletList(paper.howToApply).map((line, i) => (
+            {parseBulletList(lf(paper.howToApply, paper.howToApplyEn)!).map((line, i) => (
               <li key={i} className="text-[14px] text-muted-foreground leading-relaxed pl-4 relative before:content-['•'] before:absolute before:left-0 before:text-muted-foreground">
                 {line}
               </li>
