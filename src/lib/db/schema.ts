@@ -38,6 +38,8 @@ export const papers = sqliteTable('papers', {
   keyFindingsEn: text('key_findings_en'),
   evidenceEn: text('evidence_en'),
   howToApplyEn: text('how_to_apply_en'),
+  codeExampleEn: text('code_example_en'),
+  relatedResourcesEn: text('related_resources_en'),
   glossaryEn: text('glossary_en'),
   tagsEn: text('tags_en'),
   collectedAt: text('collected_at').notNull(),

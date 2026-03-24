@@ -2,6 +2,7 @@
 
 import { useBookmarks } from '@/hooks/use-bookmarks';
 import { useEffect, useState } from 'react';
+import { useParams } from 'next/navigation';
 import { Bookmark, BookmarkMinus, Search } from 'lucide-react';
 import Link from 'next/link';
 
@@ -47,6 +48,8 @@ interface Paper {
 const PAGE_SIZE = 10;
 
 export default function BookmarksPage() {
+  const params = useParams();
+  const lang = (params?.lang as string) === 'en' ? 'en' : 'ko';
   const { bookmarks, toggle } = useBookmarks();
   const [papers, setPapers] = useState<Paper[]>([]);
   const [loading, setLoading] = useState(true);
@@ -105,9 +108,9 @@ export default function BookmarksPage() {
       </div>
 
       {loading ? (
-        <p className="text-muted-foreground py-12 text-center">로딩 중...</p>
+        <p className="text-muted-foreground py-12 text-center">{lang === 'en' ? 'Loading...' : '로딩 중...'}</p>
       ) : papers.length === 0 ? (
-        <p className="py-12 text-center text-muted-foreground">북마크한 항목이 없습니다.</p>
+        <p className="py-12 text-center text-muted-foreground">{lang === 'en' ? 'No bookmarks yet.' : '북마크한 항목이 없습니다.'}</p>
       ) : (
         <>
           {/* Table */}
@@ -131,7 +134,7 @@ export default function BookmarksPage() {
                       <tr key={paper.id} className="group h-10 hover:bg-accent/50 transition-colors">
                         <td className="px-4 py-2 truncate">
                           <Link href={`/papers/${paper.id}`} className="text-[14px] text-foreground font-medium hover:underline">
-                            {paper.titleKo || paper.title}
+                            {lang === 'en' ? paper.title : (paper.titleKo || paper.title)}
                           </Link>
                         </td>
                         <td className="px-4 py-2 truncate">

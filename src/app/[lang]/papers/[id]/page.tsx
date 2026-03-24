@@ -142,7 +142,7 @@ export default async function PaperDetail({ params }: Props) {
             </Link>
           )}
         </span>
-        <BookmarkButton paperId={paper.id} />
+        <BookmarkButton paperId={paper.id} lang={lang} />
       </div>
 
       {/* TL;DR Highlight */}
@@ -217,7 +217,9 @@ export default async function PaperDetail({ params }: Props) {
       )}
 
       {/* Code Example */}
-      {paper.codeExample && (
+      {(paper.codeExample || paper.codeExampleEn) && (() => {
+        const code = lang === 'en' ? (paper.codeExampleEn || paper.codeExample) : paper.codeExample;
+        return code ? (
         <section className="mb-10">
           <h3 className="text-[14px] font-semibold text-foreground uppercase tracking-wide border-b border-border pb-2 mb-4">
             Code Example
@@ -225,19 +227,21 @@ export default async function PaperDetail({ params }: Props) {
           <div className="relative rounded-sm border border-border bg-muted overflow-hidden">
             <div className="flex items-center justify-between px-4 py-2 bg-card border-b border-border">
               <span className="font-mono text-[12px] text-muted-foreground">snippet</span>
-              <CopyButton text={paper.codeExample} />
+              <CopyButton text={code} />
             </div>
             <div className="p-4 overflow-x-auto">
-              <pre className="font-mono text-[13px] leading-relaxed text-foreground/80"><code>{paper.codeExample}</code></pre>
+              <pre className="font-mono text-[13px] leading-relaxed text-foreground/80"><code>{code}</code></pre>
             </div>
           </div>
         </section>
-      )}
+        ) : null;
+      })()}
 
       {/* Terminology */}
-      {paper.glossary && (() => {
+      {(paper.glossary || paper.glossaryEn) && (() => {
         try {
-          const terms = JSON.parse(paper.glossary) as Record<string, string>;
+          const src = lang === 'en' ? (paper.glossaryEn || paper.glossary) : paper.glossary;
+          const terms = JSON.parse(src!) as Record<string, string>;
           if (Object.keys(terms).length === 0) return null;
           return (
             <section className="mb-10">
@@ -260,9 +264,10 @@ export default async function PaperDetail({ params }: Props) {
       })()}
 
       {/* Related Resources */}
-      {paper.relatedResources && (() => {
+      {(paper.relatedResources || paper.relatedResourcesEn) && (() => {
         try {
-          const raw = JSON.parse(paper.relatedResources) as (string | { title?: string; url: string })[];
+          const src = lang === 'en' ? (paper.relatedResourcesEn || paper.relatedResources) : paper.relatedResources;
+          const raw = JSON.parse(src!) as (string | { title?: string; url: string })[];
           const resources = raw.map(r => typeof r === 'string' ? { title: r, url: r } : { title: r.title || r.url, url: r.url });
           if (resources.length === 0) return null;
           return (

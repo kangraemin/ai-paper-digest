@@ -302,7 +302,7 @@ export function PaperFeed({ initialPapers, initialSource = 'all', initialCategor
                     <span className="w-16 h-1 bg-muted rounded-full overflow-hidden inline-block">
                       <span className="block h-full bg-muted-foreground rounded-full animate-[loading-bar_1.2s_ease-in-out_infinite]" />
                     </span>
-                    로딩 중...
+                    {t('feed.loading', lang)}
                   </span>
                 ) : t('feed.loadMore', lang)}
               </button>

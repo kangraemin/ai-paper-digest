@@ -2,12 +2,14 @@
 
 import { Button } from '@/components/ui/button';
 import { useBookmarks } from '@/hooks/use-bookmarks';
+import type { Lang } from '@/lib/i18n';
 
 interface BookmarkButtonProps {
   paperId: string;
+  lang?: Lang;
 }
 
-export function BookmarkButton({ paperId }: BookmarkButtonProps) {
+export function BookmarkButton({ paperId, lang = 'ko' }: BookmarkButtonProps) {
   const { toggle, isBookmarked } = useBookmarks();
   const bookmarked = isBookmarked(paperId);
 
@@ -17,7 +19,9 @@ export function BookmarkButton({ paperId }: BookmarkButtonProps) {
       size="sm"
       onClick={() => toggle(paperId)}
     >
-      {bookmarked ? '★ 북마크 해제' : '☆ 북마크'}
+      {lang === 'en'
+        ? (bookmarked ? '★ Saved' : '☆ Save')
+        : (bookmarked ? '★ 북마크 해제' : '☆ 북마크')}
     </Button>
   );
 }

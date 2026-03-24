@@ -13,7 +13,7 @@ const dict: Record<string, Record<Lang, string>> = {
   'feed.emptyCommunity': { ko: 'HN 수집을 실행하거나 내일 다시 확인해 주세요.', en: 'Run HN collection or check back tomorrow.' },
   'feed.emptyPapers': { ko: '논문 수집을 실행하거나 내일 다시 확인해 주세요.', en: 'Run paper collection or check back tomorrow.' },
   'feed.count': { ko: '{n}편', en: '{n} papers' },
-  'search.placeholder': { ko: '검색...', en: 'Search...' },
+  'search.placeholder': { ko: '제목, 요약, 키워드로 검색...', en: 'Search by title, summary, or keyword...' },
   'install.success.title': { ko: '설치 완료!', en: 'Installation Complete!' },
   'install.success.desc': { ko: '매일 아침 AI 논문 요약이 Slack으로 전송됩니다.', en: 'AI paper summaries will be sent to Slack every morning.' },
   'install.success.link': { ko: '홈으로 돌아가기', en: 'Back to Home' },

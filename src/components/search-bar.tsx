@@ -1,13 +1,16 @@
 'use client';
 import { useRef } from 'react';
 import { X, Search } from 'lucide-react';
+import { t } from '@/lib/i18n';
+import type { Lang } from '@/lib/i18n';
 
 interface SearchBarProps {
   value: string;
   onChange: (v: string) => void;
+  lang?: Lang;
 }
 
-export function SearchBar({ value, onChange }: SearchBarProps) {
+export function SearchBar({ value, onChange, lang = 'ko' }: SearchBarProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   return (
     <div className="relative w-full">
@@ -15,7 +18,7 @@ export function SearchBar({ value, onChange }: SearchBarProps) {
       <input
         ref={inputRef}
         type="text"
-        placeholder="제목, 요약, 키워드로 검색..."
+        placeholder={t('search.placeholder', lang)}
         value={value}
         onChange={e => onChange(e.target.value)}
         className="w-full bg-card border border-border rounded-md pl-8 pr-8 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-border"
