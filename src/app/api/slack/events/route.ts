@@ -16,15 +16,15 @@ function verifySlackSignature(req: NextRequest, body: string): boolean {
 
 export async function POST(req: NextRequest) {
   const body = await req.text();
+  const payload = JSON.parse(body);
+
+  // url_verification은 signature 검증 없이 즉시 응답
+  if (payload.type === 'url_verification') {
+    return NextResponse.json({ challenge: payload.challenge });
+  }
 
   if (!verifySlackSignature(req, body)) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  }
-
-  const payload = JSON.parse(body);
-
-  if (payload.type === 'url_verification') {
-    return NextResponse.json({ challenge: payload.challenge });
   }
 
   if (payload.event?.type === 'app_uninstalled') {
