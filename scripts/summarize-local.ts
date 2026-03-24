@@ -30,10 +30,14 @@ async function update() {
     relatedResources: string[];
     glossary: Record<string, string>; tags: string[];
     aiCategory: string; devRelevance: number;
+    oneLinerEn?: string; targetAudienceEn?: string;
+    keyFindingsEn?: string; evidenceEn?: string;
+    howToApplyEn?: string; glossaryEn?: Record<string, string>;
+    tagsEn?: string[];
   }> = JSON.parse(input);
 
   for (const r of results) {
-    await db.update(papers).set({
+    const setFields: Record<string, unknown> = {
       titleKo: r.titleKo,
       oneLiner: r.oneLiner,
       targetAudience: r.targetAudience,
@@ -47,7 +51,15 @@ async function update() {
       aiCategory: r.aiCategory,
       devRelevance: r.devRelevance,
       summarizedAt: new Date().toISOString(),
-    }).where(eq(papers.id, r.id));
+    };
+    if (r.oneLinerEn) setFields.oneLinerEn = r.oneLinerEn;
+    if (r.targetAudienceEn) setFields.targetAudienceEn = r.targetAudienceEn;
+    if (r.keyFindingsEn) setFields.keyFindingsEn = JSON.stringify(r.keyFindingsEn);
+    if (r.evidenceEn) setFields.evidenceEn = JSON.stringify(r.evidenceEn);
+    if (r.howToApplyEn) setFields.howToApplyEn = JSON.stringify(r.howToApplyEn);
+    if (r.glossaryEn) setFields.glossaryEn = JSON.stringify(r.glossaryEn);
+    if (r.tagsEn) setFields.tagsEn = JSON.stringify(r.tagsEn);
+    await db.update(papers).set(setFields).where(eq(papers.id, r.id));
   }
   console.log(`Updated ${results.length} papers`);
 }

@@ -214,23 +214,7 @@ async function main() {
   if (!s2Only && !redditOnly) await collectHN();
   if (!s2Only && !hnOnly) await collectReddit();
 
-  // 수집 후 자동 요약
-  if (!dryRun) {
-    console.log('\n📝 자동 요약 시작...');
-    const { digestCommunity } = await import('./digest-community');
-    let total = 0;
-    let round = 1;
-    while (true) {
-      console.log(`\n--- 요약 라운드 ${round} ---`);
-      const count = await digestCommunity();
-      total += count;
-      if (count === 0) break;
-      round++;
-    }
-    console.log(`\n📝 자동 요약 완료: 총 ${total}편`);
-  }
-
-  console.log('\n🎉 벌크 수집 + 요약 완료');
+  console.log('\n🎉 벌크 수집 완료 (요약은 별도 실행)');
 }
 
 main().catch(console.error);
