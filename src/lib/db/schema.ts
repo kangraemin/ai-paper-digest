@@ -91,5 +91,6 @@ export const slackWorkspaces = sqliteTable('slack_workspaces', {
   botToken: text('bot_token').notNull(),
   channelId: text('channel_id').notNull(),
   lang: text('lang').default('ko'),
+  webhookUrl: text('webhook_url'),
   createdAt: integer('created_at', { mode: 'timestamp' }).notNull().default(sql`(unixepoch())`),
 });

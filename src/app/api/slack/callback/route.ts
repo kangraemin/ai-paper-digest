@@ -34,11 +34,12 @@ export async function GET(req: NextRequest) {
       teamName: team.name,
       botToken: access_token,
       channelId: incoming_webhook.channel_id,
+      webhookUrl: incoming_webhook.url,
       lang: langPref,
     })
     .onConflictDoUpdate({
       target: slackWorkspaces.teamId,
-      set: { botToken: access_token, channelId: incoming_webhook.channel_id, lang: langPref },
+      set: { botToken: access_token, channelId: incoming_webhook.channel_id, webhookUrl: incoming_webhook.url, lang: langPref },
     });
 
   return NextResponse.redirect(new URL('/install?success=true', req.url));
