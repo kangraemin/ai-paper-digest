@@ -25,13 +25,21 @@ async function main() {
   }
 
   const siteUrl = process.env.SITE_URL || 'https://ai-paper-delta.vercel.app';
+  const REVOKED_ERRORS = ['token_revoked', 'account_inactive', 'not_authed', 'invalid_auth'];
   let allOk = true;
 
   for (const ws of workspaces) {
     if (!ws.botToken || !ws.channelId) continue;
-    const ok = await sendSlackNotification(paper, ws.botToken, ws.channelId, siteUrl, ws.lang ?? 'ko');
-    if (!ok) allOk = false;
-    console.log(`  ${ws.teamName}: ${ok ? 'OK' : 'FAIL'} (${ws.lang ?? 'ko'})`);
+    const result = await sendSlackNotification(paper, ws.botToken, ws.channelId, siteUrl, ws.lang ?? 'ko');
+    if (!result.ok) {
+      allOk = false;
+      if (result.error && REVOKED_ERRORS.includes(result.error)) {
+        console.log(`  ${ws.teamName}: token revoked, removing from DB`);
+        await db.delete(slackWorkspaces).where(eq(slackWorkspaces.id, ws.id));
+        continue;
+      }
+    }
+    console.log(`  ${ws.teamName}: ${result.ok ? 'OK' : `FAIL (${result.error})`} (${ws.lang ?? 'ko'})`);
   }
 
   if (allOk) {

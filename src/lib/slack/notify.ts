@@ -107,7 +107,7 @@ export async function sendSlackNotification(
   channelId: string,
   siteUrl: string,
   lang: string = 'ko'
-): Promise<boolean> {
+): Promise<{ ok: boolean; error?: string }> {
   const payload = buildSlackPayload(paper, siteUrl, lang);
   const res = await fetch('https://slack.com/api/chat.postMessage', {
     method: 'POST',
@@ -118,5 +118,5 @@ export async function sendSlackNotification(
     body: JSON.stringify({ channel: channelId, ...payload }),
   });
   const data = await res.json();
-  return data.ok;
+  return { ok: data.ok as boolean, error: data.error as string | undefined };
 }

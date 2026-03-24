@@ -1,7 +1,9 @@
 import { db } from '../src/lib/db';
 import { papers, slackWorkspaces } from '../src/lib/db/schema';
 import { sendSlackNotification } from '../src/lib/slack/notify';
-import { and, inArray, isNotNull, gte } from 'drizzle-orm';
+import { and, inArray, isNotNull, gte, eq } from 'drizzle-orm';
+
+const REVOKED_ERRORS = ['token_revoked', 'account_inactive', 'not_authed', 'invalid_auth'];
 
 async function main() {
   const today = new Date();
@@ -24,12 +26,17 @@ async function main() {
   const workspaces = await db.select().from(slackWorkspaces);
 
   for (const paper of rows) {
-    const results = await Promise.all(
-      workspaces
-        .filter((w) => w.botToken && w.channelId)
-        .map((w) => sendSlackNotification(paper, w.botToken, w.channelId, siteUrl, w.lang ?? 'ko'))
-    );
-    const allOk = results.every(Boolean);
+    let allOk = true;
+    for (const ws of workspaces.filter((w) => w.botToken && w.channelId)) {
+      const result = await sendSlackNotification(paper, ws.botToken, ws.channelId, siteUrl, ws.lang ?? 'ko');
+      if (!result.ok) {
+        allOk = false;
+        if (result.error && REVOKED_ERRORS.includes(result.error)) {
+          console.log(`  token revoked: ${ws.teamName}, removing from DB`);
+          await db.delete(slackWorkspaces).where(eq(slackWorkspaces.id, ws.id));
+        }
+      }
+    }
     console.log(`슬랙 전송 ${allOk ? '✅' : '❌'}: ${paper.title?.slice(0, 50)}`);
   }
 }
