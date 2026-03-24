@@ -3,6 +3,7 @@ export type PaperListItem = {
   title: string;
   titleKo: string | null;
   oneLiner: string | null;
+  oneLinerEn: string | null;
   aiCategory: string | null;
   devRelevance: number | null;
   targetAudience: string | null;
