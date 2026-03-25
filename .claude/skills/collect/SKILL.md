@@ -274,7 +274,7 @@ const fullText = await fetchPdfText(pdfUrl); // 최대 120,000자
 - `key_findings`: JSON array (한국어, 3-5개)
 - `evidence`: JSON array (한국어, 2-3개)
 - `how_to_apply`: JSON array (한국어, 2-3개)
-- `glossary`: JSON array (한국어, 2-4개)
+- `glossary`: **JSON object** 형식 `{"용어": "설명", ...}` (한국어, 2-4개) — ⚠️ 절대 문자열 배열 사용 금지 (페이지 렌더링 깨짐)
 - `tags`: JSON array - 허용값: ["에이전트","프롬프트엔지니어링","RAG","파인튜닝","코드생성","멀티모달","평가","벤치마크","보안","프롬프트인젝션","도구사용","함수호출","추론최적화","양자화","캐싱","레드팀","프라이버시","임베딩","벡터검색","청킹","MCP","LoRA","RLHF"]
 - `ai_category`: "prompting"|"rag"|"agent"|"fine-tuning"|"eval"|"security"|"cost-speed"
 - `dev_relevance`: 1-5 (개발자 관련도)
