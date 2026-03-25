@@ -4,7 +4,7 @@ import { papers, slackWorkspaces } from '@/lib/db/schema';
 import { sendSlackNotification } from '@/lib/slack/notify';
 import { isNull, isNotNull, and, asc, eq, gte, sql } from 'drizzle-orm';
 
-const DAILY_LIMIT = 15;
+const DAILY_LIMIT = 20;
 const REVOKED_ERRORS = ['token_revoked', 'account_inactive', 'not_authed', 'invalid_auth'];
 
 export async function GET(req: NextRequest) {
