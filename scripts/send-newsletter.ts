@@ -4,6 +4,10 @@ import { eq, and, like, isNull, desc } from 'drizzle-orm';
 import { Resend } from 'resend';
 import { renderDailyDigest } from '../src/lib/email/templates';
 
+if (!process.env.RESEND_API_KEY) {
+  console.error('[send-newsletter] RESEND_API_KEY is not set');
+  process.exit(1);
+}
 const resend = new Resend(process.env.RESEND_API_KEY);
 const SITE_URL = process.env.SITE_URL || 'https://localhost:3000';
 const BATCH_SIZE = 100;
