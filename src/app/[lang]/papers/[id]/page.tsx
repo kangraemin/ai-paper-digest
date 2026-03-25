@@ -111,10 +111,8 @@ export default async function PaperDetail({ params }: Props) {
       <h1 className="text-foreground text-[24px] md:text-[28px] font-semibold leading-tight tracking-tight mb-4">
         {displayTitle}
       </h1>
-      {lang === 'en' ? (
-        paper.titleKo && <p className="text-[13px] text-muted-foreground mb-4">{paper.titleKo}</p>
-      ) : (
-        paper.titleKo && <p className="text-[13px] text-muted-foreground mb-4">{paper.title}</p>
+      {lang !== 'en' && paper.titleKo && (
+        <p className="text-[13px] text-muted-foreground mb-4">{paper.title}</p>
       )}
 
       {/* Meta Row */}
