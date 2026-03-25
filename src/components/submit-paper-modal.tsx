@@ -50,8 +50,10 @@ export function SubmitPaperModal({ open, onClose }: SubmitPaperModalProps) {
         const data = await res.json().catch(() => ({}));
         throw new Error(data.error || 'Failed to submit');
       }
+      trackEvent('submit_paper_success');
       onClose();
     } catch (err) {
+      trackEvent('submit_paper_error', { error: err instanceof Error ? err.message : 'unknown' });
       setError(err instanceof Error ? err.message : 'Failed to submit');
     } finally {
       setSubmitting(false);

@@ -283,9 +283,9 @@ export default async function PaperDetail({ params }: Props) {
               <ul className="space-y-2">
                 {resources.map((r, i) => (
                   <li key={i}>
-                    <a href={r.url} target="_blank" rel="noopener noreferrer" className="text-[13px] text-blue-400 hover:underline break-all">
+                    <TrackedExternalLink href={r.url} paperId={paper.id} source={paper.source} label="related_resource" className="text-[13px] text-blue-400 hover:underline break-all">
                       {r.title}
-                    </a>
+                    </TrackedExternalLink>
                   </li>
                 ))}
               </ul>
