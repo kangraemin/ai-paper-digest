@@ -1,7 +1,31 @@
 ---
 name: collect
-description: ai-paper-digest 프로젝트에서 논문/커뮤니티 콘텐츠 수집 → 스크리닝 → 요약 → 번역 전체 파이프라인을 Claude Code가 직접 수행. "collect", "수집", "오늘 논문", "논문 가져와", "논문 수집해" 등의 요청 시 반드시 이 스킬을 사용할 것. ANTHROPIC_API_KEY 없이 에이전트 기반으로 전체 파이프라인을 처리한다.
+description: "⚠️ DEPRECATED — 이 스킬은 더 이상 사용하지 않는다. 수집/스크리닝/요약/번역은 기존 API 스크립트(collect-papers.ts, collect-community.ts, summarize.ts, digest-community.ts, translate.ts)를 직접 실행한다. 아래 내용은 레거시 참고용으로만 보존."
 ---
+
+> ⚠️ **DEPRECATED**: 이 스킬은 레거시입니다. 아래 원래 API 기반 파이프라인을 사용하세요.
+
+## 원래 API 파이프라인 (현재 사용)
+
+```bash
+# .env에 ANTHROPIC_API_KEY 포함되어야 함
+source .env
+
+# 수집 + 스크리닝
+npx tsx scripts/collect-papers.ts
+npx tsx scripts/collect-community.ts
+
+# 요약
+npx tsx scripts/summarize.ts
+npx tsx scripts/digest-community.ts
+
+# 번역
+npx tsx scripts/translate.ts
+```
+
+---
+
+## 레거시 내용 (참고용)
 
 # collect 파이프라인
 
