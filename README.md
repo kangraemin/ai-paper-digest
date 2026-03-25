@@ -35,12 +35,15 @@ The bar is high: roughly **1 in 10 papers makes it through**.
 A GitHub Actions pipeline runs automatically every day at 07:00 KST:
 
 ```mermaid
-flowchart LR
-    A[arXiv\nHuggingFace\nHN / Reddit] -->|collect| B[Haiku\nScreening]
-    B -->|max 2 papers\nmax 10 community| C[Sonnet\nSummarize]
-    C --> D[Sonnet\nTranslate]
-    D -->|Vercel deploy| E[Web]
-    E -->|cron-job.org\nevery 5min| F[Slack\nDrip]
+flowchart TB
+    subgraph pipeline[" "]
+        direction LR
+        A[arXiv / HF / HN / Reddit] -->|collect| B[Haiku\nScreening]
+        B -->|max 2 papers · max 10 community| C[Sonnet\nSummarize]
+        C --> D[Sonnet\nTranslate]
+        D -->|Vercel deploy| E[Web]
+    end
+    E --> F[Slack Drip\ncron-job.org · every 5min]
 ```
 
 
