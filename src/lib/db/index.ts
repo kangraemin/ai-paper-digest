@@ -8,9 +8,12 @@ let _db: DB | null = null;
 
 function getDb(): DB {
   if (!_db) {
+    if (!process.env.TURSO_DATABASE_URL || !process.env.TURSO_AUTH_TOKEN) {
+      throw new Error('TURSO_DATABASE_URL and TURSO_AUTH_TOKEN must be set');
+    }
     const client = createClient({
-      url: process.env.TURSO_DATABASE_URL!,
-      authToken: process.env.TURSO_AUTH_TOKEN!,
+      url: process.env.TURSO_DATABASE_URL,
+      authToken: process.env.TURSO_AUTH_TOKEN,
     });
     _db = drizzle(client, { schema });
   }
