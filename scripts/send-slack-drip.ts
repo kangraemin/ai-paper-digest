@@ -1,9 +1,23 @@
 import { db } from '../src/lib/db';
 import { papers, slackWorkspaces } from '../src/lib/db/schema';
 import { sendSlackNotification } from '../src/lib/slack/notify';
-import { isNull, isNotNull, and, asc, eq } from 'drizzle-orm';
+import { isNull, isNotNull, and, asc, eq, gte } from 'drizzle-orm';
+
+const DAILY_LIMIT = 15;
 
 async function main() {
+  // 오늘 이미 발송한 수 확인
+  const todayStart = new Date();
+  todayStart.setUTCHours(0, 0, 0, 0);
+  const [{ count }] = await db.select({ count: db.$count(papers) })
+    .from(papers)
+    .where(gte(papers.slackNotifiedAt, todayStart.toISOString()));
+
+  if (Number(count) >= DAILY_LIMIT) {
+    console.log(`Daily limit reached (${count}/${DAILY_LIMIT})`);
+    return;
+  }
+
   // 미발송 논문 1개 (가장 오래된 것 우선)
   const [paper] = await db.select()
     .from(papers)
