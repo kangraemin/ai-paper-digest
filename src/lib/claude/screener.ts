@@ -90,6 +90,9 @@ Title: {title}
 Answer in JSON only: {"pass": true/false, "score": 1-10, "reason": "one line explanation"}`;
 
 export async function screenPaper(title: string, abstract: string, source: 'paper' | 'hn' | 'reddit' = 'paper'): Promise<{ pass: boolean; score: number; reason: string }> {
+  if (!process.env.ANTHROPIC_API_KEY) {
+    return { pass: true, score: 5, reason: 'Screening skipped - no API key (manual review required)' };
+  }
   const template = source === 'reddit' ? REDDIT_SCREEN_PROMPT : source === 'hn' ? HN_SCREEN_PROMPT : PAPER_SCREEN_PROMPT;
   const prompt = template.replace('{title}', title).replace('{abstract}', abstract);
   let text = await runClaude(prompt, { model: 'haiku', timeout: 60000 });
