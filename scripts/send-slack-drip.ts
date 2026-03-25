@@ -1,7 +1,7 @@
 import { db } from '../src/lib/db';
 import { papers, slackWorkspaces } from '../src/lib/db/schema';
 import { sendSlackNotification } from '../src/lib/slack/notify';
-import { isNull, isNotNull, and, asc, eq, gte } from 'drizzle-orm';
+import { isNull, isNotNull, and, asc, eq, gte, sql } from 'drizzle-orm';
 
 const DAILY_LIMIT = 15;
 
@@ -9,7 +9,7 @@ async function main() {
   // 오늘 이미 발송한 수 확인
   const todayStart = new Date();
   todayStart.setUTCHours(0, 0, 0, 0);
-  const [{ count }] = await db.select({ count: db.$count(papers) })
+  const [{ count }] = await db.select({ count: sql<number>`count(*)` })
     .from(papers)
     .where(gte(papers.slackNotifiedAt, todayStart.toISOString()));
 
