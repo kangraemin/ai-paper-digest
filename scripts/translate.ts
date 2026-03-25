@@ -8,7 +8,7 @@ const TRANSLATE_PROMPT = `You are a technical translator specializing in AI/ML c
 Rules:
 - Keep technical terms, model names (GPT-4, Llama, etc.), numbers, and code syntax in English
 - For array fields: translate each string item naturally
-- For glossaryEn: translate values only, keep keys as-is (they're already English terms)
+- For glossaryEn: MUST return a plain JSON object {"term": "description", ...}. Do NOT return an array. Translate values only, keep keys as-is.
 - For tagsEn: translate Korean tags to English (e.g., "프롬프트엔지니어링"→"Prompt Engineering", "RAG"→"RAG", "에이전트"→"Agent", "파인튜닝"→"Fine-tuning", "추론최적화"→"Inference Optimization", "양자화"→"Quantization", "캐싱"→"Caching", "평가"→"Evaluation", "벤치마크"→"Benchmark", "보안"→"Security", "프롬프트인젝션"→"Prompt Injection", "코드생성"→"Code Generation", "멀티모달"→"Multimodal", "임베딩"→"Embedding", "벡터검색"→"Vector Search", "청킹"→"Chunking", "함수호출"→"Function Calling", "도구사용"→"Tool Use", "MCP"→"MCP", "LoRA"→"LoRA", "RLHF"→"RLHF", "레드팀"→"Red Teaming", "프라이버시"→"Privacy")
 - For codeExampleEn: translate Korean comments only, keep code syntax unchanged. If empty string, return empty string.
 - For relatedResourcesEn: if array of URL strings, return as-is. If objects with title field, translate only the title.
