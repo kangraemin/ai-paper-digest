@@ -27,6 +27,7 @@ RESULT=$(NODE_PATH="$NODE_PATH" npx --prefix "$REPO_ROOT" tsx -e "
   const r = await client.execute(
     \`SELECT id, source, title, glossary, glossary_en,
             one_liner_en, key_findings_en, target_audience_en, tags_en,
+            evidence_en, how_to_apply_en,
             one_liner, key_findings
      FROM papers
      WHERE summarized_at >= date('now')
@@ -72,6 +73,8 @@ RESULT=$(NODE_PATH="$NODE_PATH" npx --prefix "$REPO_ROOT" tsx -e "
     if (row.glossary && !row.glossary_en) missing.push('glossary_en');
     if (!row.target_audience_en) missing.push('target_audience_en');
     if (!row.tags_en) missing.push('tags_en');
+    if (!row.evidence_en) missing.push('evidence_en');
+    if (!row.how_to_apply_en) missing.push('how_to_apply_en');
 
     if (missing.length > 0) {
       issues.push('[번역누락] [' + (row.source || '?') + '] ' + id + ' (' + title + '): ' + missing.join(', '));
