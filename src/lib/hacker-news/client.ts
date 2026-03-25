@@ -33,11 +33,14 @@ export async function fetchHNTopAI(limit = 30): Promise<HNItem[]> {
   const ids: number[] = await res.json();
 
   // 상위 200개만 fetch (API 부담 최소화)
-  const items: HNItem[] = await Promise.all(
+  const settled = await Promise.allSettled(
     ids.slice(0, 200).map(id =>
       fetch(`${HN_API}/item/${id}.json`).then(r => r.json())
     )
   );
+  const items: HNItem[] = settled
+    .filter((r): r is PromiseFulfilledResult<HNItem> => r.status === 'fulfilled')
+    .map(r => r.value);
 
   return items
     .filter(item =>
@@ -52,9 +55,12 @@ export async function fetchHNComments(storyId: number, limit = 10): Promise<stri
   const story = await storyRes.json();
   const kids: number[] = story.kids?.slice(0, limit) ?? [];
 
-  const comments = await Promise.all(
+  const settled = await Promise.allSettled(
     kids.map(id => fetch(`${HN_API}/item/${id}.json`).then(r => r.json()))
   );
+  const comments = settled
+    .filter((r): r is PromiseFulfilledResult<any> => r.status === 'fulfilled')
+    .map(r => r.value);
 
   return comments
     .filter((c: { text?: string; dead?: boolean; deleted?: boolean }) => c && c.text && !c.dead && !c.deleted)
