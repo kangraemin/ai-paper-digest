@@ -1,5 +1,7 @@
 'use client';
 
+import { trackEvent } from '@/lib/ga';
+
 const SOURCES = [
   { id: 'all', label: 'All' },
   { id: 'papers', label: 'Papers' },
@@ -17,7 +19,10 @@ export function SourceTabs({ current, onChange }: SourceTabsProps) {
       {SOURCES.map(source => (
         <button
           key={source.id}
-          onClick={() => onChange(source.id)}
+          onClick={() => {
+            trackEvent('source_tab_change', { tab: source.id });
+            onChange(source.id);
+          }}
           className={`flex flex-col items-center justify-center border-b-[2px] py-2 font-medium text-[14px] transition-all ${
             current === source.id
               ? 'border-b-foreground text-foreground'

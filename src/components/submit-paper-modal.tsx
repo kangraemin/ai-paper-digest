@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { FileText, Link as LinkIcon, X, ArrowRight } from 'lucide-react';
 import { createPortal } from 'react-dom';
+import { trackEvent } from '@/lib/ga';
 
 interface SubmitPaperModalProps {
   open: boolean;
@@ -21,6 +22,10 @@ export function SubmitPaperModal({ open, onClose }: SubmitPaperModalProps) {
       setError(null);
       setTimeout(() => inputRef.current?.focus(), 100);
     }
+  }, [open]);
+
+  useEffect(() => {
+    if (open) trackEvent('submit_paper_modal_open');
   }, [open]);
 
   useEffect(() => {

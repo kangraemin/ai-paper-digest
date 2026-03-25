@@ -3,6 +3,7 @@
 import { useTheme } from 'next-themes';
 import { Button } from '@/components/ui/button';
 import { useEffect, useState } from 'react';
+import { trackEvent } from '@/lib/ga';
 
 export function ThemeToggle() {
   const { theme, setTheme } = useTheme();
@@ -15,7 +16,11 @@ export function ThemeToggle() {
     <Button
       variant="ghost"
       size="sm"
-      onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+      onClick={() => {
+        const next = theme === 'dark' ? 'light' : 'dark';
+        trackEvent('theme_toggle', { from: theme, to: next });
+        setTheme(next);
+      }}
     >
       {theme === 'dark' ? '☀️' : '🌙'}
     </Button>

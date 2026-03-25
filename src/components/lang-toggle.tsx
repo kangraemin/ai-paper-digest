@@ -3,6 +3,7 @@
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import type { Lang } from '@/lib/i18n';
+import { trackEvent } from '@/lib/ga';
 
 export function LangToggle({ lang }: { lang: Lang }) {
   const pathname = usePathname();
@@ -14,6 +15,7 @@ export function LangToggle({ lang }: { lang: Lang }) {
       href={newPath}
       onClick={() => {
         document.cookie = `lang=${otherLang};path=/;max-age=31536000`;
+        trackEvent('lang_toggle', { from: lang, to: otherLang });
       }}
       className="flex items-center justify-center rounded-sm h-8 px-2 bg-card hover:bg-accent text-muted-foreground hover:text-foreground border border-border transition-colors font-mono text-[12px]"
     >

@@ -3,6 +3,7 @@
 import { Button } from '@/components/ui/button';
 import { useBookmarks } from '@/hooks/use-bookmarks';
 import type { Lang } from '@/lib/i18n';
+import { trackEvent } from '@/lib/ga';
 
 interface BookmarkButtonProps {
   paperId: string;
@@ -17,7 +18,10 @@ export function BookmarkButton({ paperId, lang = 'ko' }: BookmarkButtonProps) {
     <Button
       variant={bookmarked ? 'default' : 'outline'}
       size="sm"
-      onClick={() => toggle(paperId)}
+      onClick={() => {
+        toggle(paperId);
+        trackEvent(bookmarked ? 'bookmark_remove' : 'bookmark_add', { paper_id: paperId });
+      }}
     >
       {lang === 'en'
         ? (bookmarked ? '★ Saved' : '☆ Save')

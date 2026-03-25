@@ -1,6 +1,7 @@
 'use client';
 
 import type { Lang } from '@/lib/i18n';
+import { trackEvent } from '@/lib/ga';
 
 const REDIRECT_URI = 'https://ai-paper-delta.vercel.app/api/slack/callback';
 const SLACK_SCOPE = 'chat:write,chat:write.customize,channels:read,channels:join,groups:read,reactions:write,reactions:read,files:write,files:read,users:read,commands,incoming-webhook,links:read,links:write';
@@ -12,7 +13,7 @@ export function AddToSlackButton({ lang }: { lang: Lang }) {
   const installUrl = `https://slack.com/oauth/v2/authorize?client_id=${clientId}&scope=${SLACK_SCOPE}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&state=${lang}`;
 
   return (
-    <a href={installUrl} title="Add to Slack" className="flex items-center">
+    <a href={installUrl} onClick={() => trackEvent('slack_add_click', { lang })} title="Add to Slack" className="flex items-center">
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         alt="Add to Slack"

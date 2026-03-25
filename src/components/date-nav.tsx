@@ -2,6 +2,7 @@
 
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
+import { trackEvent } from '@/lib/ga';
 
 export function DateNav() {
   const router = useRouter();
@@ -12,6 +13,7 @@ export function DateNav() {
   const navigate = (offset: number) => {
     const newDate = new Date(date);
     newDate.setDate(newDate.getDate() + offset);
+    trackEvent('date_nav', { direction: offset > 0 ? 'next' : 'prev', date: newDate.toISOString().split('T')[0] });
     const params = new URLSearchParams(searchParams.toString());
     params.set('date', newDate.toISOString().split('T')[0]);
     router.push(`/?${params.toString()}`);

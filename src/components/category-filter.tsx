@@ -2,6 +2,7 @@
 
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
+import { trackEvent } from '@/lib/ga';
 
 const CATEGORIES = [
   { id: 'all', label: '전체' },
@@ -23,6 +24,7 @@ export function CategoryFilter() {
   const current = searchParams.get('category') || 'all';
 
   const handleClick = (id: string) => {
+    trackEvent('category_filter', { category: id });
     const params = new URLSearchParams(searchParams.toString());
     if (id === 'all') {
       params.delete('category');
