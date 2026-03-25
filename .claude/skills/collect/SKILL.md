@@ -171,11 +171,14 @@ export $(grep -E '^TURSO_' .env | xargs) && NODE_PATH=/Users/ram/programming/vib
 커뮤니티 아이템은 `digest-community.ts`를 사용하면 안 됨 (`runClaude()` = API 호출).
 Claude가 직접 각 아이템에 대해:
 1. 원문 fetch: `src/lib/content-fetcher.ts`의 `fetchContent(arxivUrl)` 실행
-2. 댓글 fetch:
+2. **원문이 부실하면 (네비게이션/보일러플레이트만 있거나 500자 미만) WebFetch 도구로 직접 재시도**
+   - `WebFetch(url, "Extract all technical details: what the method does, how it works, key results/numbers")` 호출
+   - Google Research, Anthropic, OpenAI 블로그 등 JS 렌더링 필요한 사이트는 fetchContent 실패 확률 높음
+3. 댓글 fetch:
    - HN: `src/lib/hacker-news/client.ts`의 `fetchHNComments(hnId, 15)` (공개 API, Claude API 아님)
    - Reddit: `src/lib/reddit/client.ts`의 `fetchRedditComments(url, 15)` (공개 API)
-3. 원문 + 댓글 전체를 직접 읽고 요약 작성
-4. DB UPDATE
+4. 원문 + 댓글 전체를 직접 읽고 요약 작성 (원문이 부실하면 댓글에서 기술 내용 최대한 추출)
+5. DB UPDATE
 
 커뮤니티 아이템 조회:
 ```bash
