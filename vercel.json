@@ -1,1 +1,8 @@
-{}
+{
+  "crons": [
+    {
+      "path": "/api/cron/slack-drip",
+      "schedule": "*/5 0-8 * * *"
+    }
+  ]
+}
