@@ -41,6 +41,8 @@ flowchart LR
     C --> D[Sonnet\n번역]
     D -->|배포| E[Vercel\n웹]
     E -->|5분마다\ncron-job.org| F[Slack\n발송]
+    F ~~~ G[ ]:::invis
+    classDef invis display:none
 ```
 
 

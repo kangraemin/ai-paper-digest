@@ -41,8 +41,9 @@ flowchart LR
     C --> D[Sonnet\nTranslate]
     D -->|deploy| E[Vercel\nWeb]
     E -->|every 5min\ncron-job.org| F[Slack\nDrip]
+    F ~~~ G[ ]:::invis
+    classDef invis display:none
 ```
-
 
 | Step | Script | Source | Filter | Output |
 |------|--------|--------|--------|--------|
