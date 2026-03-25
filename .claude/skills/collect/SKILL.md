@@ -109,13 +109,27 @@ export $(grep -E '^TURSO_' .env | xargs) && NODE_PATH=/Users/ram/programming/vib
 
 미요약 논문 ID를 전부 조회 후 **10개 배치로 나눠 Agent 10개 병렬 스폰**.
 각 에이전트는 자신의 배치 ID만 처리 (중복 없음).
-오늘 번역할 때와 동일한 방식: 에이전트가 DB 조회 → 요약 작성 → /tmp/summarize-batch-N.ts 실행 → UPDATE.
+
+**⚠️ 필수: 초록(abstract)만 읽으면 안 됨. 반드시 PDF 전문을 다운로드해서 읽고 요약할 것.**
+
+**각 에이전트의 논문별 처리 순서:**
+1. DB에서 `pdfUrl` 조회
+2. `src/lib/pdf-fetcher.ts`의 `fetchPdfText(pdfUrl)` 로 PDF 전문 다운로드 (최대 120,000자)
+3. 전문 기반으로 요약 작성
+4. DB UPDATE
 
 **병렬 스폰 방법:**
-1. `SELECT id FROM papers WHERE summarized_at IS NULL ORDER BY id` 로 미요약 ID 전체 조회
+1. `SELECT id, title, pdf_url FROM papers WHERE summarized_at IS NULL ORDER BY id` 로 미요약 논문 전체 조회
 2. `Math.ceil(total / 10)` 씩 10개 배치 분할
 3. Agent 10개 동시 스폰 (run_in_background: true)
-4. 각 에이전트 프롬프트에 담당 ID 배열 명시
+4. 각 에이전트 프롬프트에 담당 ID 배열 + pdfUrl 명시
+
+**PDF fetch 예시 (각 에이전트가 /tmp 스크립트로 실행):**
+```typescript
+import { fetchPdfText } from '/Users/ram/programming/vibecoding/ai-paper/src/lib/pdf-fetcher';
+const fullText = await fetchPdfText(pdfUrl); // 최대 120,000자
+// fullText 기반으로 요약 작성
+```
 
 요약 필드:
 - `title_ko`: 한국어 제목
