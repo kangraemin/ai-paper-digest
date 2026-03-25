@@ -7,7 +7,7 @@ import { eq, inArray, sql } from 'drizzle-orm';
 
 const HF_API = 'https://huggingface.co/api/papers?limit=40';
 const MIN_SCORE = 7;
-const MAX_PAPERS = 5;
+const MAX_PAPERS = 3;
 
 interface HfPaper {
   id: string;
