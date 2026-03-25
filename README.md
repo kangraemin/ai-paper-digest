@@ -17,9 +17,12 @@
 
 ## What It Does
 
-- **자동 수집** — arXiv · HuggingFace · Hacker News · Reddit에서 매일 최대 15개 선별 (HN · Reddit 댓글 최대 15개 포함)
-- **엄격한 스크리닝** — Claude가 품질 점수화 (논문 score ≥ 7, 커뮤니티 score ≥ 6)
-- **한국어 요약** — TL;DR · 핵심 발견 · 적용 가이드 · 코드 예시까지 자동 생성
+AI로 제품을 만드는 개발자, 특히 AI 에이전트를 쓰거나 만드는 분들이 읽으면 도움될 만한 것들로 최대한 구성하려 노력합니다.
+
+- **논문** — arXiv · HuggingFace에서 하루 140개 수집, Claude Haiku 스크리닝 후 최대 2개 선별. PDF 전문을 읽고 요약
+- **커뮤니티** — HN · Reddit에서 하루 250개 수집, Claude Haiku 스크리닝 후 최대 10개 선별. 원문 + 댓글까지 함께 읽고 요약
+- **요약 항목** — 한 줄 요약 · 핵심 발견 · 근거와 수치 · 실무 적용 가이드 · 용어 사전 · 한/영 모두 제공
+- **Slack 구독** — 사이트에서 Add to Slack으로 워크스페이스에 추가, 매일 업데이트를 Slack으로 편하게 받아볼 수 있음
 - **스크리닝 캐시** — 이미 평가한 항목 재스크리닝 방지 (15일 TTL)
 
 ## Quick Start
@@ -40,7 +43,9 @@ npm run dev                   # http://localhost:3000
 | `ANTHROPIC_API_KEY` | ✅ | Claude API 키 |
 | `TURSO_DATABASE_URL` | ✅ | Turso DB URL |
 | `TURSO_AUTH_TOKEN` | ✅ | Turso 인증 토큰 |
-| `SLACK_WEBHOOK_URL` | ❌ | 요약 완료 시 Slack 알림 |
+| `SLACK_CLIENT_ID` | ❌ | Slack 앱 OAuth 클라이언트 ID |
+| `SLACK_CLIENT_SECRET` | ❌ | Slack 앱 OAuth 클라이언트 시크릿 |
+| `SLACK_SIGNING_SECRET` | ❌ | Slack 이벤트 서명 검증 |
 | `SITE_URL` | ❌ | 배포된 사이트 URL |
 | `RESEND_API_KEY` | ❌ | 뉴스레터 이메일 발송 |
 
@@ -50,14 +55,14 @@ npm run dev                   # http://localhost:3000
 
 | 단계 | 스크립트 | 소스 | 처리 | 결과 |
 |------|----------|------|------|------|
-| 1. 논문 수집 | `collect-papers.ts` | arXiv 100개 + HuggingFace 40개 | Claude Haiku 스크리닝 (score ≥ 7) | 최대 5개 저장 |
+| 1. 논문 수집 | `collect-papers.ts` | arXiv 100개 + HuggingFace 40개 | Claude Haiku 스크리닝 (score ≥ 7) | 최대 2개 저장 |
 | 2. 커뮤니티 수집 | `collect-community.ts` | HN 100개 + Reddit 150개 | Claude Haiku 스크리닝 (score ≥ 6) | 최대 10개 저장 |
 | 3. 커뮤니티 요약 | `digest-community.ts` | 원문 + 댓글 최대 15개 | Claude Sonnet 요약 | 최대 10개 |
-| 4. 논문 요약 | `summarize.ts` | PDF 전문 | Claude Sonnet 요약 | 최대 5개 |
-| 5. 영어 번역 | `translate.ts` | 한국어 요약 전체 | Claude Sonnet 번역 | 최대 15개 |
+| 4. 논문 요약 | `summarize.ts` | PDF 전문 | Claude Sonnet 요약 | 최대 2개 |
+| 5. 영어 번역 | `translate.ts` | 한국어 요약 전체 | Claude Sonnet 번역 | 최대 12개 |
 | 6. 재배포 | `redeploy.yml` | — | Vercel 프로덕션 배포 | — |
 
-**Slack 알림** — KST 09~18시 drip 방식으로 하루 최대 15개 순차 발송 (`slack-drip.yml`)
+**Slack 알림** — KST 09~18시 drip 방식으로 하루 최대 12개 순차 발송 (`slack-drip.yml`)
 
 수동 실행:
 
