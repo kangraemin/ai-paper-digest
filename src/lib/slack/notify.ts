@@ -73,31 +73,27 @@ export function buildSlackPayload(paper: PaperForSlack, siteUrl: string, lang: s
   const headerText = truncate(`[${category}][${sourceLabel}] ${title}`, 149);
 
   return {
-    attachments: [
+    blocks: [
       {
-        color,
-        blocks: [
-          {
-            type: 'section',
-            text: {
-              type: 'mrkdwn',
-              text: `*<${pageUrl}|${headerText}>*`,
-            },
-          },
-          ...(bodyParts.length > 0
-            ? [
-                {
-                  type: 'section',
-                  text: {
-                    type: 'mrkdwn',
-                    text: bodyParts.join('\n\n'),
-                  },
-                },
-              ]
-            : []),
-        ],
+        type: 'section',
+        text: {
+          type: 'mrkdwn',
+          text: `*<${pageUrl}|${headerText}>*`,
+        },
       },
+      ...(bodyParts.length > 0
+        ? [
+            {
+              type: 'section',
+              text: {
+                type: 'mrkdwn',
+                text: bodyParts.join('\n\n'),
+              },
+            },
+          ]
+        : []),
     ],
+    attachments: [{ color, fallback: headerText }],
   };
 }
 
