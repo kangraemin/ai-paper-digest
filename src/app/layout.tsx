@@ -32,6 +32,11 @@ export const metadata: Metadata = {
   other: {
     'naver-site-verification': '2e4d659c76c39edf9217174dfc71064db3d4809a',
   },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'AI Paper Digest',
+    description: '매일 업데이트되는 AI/LLM 논문 한글 요약',
+  },
 };
 
 export default function RootLayout({
