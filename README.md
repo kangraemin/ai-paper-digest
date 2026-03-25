@@ -35,6 +35,7 @@ The bar is high: roughly **1 in 10 papers makes it through**.
 A GitHub Actions pipeline runs automatically every day at 07:00 KST:
 
 ```mermaid
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#ffffff', 'primaryTextColor': '#000000', 'primaryBorderColor': '#000000', 'lineColor': '#000000', 'edgeLabelBackground': '#ffffff'}}}%%
 flowchart LR
     A[arXiv · HF\nHN · Reddit] -->|collect| B[Haiku\nScreen]
     B -->|2 papers\n10 community| C[Sonnet\nSummarize]

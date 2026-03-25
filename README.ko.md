@@ -35,6 +35,7 @@ AI Paper Digest는 그 노이즈를 걷어냅니다. arXiv, HuggingFace, Hacker 
 GitHub Actions 파이프라인이 매일 KST 07:00에 자동 실행됩니다:
 
 ```mermaid
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#ffffff', 'primaryTextColor': '#000000', 'primaryBorderColor': '#000000', 'lineColor': '#000000', 'edgeLabelBackground': '#ffffff'}}}%%
 flowchart LR
     A[arXiv · HF\nHN · Reddit] -->|수집| B[Haiku\n스크리닝]
     B -->|논문 2개\n커뮤니티 10개| C[Sonnet\n요약]
