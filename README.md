@@ -34,6 +34,16 @@ The bar is high: roughly **1 in 10 papers makes it through**.
 
 A GitHub Actions pipeline runs automatically every day at 07:00 KST:
 
+```mermaid
+flowchart LR
+    A[arXiv\nHuggingFace\nHN / Reddit] -->|collect| B[Haiku\nScreening]
+    B -->|max 2 papers\nmax 10 community| C[Sonnet\nSummarize]
+    C --> D[Sonnet\nTranslate]
+    D -->|Vercel deploy| E[Web]
+    E -->|cron-job.org\nevery 5min| F[Slack\nDrip]
+```
+
+
 | Step | Script | Source | Filter | Output |
 |------|--------|--------|--------|--------|
 | 1. Collect papers | `collect-papers.ts` | arXiv 100 + HuggingFace 40 | Claude Haiku screening (score ≥ 7) | Max 2/day |

@@ -34,6 +34,16 @@ AI Paper Digest는 그 노이즈를 걷어냅니다. arXiv, HuggingFace, Hacker 
 
 GitHub Actions 파이프라인이 매일 KST 07:00에 자동 실행됩니다:
 
+```mermaid
+flowchart LR
+    A[arXiv\nHuggingFace\nHN / Reddit] -->|수집| B[Haiku\n스크리닝]
+    B -->|논문 최대 2개\n커뮤니티 최대 10개| C[Sonnet\n요약]
+    C --> D[Sonnet\n번역]
+    D -->|Vercel 배포| E[웹사이트]
+    E -->|cron-job.org\n5분마다| F[Slack\n발송]
+```
+
+
 | 단계 | 스크립트 | 소스 | 처리 | 결과 |
 |------|----------|------|------|------|
 | 1. 논문 수집 | `collect-papers.ts` | arXiv 100개 + HuggingFace 40개 | Claude Haiku 스크리닝 (score ≥ 7) | 최대 2개 |
