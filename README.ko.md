@@ -35,15 +35,12 @@ AI Paper Digest는 그 노이즈를 걷어냅니다. arXiv, HuggingFace, Hacker 
 GitHub Actions 파이프라인이 매일 KST 07:00에 자동 실행됩니다:
 
 ```mermaid
-flowchart TB
-    subgraph pipeline[" "]
-        direction LR
-        A[arXiv / HF / HN / Reddit] -->|수집| B[Haiku\n스크리닝]
-        B -->|논문 최대 2개 · 커뮤니티 최대 10개| C[Sonnet\n요약]
-        C --> D[Sonnet\n번역]
-        D -->|Vercel 배포| E[웹사이트]
-    end
-    E --> F[Slack 발송\ncron-job.org · 5분마다]
+flowchart LR
+    A[arXiv · HF\nHN · Reddit] -->|수집| B[Haiku\n스크리닝]
+    B -->|논문 2개\n커뮤니티 10개| C[Sonnet\n요약]
+    C --> D[Sonnet\n번역]
+    D -->|배포| E[Vercel\n웹]
+    E -->|5분마다\ncron-job.org| F[Slack\n발송]
 ```
 
 
