@@ -40,7 +40,7 @@ export async function fetchHNTopAI(limit = 30): Promise<HNItem[]> {
   );
   const items: HNItem[] = settled
     .filter((r): r is PromiseFulfilledResult<HNItem> => r.status === 'fulfilled')
-    .map(r => r.value);
+    .map(r => r.value as HNItem);
 
   return items
     .filter(item =>
@@ -58,13 +58,14 @@ export async function fetchHNComments(storyId: number, limit = 10): Promise<stri
   const settled = await Promise.allSettled(
     kids.map(id => fetch(`${HN_API}/item/${id}.json`).then(r => r.json()))
   );
+  type HNComment = { text?: string; dead?: boolean; deleted?: boolean };
   const comments = settled
-    .filter((r): r is PromiseFulfilledResult<any> => r.status === 'fulfilled')
+    .filter((r): r is PromiseFulfilledResult<HNComment> => r.status === 'fulfilled')
     .map(r => r.value);
 
   return comments
-    .filter((c: { text?: string; dead?: boolean; deleted?: boolean }) => c && c.text && !c.dead && !c.deleted)
-    .map((c: { text: string }) => c.text.replace(/<[^>]*>/g, ''));
+    .filter((c): c is HNComment & { text: string } => !!c && !!c.text && !c.dead && !c.deleted)
+    .map(c => c.text.replace(/<[^>]*>/g, ''));
 }
 
 export async function fetchHNStoriesAlgolia(
