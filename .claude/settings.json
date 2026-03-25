@@ -48,6 +48,16 @@
             "command": "/Users/ram/programming/vibecoding/ai-paper/.claude/hooks/completion-gate.sh"
           }
         ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/Users/ram/programming/vibecoding/ai-paper/.claude/hooks/data-quality-gate.sh",
+            "timeout": 30,
+            "statusMessage": "데이터 품질 검사 중..."
+          }
+        ]
       }
     ],
     "SubagentStart": [
