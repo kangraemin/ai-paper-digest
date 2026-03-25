@@ -112,14 +112,19 @@ export async function sendSlackNotification(
   lang: string = 'ko'
 ): Promise<{ ok: boolean; error?: string }> {
   const payload = buildSlackPayload(paper, siteUrl, lang);
-  const res = await fetch('https://slack.com/api/chat.postMessage', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${botToken}`,
-    },
-    body: JSON.stringify({ channel: channelId, ...payload }),
-  });
-  const data = await res.json();
-  return { ok: data.ok as boolean, error: data.error as string | undefined };
+  try {
+    const res = await fetch('https://slack.com/api/chat.postMessage', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${botToken}`,
+      },
+      body: JSON.stringify({ channel: channelId, ...payload }),
+    });
+    const data = await res.json();
+    return { ok: data.ok as boolean, error: data.error as string | undefined };
+  } catch (e) {
+    console.warn('[slack] sendSlackNotification failed:', (e as Error).message);
+    return { ok: false, error: (e as Error).message };
+  }
 }
