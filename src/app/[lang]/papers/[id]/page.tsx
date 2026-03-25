@@ -11,6 +11,8 @@ import { getLocalizedField } from '@/lib/i18n';
 import type { Lang } from '@/lib/i18n';
 import Link from 'next/link';
 import { Calendar, Users, FileText, Zap, ChevronDown } from 'lucide-react';
+import { PaperViewTracker } from '@/components/paper-view-tracker';
+import { TrackedExternalLink } from '@/components/tracked-external-link';
 
 function parseBulletList(value: string): string[] {
   try {
@@ -94,6 +96,7 @@ export default async function PaperDetail({ params }: Props) {
 
   return (
     <article className="w-full max-w-[768px] mx-auto px-4 sm:px-6 pt-6 sm:pt-8">
+      <PaperViewTracker paperId={paper.id} source={paper.source} category={paper.aiCategory} lang={lang} />
       {/* Breadcrumbs */}
       <nav className="flex items-center gap-2 mb-6 font-mono text-[12px] text-muted-foreground">
         <Link href={`/${lang}`} className="hover:text-foreground transition-colors">Home</Link>
@@ -129,15 +132,15 @@ export default async function PaperDetail({ params }: Props) {
         <span className="flex items-center gap-1.5 mr-4">
           <span className="text-muted-foreground">&bull;</span>
           {(paper.source === 'hacker_news' || paper.source === 'reddit') ? (
-            <Link href={paper.arxivUrl} target="_blank" className="flex items-center gap-1.5 text-blue-400 hover:underline">
+            <TrackedExternalLink href={paper.arxivUrl} paperId={paper.id} source={paper.source} label="arxiv" className="flex items-center gap-1.5 text-blue-400 hover:underline">
               <FileText size={16} />
               View Original
-            </Link>
+            </TrackedExternalLink>
           ) : (
-            <Link href={paper.pdfUrl || paper.arxivUrl} target="_blank" className="flex items-center gap-1.5 text-blue-400 hover:underline">
+            <TrackedExternalLink href={paper.pdfUrl || paper.arxivUrl} paperId={paper.id} source={paper.source} label="pdf" className="flex items-center gap-1.5 text-blue-400 hover:underline">
               <FileText size={16} />
               View PDF
-            </Link>
+            </TrackedExternalLink>
           )}
         </span>
         <BookmarkButton paperId={paper.id} lang={lang} />

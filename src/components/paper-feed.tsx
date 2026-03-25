@@ -9,12 +9,7 @@ import { PaperCard } from './paper-card';
 import type { PaperListItem } from '@/lib/types';
 import type { Lang } from '@/lib/i18n';
 import { t } from '@/lib/i18n';
-
-declare global {
-  interface Window {
-    gtag?: (...args: unknown[]) => void;
-  }
-}
+import { trackEvent } from '@/lib/ga';
 
 function formatDateHeader(dateStr: string, lang: Lang): string {
   const date = new Date(dateStr + 'T00:00:00');
@@ -85,11 +80,12 @@ export function PaperFeed({ initialPapers, initialSource = 'all', initialCategor
         setSearchResults(data.papers);
         setSearchPage(1);
         setSearchHasMore(data.papers.length === 20 && data.total > 20);
-        if (typeof window !== 'undefined' && window.gtag) {
-          window.gtag('event', 'search', {
-            search_term: searchQuery,
-            results_count: data.papers.length,
-          });
+        trackEvent('search', {
+          search_term: searchQuery,
+          results_count: data.papers.length,
+        });
+        if (data.papers.length === 0) {
+          trackEvent('search_no_results', { search_term: searchQuery });
         }
       } finally {
         setSearching(false);
@@ -101,6 +97,7 @@ export function PaperFeed({ initialPapers, initialSource = 'all', initialCategor
   const loadMoreSearch = useCallback(async () => {
     setSearchLoadingMore(true);
     const nextPage = searchPage + 1;
+    trackEvent('load_more', { page: nextPage });
     const res = await fetch(`/api/search?q=${encodeURIComponent(searchQuery)}&limit=20&page=${nextPage}`);
     const data = await res.json();
     setSearchResults(prev => [...prev, ...data.papers]);
@@ -136,6 +133,7 @@ export function PaperFeed({ initialPapers, initialSource = 'all', initialCategor
   const loadMore = useCallback(async () => {
     setLoadingMore(true);
     const nextPage = page + 1;
+    trackEvent('load_more', { page: nextPage });
     const params = new URLSearchParams();
     if (source !== 'all') params.set('source', source);
     if (category !== 'all') params.set('category', category);
@@ -193,7 +191,7 @@ export function PaperFeed({ initialPapers, initialSource = 'all', initialCategor
                   </h2>
                 </div>
                 <div className="space-y-3">
-                  {datePapers.map(paper => (
+                  {datePapers.map((paper, index) => (
                     <PaperCard
                       key={paper.id}
                       id={paper.id}
@@ -212,6 +210,7 @@ export function PaperFeed({ initialPapers, initialSource = 'all', initialCategor
                       venue={paper.venue}
                       affiliations={paper.affiliations}
                       lang={lang}
+                      position={index}
                     />
                   ))}
                 </div>
@@ -265,7 +264,7 @@ export function PaperFeed({ initialPapers, initialSource = 'all', initialCategor
                 </h2>
               </div>
               <div className="space-y-3">
-                {datePapers.map(paper => (
+                {datePapers.map((paper, index) => (
                   <PaperCard
                     key={paper.id}
                     id={paper.id}
@@ -284,6 +283,7 @@ export function PaperFeed({ initialPapers, initialSource = 'all', initialCategor
                     venue={paper.venue}
                     affiliations={paper.affiliations}
                     lang={lang}
+                    position={index}
                   />
                 ))}
               </div>

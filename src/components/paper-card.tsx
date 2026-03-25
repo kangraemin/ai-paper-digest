@@ -1,5 +1,8 @@
+'use client';
+
 import Link from 'next/link';
 import { computeBadges } from '@/lib/badges';
+import { trackEvent } from '@/lib/ga';
 import type { Lang } from '@/lib/i18n';
 
 const categoryColorMap: Record<string, string> = {
@@ -50,16 +53,24 @@ interface PaperCardProps {
   venue: string | null;
   affiliations: string | null;
   lang: Lang;
+  position?: number;
 }
 
-export function PaperCard({ id, title, titleKo, oneLiner, oneLinerEn, aiCategory, source, authors, venue, affiliations, lang }: PaperCardProps) {
+export function PaperCard({ id, title, titleKo, oneLiner, oneLinerEn, aiCategory, source, isHot, authors, venue, affiliations, lang, position }: PaperCardProps) {
   const catColor = aiCategory ? (categoryColorMap[aiCategory] ?? '#888') : '#888';
   const catName = aiCategory ? (categoryDisplayName[aiCategory] ?? aiCategory) : null;
   const srcLabel = source ? (sourceLabel[source] ?? null) : null;
   const badges = computeBadges({ authors, affiliations, venue });
 
   return (
-    <Link href={`/${lang}/papers/${id}`} className="group block w-full">
+    <Link
+      href={`/${lang}/papers/${id}`}
+      className="group block w-full"
+      onClick={() => {
+        trackEvent('paper_click', { paper_id: id, source, category: aiCategory, position });
+        if (isHot) trackEvent('hot_paper_view', { paper_id: id, source, category: aiCategory });
+      }}
+    >
       <div
         className="bg-card border-y border-r border-border border-l-[3px] rounded-sm hover:bg-accent transition-colors p-4"
         style={{ borderLeftColor: catColor }}
