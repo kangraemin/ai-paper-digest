@@ -48,20 +48,26 @@ npm run dev                   # http://localhost:3000
 
 매일 KST 07:00 자동 실행:
 
-| 단계 | 스크립트 | 소스 | 스크리닝 | 결과 |
-|------|----------|------|----------|------|
-| 수집 | `collect-papers.ts` | arXiv 100개 + HuggingFace 40개 | score ≥ 7 | 최대 5개 저장 |
-| 수집 | `collect-community.ts` | HN 100개 + Reddit 150개 | score ≥ 6 | 최대 10개 저장 |
-| 요약 + 슬랙 | `digest-community.ts` | 커뮤니티 (원문 + 댓글 최대 15개) | — | 최대 10개 → Slack |
-| 요약 + 슬랙 | `summarize.ts` | 논문 | — | 최대 5개 → Slack |
+| 단계 | 스크립트 | 소스 | 처리 | 결과 |
+|------|----------|------|------|------|
+| 1. 논문 수집 | `collect-papers.ts` | arXiv 100개 + HuggingFace 40개 | Claude Haiku 스크리닝 (score ≥ 7) | 최대 5개 저장 |
+| 2. 커뮤니티 수집 | `collect-community.ts` | HN 100개 + Reddit 150개 | Claude Haiku 스크리닝 (score ≥ 6) | 최대 10개 저장 |
+| 3. 커뮤니티 요약 | `digest-community.ts` | 원문 + 댓글 최대 15개 | Claude Sonnet 요약 | 최대 10개 |
+| 4. 논문 요약 | `summarize.ts` | PDF 전문 | Claude Sonnet 요약 | 최대 5개 |
+| 5. 영어 번역 | `translate.ts` | 한국어 요약 전체 | Claude Sonnet 번역 | 최대 15개 |
+| 6. 재배포 | `redeploy.yml` | — | Vercel 프로덕션 배포 | — |
+
+**Slack 알림** — KST 09~18시 drip 방식으로 하루 최대 15개 순차 발송 (`slack-drip.yml`)
 
 수동 실행:
 
 ```bash
-npx tsx scripts/collect-papers.ts     # 논문 수집
-npx tsx scripts/collect-community.ts  # 커뮤니티 수집
-npx tsx scripts/digest-community.ts   # 커뮤니티 요약 + Slack
-npx tsx scripts/summarize.ts          # 논문 요약 + Slack
+source .env   # ANTHROPIC_API_KEY 포함
+npx tsx scripts/collect-papers.ts     # 논문 수집 + 스크리닝
+npx tsx scripts/collect-community.ts  # 커뮤니티 수집 + 스크리닝
+npx tsx scripts/digest-community.ts   # 커뮤니티 요약
+npx tsx scripts/summarize.ts          # 논문 요약
+npx tsx scripts/translate.ts          # 영어 번역
 ```
 
 ## Tech Stack
