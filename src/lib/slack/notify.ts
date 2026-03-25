@@ -64,34 +64,37 @@ export function buildSlackPayload(paper: PaperForSlack, siteUrl: string, lang: s
   const applies = parseJsonArray(isEn ? (paper.howToApplyEn || paper.howToApply) : paper.howToApply).slice(0, 2);
   const audience = truncate(isEn ? (paper.targetAudienceEn || paper.targetAudience) : paper.targetAudience, 300);
 
-  const bodyParts: string[] = [];
-  if (oneLiner) bodyParts.push(`*TL;DR*\n${oneLiner}`);
-  if (findings.length > 0) bodyParts.push(`*Core Mechanics*\n${findings.map(f => `• ${f}`).join('\n')}`);
-  if (applies.length > 0) bodyParts.push(`*How to apply*\n${applies.map(a => `• ${a}`).join('\n')}`);
-  if (audience) bodyParts.push(`*${isEn ? 'Who Should Read' : '대상 독자'}*\n${audience}`);
-
   const headerText = truncate(`[${category}][${sourceLabel}] ${title}`, 149);
+
+  const sectionBlocks: object[] = [];
+
+  if (oneLiner) {
+    sectionBlocks.push({ type: 'header', text: { type: 'plain_text', text: 'TL;DR' } });
+    sectionBlocks.push({ type: 'section', text: { type: 'mrkdwn', text: oneLiner } });
+  }
+  if (findings.length > 0) {
+    sectionBlocks.push({ type: 'divider' });
+    sectionBlocks.push({ type: 'header', text: { type: 'plain_text', text: 'Core Mechanics' } });
+    sectionBlocks.push({ type: 'section', text: { type: 'mrkdwn', text: findings.map(f => `• ${f}`).join('\n') } });
+  }
+  if (applies.length > 0) {
+    sectionBlocks.push({ type: 'divider' });
+    sectionBlocks.push({ type: 'header', text: { type: 'plain_text', text: 'How to Apply' } });
+    sectionBlocks.push({ type: 'section', text: { type: 'mrkdwn', text: applies.map(a => `• ${a}`).join('\n') } });
+  }
+  if (audience) {
+    sectionBlocks.push({ type: 'divider' });
+    sectionBlocks.push({ type: 'header', text: { type: 'plain_text', text: isEn ? 'Who Should Read' : '대상 독자' } });
+    sectionBlocks.push({ type: 'section', text: { type: 'mrkdwn', text: audience } });
+  }
 
   return {
     blocks: [
       {
         type: 'section',
-        text: {
-          type: 'mrkdwn',
-          text: `*<${pageUrl}|${headerText}>*`,
-        },
+        text: { type: 'mrkdwn', text: `*<${pageUrl}|${headerText}>*` },
       },
-      ...(bodyParts.length > 0
-        ? [
-            {
-              type: 'section',
-              text: {
-                type: 'mrkdwn',
-                text: bodyParts.join('\n\n'),
-              },
-            },
-          ]
-        : []),
+      ...sectionBlocks,
     ],
     attachments: [{ color, fallback: headerText }],
   };
