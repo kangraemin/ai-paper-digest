@@ -214,9 +214,34 @@ const comments = await fetchRedditComments(arxivUrl, 15);
 
 **각 에이전트의 논문별 처리 순서:**
 1. DB에서 `pdfUrl` 조회
-2. `src/lib/pdf-fetcher.ts`의 `fetchPdfText(pdfUrl)` 로 PDF 전문 다운로드 (최대 120,000자)
-3. 전문 기반으로 요약 작성
+2. `/tmp/pdf-{id}.ts` 스크립트로 PDF 전문 다운로드 후 `/tmp/pdf-{id}.txt`에 저장
+3. **전문을 모두 읽고** 요약 작성 (아래 주의사항 필수)
 4. DB UPDATE
+
+⚠️ **PDF 전문 읽기 주의사항 (반드시 준수)**
+- Read 도구는 한 번에 10,000 토큰(약 400줄) 제한이 있음
+- 논문은 보통 800~2000줄 → **반드시 여러 번 Read해서 전체를 읽어야 함**
+- 읽는 방법: `offset=1, limit=400` → `offset=401, limit=400` → `offset=801, limit=400` → 끝날 때까지 반복
+- 먼저 파일의 총 줄 수를 파악한 후, 모든 섹션(서론, 방법론, 실험, 결과, 결론)을 빠짐없이 읽을 것
+- 앞뒤만 읽고 요약하는 것은 **절대 금지**. 중간 실험/결과 섹션을 빠뜨리면 요약 품질이 심각하게 저하됨
+
+PDF 저장 스크립트 예시:
+```typescript
+// /tmp/fetch-pdf-{id}.ts
+const { fetchPdfText } = await import('/Users/ram/programming/vibecoding/ai-paper/src/lib/pdf-fetcher');
+const fs = await import('fs');
+const text = await fetchPdfText(pdfUrl);
+fs.writeFileSync('/tmp/pdf-{id}.txt', text);
+console.log('줄 수:', text.split('\n').length, '/ 글자수:', text.length);
+```
+
+실행: `NODE_PATH=/Users/ram/programming/vibecoding/ai-paper/node_modules npx tsx /tmp/fetch-pdf-{id}.ts`
+
+읽기 반복 예시 (1200줄 논문의 경우):
+- Read(`/tmp/pdf-{id}.txt`, offset=1, limit=400) → 서론/배경
+- Read(`/tmp/pdf-{id}.txt`, offset=401, limit=400) → 방법론
+- Read(`/tmp/pdf-{id}.txt`, offset=801, limit=400) → 결과/결론
+→ 모두 읽은 후에만 요약 작성
 
 **병렬 스폰 방법:**
 1. `SELECT id, title, pdf_url FROM papers WHERE summarized_at IS NULL ORDER BY id` 로 미요약 논문 전체 조회
