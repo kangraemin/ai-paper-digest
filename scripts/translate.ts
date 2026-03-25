@@ -21,7 +21,7 @@ Return ONLY valid JSON with exactly these keys (no more, no less):
 {outputKeys}`;
 
 async function main() {
-  const limit = parseInt(process.env.TRANSLATE_LIMIT ?? '10');
+  const limit = parseInt(process.env.TRANSLATE_LIMIT ?? '15');
   const offset = parseInt(process.env.TRANSLATE_OFFSET ?? '0');
 
   const untranslated = await db.select()
