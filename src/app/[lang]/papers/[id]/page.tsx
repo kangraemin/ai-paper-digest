@@ -241,15 +241,19 @@ export default async function PaperDetail({ params }: Props) {
       {(paper.glossary || paper.glossaryEn) && (() => {
         try {
           const src = lang === 'en' ? (paper.glossaryEn || paper.glossary) : paper.glossary;
-          const terms = JSON.parse(src!) as Record<string, string>;
-          if (Object.keys(terms).length === 0) return null;
+          const parsed = JSON.parse(src!);
+          // 두 가지 포맷 처리: {key: string} 또는 [{term, definition}]
+          const entries: [string, string][] = Array.isArray(parsed)
+            ? parsed.map((item: { term: string; definition: string }) => [item.term, item.definition])
+            : Object.entries(parsed as Record<string, string>);
+          if (entries.length === 0) return null;
           return (
             <section className="mb-10">
               <h3 className="text-[14px] font-semibold text-foreground uppercase tracking-wide border-b border-border pb-2 mb-4">
                 Terminology
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
-                {Object.entries(terms).map(([term, desc]) => (
+                {entries.map(([term, desc]) => (
                   <div key={term} className="flex flex-col gap-1">
                     <span className="font-mono text-[13px] text-foreground">{term}</span>
                     <span className="text-[13px] text-muted-foreground">{desc}</span>
