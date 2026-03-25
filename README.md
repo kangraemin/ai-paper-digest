@@ -15,7 +15,8 @@
 
 ---
 
-![Main](docs/screenshot-en.png)
+<img src="docs/screenshot-en.png" width="100%" />
+<img src="docs/screenshot-en-detail.png" width="100%" />
 
 ---
 
@@ -25,15 +26,7 @@ Every morning, hundreds of AI papers and community posts come out. Most of them 
 
 AI Paper Digest cuts through the noise. It automatically collects from arXiv, HuggingFace, Hacker News, and Reddit every day, runs strict AI-powered screening, and delivers summaries designed for developers who use AI agents, prompting, and RAG — not ML researchers.
 
-The bar is high: roughly 1 in 10 papers makes it through.
-
----
-
-## Screenshots
-
-| Korean | Detail |
-|--------|--------|
-| ![ko](docs/screenshot-ko.png) | ![detail](docs/screenshot-detail.png) |
+The bar is high: roughly **1 in 10 papers makes it through**.
 
 ---
 
@@ -50,12 +43,12 @@ A GitHub Actions pipeline runs automatically every day at 07:00 KST:
 | 5. Translate | `translate.ts` | Korean summaries | Claude Sonnet | Max 12/day |
 | 6. Redeploy | `redeploy.yml` | — | Vercel production deploy | — |
 
-**Screening criteria for papers** — passes only if all of these are true:
+Screening criteria for **papers** — passes only if:
 - Immediately applicable without model training or infra setup
 - A developer can change their prompting or tool usage based on this
 - Non-obvious, not already common knowledge
 
-**Screening criteria for community** — passes only if:
+Screening criteria for **community** — passes only if:
 - Technical tutorial, deep dive, or real-world experience with AI tools
 - Developer workflow or productivity content with substance
 
@@ -71,7 +64,7 @@ Each summary includes:
 
 ## Slack Integration
 
-Add to your Slack workspace directly from the site. Summaries are delivered throughout the day via drip — no feed to check, no tab to keep open.
+Add to your Slack workspace directly from the site. Summaries are delivered throughout the day — no feed to check, no tab to keep open.
 
 ---
 
@@ -104,12 +97,11 @@ npm run dev   # http://localhost:3000
 
 PRs welcome. Bug reports and feature requests via [Issues](../../issues).
 
----
-
 ## License
 
 MIT
 
+---
 ---
 
 <div align="center">
@@ -122,13 +114,18 @@ MIT
 
 ---
 
+<img src="docs/screenshot-ko.png" width="100%" />
+<img src="docs/screenshot-ko-detail.png" width="100%" />
+
+---
+
 ## 이게 뭔가요?
 
 매일 아침 수백 개의 AI 논문과 커뮤니티 글이 쏟아집니다. AI로 제품을 만드는 개발자에게 대부분은 필요 없습니다 — 모델 학습, 액션 없는 벤치마크, 아무도 적용 못 할 도메인 특화 연구들이니까요.
 
 AI Paper Digest는 그 노이즈를 걷어냅니다. arXiv, HuggingFace, Hacker News, Reddit에서 매일 자동 수집하고, 엄격한 AI 스크리닝을 거쳐 AI 에이전트, 프롬프팅, RAG를 다루는 개발자에게 실제로 도움되는 것들만 요약해서 전달합니다.
 
-기준이 높습니다: 대략 10개 중 1개만 통과합니다.
+기준이 높습니다: 대략 **10개 중 1개만 통과**합니다.
 
 ---
 
@@ -157,7 +154,7 @@ GitHub Actions 파이프라인이 매일 KST 07:00에 자동 실행됩니다:
 
 ## Slack 구독
 
-사이트에서 Add to Slack으로 워크스페이스에 바로 추가할 수 있습니다. 하루 종일 drip 방식으로 전달 — 피드를 확인할 필요 없습니다.
+사이트에서 Add to Slack으로 워크스페이스에 바로 추가할 수 있습니다. 하루 종일 순차적으로 전달 — 피드를 따로 확인할 필요 없습니다.
 
 ---
 
