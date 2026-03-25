@@ -42,6 +42,7 @@ GitHub Actions 파이프라인이 매일 KST 07:00에 자동 실행됩니다:
 | 4. 논문 요약 | `summarize.ts` | PDF 전문 | Claude Sonnet 요약 | 최대 2개 |
 | 5. 영어 번역 | `translate.ts` | 한국어 요약 | Claude Sonnet 번역 | 최대 12개 |
 | 6. 재배포 | `redeploy.yml` | — | Vercel 프로덕션 배포 | — |
+| 7. Slack 발송 | `api/cron/slack-drip` | — | cron-job.org (5분마다) | 최대 20개/일 |
 
 각 요약 항목:
 - 한 줄 요약 (TL;DR)
@@ -67,7 +68,7 @@ GitHub Actions 파이프라인이 매일 KST 07:00에 자동 실행됩니다:
 | AI | Claude Sonnet (요약) · Haiku (스크리닝) |
 | Database | Turso + Drizzle ORM |
 | Styling | Tailwind CSS v4 + shadcn/ui |
-| Infra | GitHub Actions + Vercel |
+| Infra | GitHub Actions + Vercel + cron-job.org |
 
 ---
 
