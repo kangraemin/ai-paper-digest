@@ -69,6 +69,7 @@ export function buildSlackPayload(paper: PaperForSlack, siteUrl: string, lang: s
   const sectionBlocks: object[] = [];
 
   if (oneLiner) {
+    sectionBlocks.push({ type: 'divider' });
     sectionBlocks.push({ type: 'header', text: { type: 'plain_text', text: 'TL;DR' } });
     sectionBlocks.push({ type: 'section', text: { type: 'mrkdwn', text: oneLiner } });
   }
