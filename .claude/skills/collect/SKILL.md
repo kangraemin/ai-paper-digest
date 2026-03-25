@@ -169,16 +169,24 @@ export $(grep -E '^TURSO_' .env | xargs) && NODE_PATH=/Users/ram/programming/vib
 #### 4-A. 커뮤니티 요약 (Claude가 직접)
 
 커뮤니티 아이템은 `digest-community.ts`를 사용하면 안 됨 (`runClaude()` = API 호출).
+
+**원문 품질 보장이 핵심 — 이 단계를 건너뛰면 나중에 수동 재검증이 필요해진다.**
+
 Claude가 직접 각 아이템에 대해:
+
 1. 원문 fetch: `src/lib/content-fetcher.ts`의 `fetchContent(arxivUrl)` 실행
-2. **원문이 부실하면 (네비게이션/보일러플레이트만 있거나 500자 미만) WebFetch 도구로 직접 재시도**
-   - `WebFetch(url, "Extract all technical details: what the method does, how it works, key results/numbers")` 호출
-   - Google Research, Anthropic, OpenAI 블로그 등 JS 렌더링 필요한 사이트는 fetchContent 실패 확률 높음
+2. **원문 품질 체크 (필수)**:
+   - 원문이 500자 미만이거나 네비게이션/보일러플레이트만 있으면 → **즉시 WebFetch 재시도**
+   - `WebFetch(url, "Extract all technical details: what it does, how it works, key results, specific numbers")` 호출
+   - WebFetch도 실패하거나 내용 없으면 → **WebSearch로 논문/블로그 검색**
+   - Google Research·Anthropic·OpenAI 블로그·Reddit 포스트는 fetchContent 실패 확률 높음 — 처음부터 WebFetch 우선 고려
 3. 댓글 fetch:
-   - HN: `src/lib/hacker-news/client.ts`의 `fetchHNComments(hnId, 15)` (공개 API, Claude API 아님)
-   - Reddit: `src/lib/reddit/client.ts`의 `fetchRedditComments(url, 15)` (공개 API)
-4. 원문 + 댓글 전체를 직접 읽고 요약 작성 (원문이 부실하면 댓글에서 기술 내용 최대한 추출)
+   - HN: `fetchHNComments(hnId, 15)` (공개 API)
+   - Reddit: `fetchRedditComments(url, 15)` (공개 API)
+4. 원문 + 댓글 전체 읽고 요약 작성 — **요약 전 반드시 충분한 기술 내용이 확보됐는지 확인**
 5. DB UPDATE
+
+이 단계를 제대로 하면 별도 품질 검증 불필요.
 
 커뮤니티 아이템 조회:
 ```bash
