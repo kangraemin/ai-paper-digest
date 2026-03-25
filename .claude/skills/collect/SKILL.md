@@ -66,9 +66,66 @@ EOF
 export $(grep -E '^TURSO_' .env | xargs) && NODE_PATH=/Users/ram/programming/vibecoding/ai-paper/node_modules npx tsx /tmp/collect-no-screen.ts
 ```
 
-커뮤니티(HN/Reddit) 수집:
+커뮤니티(HN/Reddit) 수집 — 마찬가지로 no-screen 버전 사용:
+
 ```bash
-export $(grep -E '^TURSO_' .env | xargs) && npx tsx scripts/collect-community.ts
+cat > /tmp/collect-community-no-screen.ts << 'EOF'
+import { createClient } from '@libsql/client';
+import { drizzle } from 'drizzle-orm/libsql';
+import * as schema from '/Users/ram/programming/vibecoding/ai-paper/src/lib/db/schema';
+import { eq } from 'drizzle-orm';
+
+const client = createClient({ url: process.env.TURSO_DATABASE_URL!, authToken: process.env.TURSO_AUTH_TOKEN! });
+const db = drizzle(client, { schema });
+
+async function main() {
+  const { fetchHNTopAI } = await import('/Users/ram/programming/vibecoding/ai-paper/src/lib/hacker-news/client');
+  const { fetchRedditAI } = await import('/Users/ram/programming/vibecoding/ai-paper/src/lib/reddit/client');
+
+  console.log('📰 HN 수집...');
+  const stories = await fetchHNTopAI(100);
+  let hnSaved = 0;
+  for (const s of stories) {
+    const id = 'hn_' + s.id;
+    const exists = await db.select().from(schema.papers).where(eq(schema.papers.id, id)).limit(1);
+    if (exists.length > 0) continue;
+    const hotScore = Math.min(Math.floor(s.score / 5), 100);
+    await db.insert(schema.papers).values({
+      id, title: s.title, abstract: s.title,
+      authors: JSON.stringify([s.by]), categories: JSON.stringify(['hacker_news']),
+      primaryCategory: 'hacker_news',
+      publishedAt: new Date(s.time * 1000).toISOString(),
+      arxivUrl: s.url ?? 'https://news.ycombinator.com/item?id=' + s.id,
+      pdfUrl: '', source: 'hacker_news', hotScore, isHot: hotScore >= 70,
+      collectedAt: new Date().toISOString(),
+    }).onConflictDoNothing();
+    hnSaved++;
+  }
+  console.log('HN:', hnSaved, '개 저장');
+
+  console.log('🔴 Reddit 수집...');
+  const posts = await fetchRedditAI();
+  let redditSaved = 0;
+  for (const p of posts) {
+    const id = 'reddit_' + p.subreddit + '_' + p.id;
+    const exists = await db.select().from(schema.papers).where(eq(schema.papers.id, id)).limit(1);
+    if (exists.length > 0) continue;
+    await db.insert(schema.papers).values({
+      id, title: p.title, abstract: p.selftext || p.title,
+      authors: JSON.stringify([p.author]), categories: JSON.stringify(['reddit_' + p.subreddit]),
+      primaryCategory: 'reddit_' + p.subreddit,
+      publishedAt: new Date(p.created_utc * 1000).toISOString(),
+      arxivUrl: p.url || 'https://www.reddit.com' + p.permalink,
+      pdfUrl: '', source: 'reddit', hotScore: 50, isHot: false,
+      collectedAt: new Date().toISOString(),
+    }).onConflictDoNothing();
+    redditSaved++;
+  }
+  console.log('Reddit:', redditSaved, '개 저장');
+}
+main().catch(console.error);
+EOF
+export $(grep -E '^TURSO_' .env | xargs) && NODE_PATH=/Users/ram/programming/vibecoding/ai-paper/node_modules npx tsx /tmp/collect-community-no-screen.ts
 ```
 
 ### 2. 수집된 논문 확인
@@ -105,7 +162,50 @@ export $(grep -E '^TURSO_' .env | xargs) && NODE_PATH=/Users/ram/programming/vib
 })();"
 ```
 
-### 4. 요약 (에이전트 병렬)
+### 4. 요약 — 논문 vs 커뮤니티 분리 처리
+
+**논문(arxiv/hugging_face)과 커뮤니티(hacker_news/reddit)는 처리 방식이 다르다.**
+
+#### 4-A. 커뮤니티 요약 (Claude가 직접)
+
+커뮤니티 아이템은 `digest-community.ts`를 사용하면 안 됨 (`runClaude()` = API 호출).
+Claude가 직접 각 아이템에 대해:
+1. 원문 fetch: `src/lib/content-fetcher.ts`의 `fetchContent(arxivUrl)` 실행
+2. 댓글 fetch:
+   - HN: `src/lib/hacker-news/client.ts`의 `fetchHNComments(hnId, 15)` (공개 API, Claude API 아님)
+   - Reddit: `src/lib/reddit/client.ts`의 `fetchRedditComments(url, 15)` (공개 API)
+3. 원문 + 댓글 전체를 직접 읽고 요약 작성
+4. DB UPDATE
+
+커뮤니티 아이템 조회:
+```bash
+export $(grep -E '^TURSO_' .env | xargs) && NODE_PATH=/Users/ram/programming/vibecoding/ai-paper/node_modules npx tsx -e "
+(async () => {
+  const { createClient } = await import('@libsql/client');
+  const client = createClient({ url: process.env.TURSO_DATABASE_URL, authToken: process.env.TURSO_AUTH_TOKEN });
+  const r = await client.execute(\"SELECT id, title, source, arxiv_url FROM papers WHERE summarized_at IS NULL AND source IN ('hacker_news','reddit') ORDER BY collected_at DESC\");
+  for (const row of r.rows) console.log('['+row.source+'] '+row.id+': '+String(row.title).slice(0,80));
+  console.log('총:', r.rows.length, '개');
+})();"
+```
+
+원문+댓글 fetch 예시:
+```typescript
+// HN
+const { fetchContent } = await import('/Users/ram/programming/vibecoding/ai-paper/src/lib/content-fetcher');
+const { fetchHNComments } = await import('/Users/ram/programming/vibecoding/ai-paper/src/lib/hacker-news/client');
+const content = await fetchContent(arxivUrl);
+const hnId = parseInt(id.replace('hn_', ''));
+const comments = await fetchHNComments(hnId, 15);
+// content + comments 전부 읽고 직접 요약
+
+// Reddit
+const { fetchRedditComments } = await import('/Users/ram/programming/vibecoding/ai-paper/src/lib/reddit/client');
+const content = await fetchContent(arxivUrl);
+const comments = await fetchRedditComments(arxivUrl, 15);
+```
+
+#### 4-B. 논문 요약 (에이전트 병렬)
 
 미요약 논문 ID를 전부 조회 후 **10개 배치로 나눠 Agent 10개 병렬 스폰**.
 각 에이전트는 자신의 배치 ID만 처리 (중복 없음).
