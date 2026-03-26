@@ -57,7 +57,7 @@ export async function digestCommunity(): Promise<number> {
         comments = await fetchHNComments(hnId, 15);
         console.log(`  댓글: ${comments.length}개`);
       } else if (item.source === 'reddit') {
-        comments = await fetchRedditComments(item.arxivUrl, 15);
+        comments = await fetchRedditComments(item.arxivUrl.replace('https://www.reddit.com', ''), 15);
         console.log(`  댓글: ${comments.length}개`);
       }
 
