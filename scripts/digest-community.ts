@@ -37,7 +37,7 @@ export async function digestCommunity(): Promise<number> {
         // Reddit JSON API로 본문 가져오기
         try {
           const jsonUrl = item.arxivUrl.replace(/\/$/, '') + '.json';
-          const res = await fetch(jsonUrl, { headers: { 'User-Agent': 'AI-Paper-Digest/1.0' } });
+          const res = await fetch(jsonUrl, { headers: { 'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36' } });
           if (res.ok) {
             const data = await res.json();
             const post = data[0]?.data?.children?.[0]?.data;
