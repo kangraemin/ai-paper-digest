@@ -2,9 +2,15 @@ import Link from 'next/link';
 import { t } from '@/lib/i18n';
 import type { Lang } from '@/lib/i18n/types';
 
+const REDIRECT_URI = 'https://ai-paper-delta.vercel.app/api/slack/callback';
+const SLACK_SCOPE = 'chat:write,chat:write.customize,channels:read,channels:join,groups:read,reactions:write,reactions:read,files:write,files:read,users:read,commands,incoming-webhook,links:read,links:write';
+
 export default async function SlackNoticePage({ params }: { params: Promise<{ lang: string }> }) {
   const { lang } = await params;
-  const installUrl = '/api/slack/install';
+  const clientId = process.env.NEXT_PUBLIC_SLACK_CLIENT_ID;
+  const installUrl = clientId
+    ? `https://slack.com/oauth/v2/authorize?client_id=${clientId}&scope=${SLACK_SCOPE}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&state=${lang}`
+    : '#';
 
   return (
     <div className="max-w-2xl mx-auto px-4 py-12 flex flex-col gap-6">
