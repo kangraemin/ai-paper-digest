@@ -26,28 +26,40 @@ export async function GET(req: NextRequest) {
   }
 
   const { team, access_token, incoming_webhook } = data;
+  const channelId = incoming_webhook.channel_id;
   const langPref = req.nextUrl.searchParams.get('state') || 'ko';
+
+  // 1. 웰컴 메시지 전송으로 채널 유효성 검증 (성공 = 채널 접근 가능 증명)
+  const welcomeText = langPref === 'en'
+    ? `✅ AI Paper Digest connected! You'll receive daily AI paper updates here.`
+    : `✅ AI Paper Digest가 연결되었습니다! 매일 AI 논문/아티클 소식을 이곳으로 전송합니다.`;
+
+  const testRes = await fetch('https://slack.com/api/chat.postMessage', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${access_token}` },
+    body: JSON.stringify({ channel: channelId, text: welcomeText }),
+  });
+  const testData = await testRes.json();
+
+  if (!testData.ok) {
+    return NextResponse.redirect(new URL(`/install?error=${encodeURIComponent(testData.error)}`, req.url));
+  }
+
+  // 2. 검증 통과 후 DB 저장
   await db
     .insert(slackWorkspaces)
     .values({
       teamId: team.id,
       teamName: team.name,
       botToken: access_token,
-      channelId: incoming_webhook.channel_id,
+      channelId,
       webhookUrl: incoming_webhook.url,
       lang: langPref,
     })
     .onConflictDoUpdate({
       target: slackWorkspaces.teamId,
-      set: { botToken: access_token, channelId: incoming_webhook.channel_id, webhookUrl: incoming_webhook.url, lang: langPref },
+      set: { botToken: access_token, channelId, webhookUrl: incoming_webhook.url, lang: langPref },
     });
-
-  // 봇을 채널에 자동 입장
-  await fetch('https://slack.com/api/conversations.join', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${access_token}` },
-    body: JSON.stringify({ channel: incoming_webhook.channel_id }),
-  });
 
   return NextResponse.redirect(new URL('/install?success=true', req.url));
 }
