@@ -20,6 +20,18 @@ const dict: Record<string, Record<Lang, string>> = {
   'install.fail.title': { ko: '설치 실패', en: 'Installation Failed' },
   'install.fail.error': { ko: '오류 코드: {code}', en: 'Error code: {code}' },
   'install.fail.link': { ko: '다시 시도하기', en: 'Try Again' },
+  'notice.banner.text': {
+    ko: '⚠️ Slack 알림 오류 안내 — 영향받으신 분은 재설치를 요청드립니다.',
+    en: '⚠️ Slack notification issue — Please reinstall if you were affected.',
+  },
+  'notice.banner.link': { ko: '자세히 보기 →', en: 'Learn more →' },
+  'notice.title': { ko: 'Slack 알림 오류 안내', en: 'Slack Notification Issue' },
+  'notice.body': {
+    ko: `안녕하세요, AI Paper Digest 팀입니다.\n\nSlack 봇 설치 과정에서 DM 채널이나 메시지를 보낼 수 없는 채널을 걸러내지 못하는 문제가 있었습니다. 이로 인해 일부 사용자분께서 알림을 잘못 수신하시거나, 아예 받지 못하셨을 수 있습니다. 진심으로 사과드립니다.\n\n현재는 Slack 설치 시 실제로 메시지를 보낼 수 있는 채널인지 테스트하는 과정을 추가하여, 올바른 채널에만 알림이 등록되도록 수정했습니다.\n\n알림을 정상적으로 받지 못하신 분들께서는 아래 버튼을 통해 Slack 봇을 재설치해 주시면 감사하겠습니다. 불편을 드려 다시 한번 깊이 사과드립니다.`,
+    en: `Hello, this is the AI Paper Digest team.\n\nDuring the Slack bot installation process, we failed to filter out DM channels and channels where the bot cannot send messages. As a result, some users may have received notifications incorrectly or not at all. We sincerely apologize for this.\n\nWe have since added a channel validation step during installation — the bot now tests whether it can actually send a message to the selected channel before completing setup.\n\nIf you were not receiving notifications correctly, please reinstall the Slack bot using the button below. We are deeply sorry for the inconvenience.`,
+  },
+  'notice.reinstall': { ko: 'Slack 봇 재설치하기', en: 'Reinstall Slack Bot' },
+  'notice.back': { ko: '홈으로 돌아가기', en: 'Back to Home' },
 };
 
 export function t(key: string, lang: Lang, params?: Record<string, string | number>): string {
