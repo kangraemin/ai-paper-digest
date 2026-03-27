@@ -29,7 +29,14 @@ export async function GET(req: NextRequest) {
   const channelId = incoming_webhook.channel_id;
   const langPref = req.nextUrl.searchParams.get('state') || 'ko';
 
-  // 1. 웰컴 메시지 전송으로 채널 유효성 검증 (성공 = 채널 접근 가능 증명)
+  // 1. 공개 채널 자동 join 시도 (비공개 채널은 실패해도 무시)
+  await fetch('https://slack.com/api/conversations.join', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${access_token}` },
+    body: JSON.stringify({ channel: channelId }),
+  });
+
+  // 2. 웰컴 메시지 전송으로 채널 유효성 검증 (성공 = 채널 접근 가능 증명)
   const welcomeText = langPref === 'en'
     ? `✅ AI Paper Digest connected! You'll receive daily AI paper updates here.`
     : `✅ AI Paper Digest가 연결되었습니다! 매일 AI 논문/아티클 소식을 이곳으로 전송합니다.`;
