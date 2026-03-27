@@ -44,7 +44,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ skipped: true, reason: 'No workspaces' });
   }
 
-  const siteUrl = process.env.SITE_URL || 'https://ai-paper-delta.vercel.app';
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://paper-digest.app';
   const results: { team: string; ok: boolean; error?: string }[] = [];
 
   for (const ws of workspaces) {

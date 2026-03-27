@@ -74,7 +74,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       title,
       description,
       type: 'article',
-      url: `https://ai-paper-delta.vercel.app/${lang}/papers/${id}`,
+      url: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://paper-digest.app'}/${lang}/papers/${id}`,
       siteName: 'AI Paper Digest',
       locale: lang === 'en' ? 'en_US' : 'ko_KR',
     },

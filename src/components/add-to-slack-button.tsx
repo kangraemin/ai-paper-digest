@@ -3,7 +3,7 @@
 import type { Lang } from '@/lib/i18n';
 import { trackEvent } from '@/lib/ga';
 
-const REDIRECT_URI = 'https://ai-paper-delta.vercel.app/api/slack/callback';
+const REDIRECT_URI = `${process.env.NEXT_PUBLIC_SITE_URL || 'https://paper-digest.app'}/api/slack/callback`;
 const SLACK_SCOPE = 'chat:write,chat:write.customize,channels:read,channels:join,groups:read,reactions:write,reactions:read,files:write,files:read,users:read,commands,incoming-webhook,links:read,links:write';
 
 export function AddToSlackButton({ lang }: { lang: Lang }) {

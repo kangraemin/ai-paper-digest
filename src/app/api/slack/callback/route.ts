@@ -15,7 +15,7 @@ export async function GET(req: NextRequest) {
       client_id: process.env.SLACK_CLIENT_ID!,
       client_secret: process.env.SLACK_CLIENT_SECRET!,
       code,
-      redirect_uri: 'https://ai-paper-delta.vercel.app/api/slack/callback',
+      redirect_uri: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://paper-digest.app'}/api/slack/callback`,
     }),
   });
 
