@@ -1,8 +1,9 @@
 import { MetadataRoute } from 'next'
 
 export default function robots(): MetadataRoute.Robots {
+  const BASE = process.env.NEXT_PUBLIC_SITE_URL || 'https://paper-digest.app'
   return {
     rules: { userAgent: '*', allow: '/' },
-    sitemap: 'https://paper-digest.app/sitemap.xml',
+    sitemap: `${BASE}/sitemap.xml`,
   }
 }

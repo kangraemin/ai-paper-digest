@@ -8,7 +8,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const BASE = process.env.NEXT_PUBLIC_SITE_URL || 'https://paper-digest.app'
 
   const rows = await db
-    .select({ id: papers.id, publishedAt: papers.publishedAt })
+    .select({ id: papers.id, publishedAt: papers.publishedAt, summarizedAt: papers.summarizedAt })
     .from(papers)
     .where(isNotNull(papers.summarizedAt))
     .orderBy(desc(papers.publishedAt))
@@ -22,11 +22,17 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: 'daily',
       priority: 1,
     })
+    entries.push({
+      url: `${BASE}/${lang}/trends`,
+      lastModified: new Date(),
+      changeFrequency: 'daily',
+      priority: 0.7,
+    })
     for (const p of rows) {
       entries.push({
         url: `${BASE}/${lang}/papers/${p.id}`,
-        lastModified: new Date(p.publishedAt),
-        changeFrequency: 'monthly',
+        lastModified: new Date(p.summarizedAt ?? p.publishedAt),
+        changeFrequency: 'weekly',
         priority: 0.8,
       })
     }
