@@ -1,58 +1,30 @@
-'use client';
+import type { Metadata } from 'next';
+import TrendsClient from '@/components/trends-client';
 
-import { useEffect, useState } from 'react';
-import { TrendChart } from '@/components/trend-chart';
-import { Button } from '@/components/ui/button';
+const BASE = process.env.NEXT_PUBLIC_SITE_URL || 'https://paper-digest.app';
 
-interface TrendData {
-  category: string | null;
-  count: number;
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ lang: string }>;
+}): Promise<Metadata> {
+  const { lang } = await params;
+  const isKo = lang === 'ko';
+  return {
+    title: isKo ? '트렌드 분석' : 'Trend Analysis',
+    description: isKo
+      ? '카테고리별 AI/LLM 논문 트렌드를 주간/월간으로 확인하세요.'
+      : 'Explore weekly and monthly trends in AI/LLM papers by category.',
+    alternates: {
+      canonical: `${BASE}/${lang}/trends`,
+      languages: {
+        'ko-KR': `${BASE}/ko/trends`,
+        'en-US': `${BASE}/en/trends`,
+      },
+    },
+  };
 }
 
 export default function TrendsPage() {
-  const [period, setPeriod] = useState<'weekly' | 'monthly'>('weekly');
-  const [data, setData] = useState<TrendData[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    setLoading(true);
-    fetch(`/api/trends?period=${period}`)
-      .then(r => r.json())
-      .then(res => {
-        setData(res.data);
-        setLoading(false);
-      });
-  }, [period]);
-
-  return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold">트렌드 분석</h1>
-        <div className="flex gap-2">
-          <Button
-            variant={period === 'weekly' ? 'default' : 'outline'}
-            size="sm"
-            onClick={() => setPeriod('weekly')}
-          >
-            주간
-          </Button>
-          <Button
-            variant={period === 'monthly' ? 'default' : 'outline'}
-            size="sm"
-            onClick={() => setPeriod('monthly')}
-          >
-            월간
-          </Button>
-        </div>
-      </div>
-
-      {loading ? (
-        <p className="py-12 text-center text-muted-foreground">로딩 중...</p>
-      ) : data.length === 0 ? (
-        <p className="py-12 text-center text-muted-foreground">트렌드 데이터가 없습니다.</p>
-      ) : (
-        <TrendChart data={data} />
-      )}
-    </div>
-  );
+  return <TrendsClient />;
 }
