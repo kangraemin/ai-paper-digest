@@ -131,12 +131,38 @@ export default async function PaperDetail({ params }: Props) {
     inLanguage: lang === 'ko' ? 'ko' : 'en',
     ...(paper.arxivUrl ? { sameAs: paper.arxivUrl } : {}),
   };
+  const breadcrumbJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: 'Home',
+        item: `${BASE}/${lang}`,
+      },
+      ...(catName ? [{
+        '@type': 'ListItem',
+        position: 2,
+        name: catName,
+      }] : []),
+      {
+        '@type': 'ListItem',
+        position: catName ? 3 : 2,
+        name: displayTitle,
+      },
+    ],
+  };
 
   return (
     <>
     <script
       type="application/ld+json"
       dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+    />
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
     />
     <article className="w-full max-w-[768px] mx-auto px-4 sm:px-6 pt-6 sm:pt-8">
       <PaperViewTracker paperId={paper.id} source={paper.source} category={paper.aiCategory} lang={lang} />
