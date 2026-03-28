@@ -55,28 +55,49 @@ interface Props {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id, lang } = await params;
+  const BASE = process.env.NEXT_PUBLIC_SITE_URL || 'https://paper-digest.app';
   const result = await db.select({
     title: papers.title,
     titleKo: papers.titleKo,
     oneLiner: papers.oneLiner,
+    oneLinerEn: papers.oneLinerEn,
     abstract: papers.abstract,
+    publishedAt: papers.publishedAt,
+    authors: papers.authors,
+    aiCategory: papers.aiCategory,
   }).from(papers).where(eq(papers.id, id)).limit(1);
 
   if (result.length === 0) return {};
   const paper = result[0];
   const title = lang === 'en' ? paper.title : (paper.titleKo || paper.title);
-  const description = paper.oneLiner || paper.abstract?.slice(0, 160) || '';
+  const description = (lang === 'en' ? paper.oneLinerEn : paper.oneLiner) || paper.abstract?.slice(0, 160) || '';
+  const authorList = JSON.parse(paper.authors || '[]') as string[];
 
   return {
     title,
     description,
+    alternates: {
+      canonical: `${BASE}/${lang}/papers/${id}`,
+      languages: {
+        'ko-KR': `${BASE}/ko/papers/${id}`,
+        'en-US': `${BASE}/en/papers/${id}`,
+      },
+    },
     openGraph: {
       title,
       description,
       type: 'article',
-      url: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://paper-digest.app'}/${lang}/papers/${id}`,
+      url: `${BASE}/${lang}/papers/${id}`,
       siteName: 'AI Paper Digest',
       locale: lang === 'en' ? 'en_US' : 'ko_KR',
+      publishedTime: paper.publishedAt,
+      authors: authorList.slice(0, 3),
+      tags: paper.aiCategory ? [paper.aiCategory] : undefined,
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
     },
   };
 }
@@ -93,8 +114,30 @@ export default async function PaperDetail({ params }: Props) {
   const catName = paper.aiCategory ? (categoryDisplayName[paper.aiCategory] ?? paper.aiCategory) : null;
   const displayTitle = lang === 'en' ? paper.title : (paper.titleKo || paper.title);
   const lf = (ko: string | null, en: string | null) => getLocalizedField(ko, en, lang);
+  const BASE = process.env.NEXT_PUBLIC_SITE_URL || 'https://paper-digest.app';
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'ScholarlyArticle',
+    headline: displayTitle,
+    description: lf(paper.oneLiner, paper.oneLinerEn) || paper.abstract?.slice(0, 200) || '',
+    datePublished: paper.publishedAt,
+    author: authorList.map((name) => ({ '@type': 'Person', name })),
+    publisher: {
+      '@type': 'Organization',
+      name: 'AI Paper Digest',
+      url: BASE,
+    },
+    url: `${BASE}/${lang}/papers/${paper.id}`,
+    inLanguage: lang === 'ko' ? 'ko' : 'en',
+    ...(paper.arxivUrl ? { sameAs: paper.arxivUrl } : {}),
+  };
 
   return (
+    <>
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+    />
     <article className="w-full max-w-[768px] mx-auto px-4 sm:px-6 pt-6 sm:pt-8">
       <PaperViewTracker paperId={paper.id} source={paper.source} category={paper.aiCategory} lang={lang} />
       {/* Breadcrumbs */}
@@ -311,5 +354,6 @@ export default async function PaperDetail({ params }: Props) {
         </section>
       )}
     </article>
+    </>
   );
 }
