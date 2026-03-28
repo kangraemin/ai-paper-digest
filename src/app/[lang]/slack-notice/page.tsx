@@ -1,9 +1,25 @@
 import Link from 'next/link';
+import type { Metadata } from 'next';
 import { t } from '@/lib/i18n';
 import type { Lang } from '@/lib/i18n/types';
 
 const REDIRECT_URI = `${process.env.NEXT_PUBLIC_SITE_URL || 'https://paper-digest.app'}/api/slack/callback`;
 const SLACK_SCOPE = 'chat:write,chat:write.customize,channels:read,channels:join,groups:read,reactions:write,reactions:read,files:write,files:read,users:read,commands,incoming-webhook,links:read,links:write';
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ lang: string }>;
+}): Promise<Metadata> {
+  const { lang } = await params;
+  const isKo = lang === 'ko';
+  return {
+    title: isKo ? 'Slack 알림 설정' : 'Slack Notifications',
+    description: isKo
+      ? 'Slack으로 AI 논문 요약을 매일 받아보세요.'
+      : 'Receive daily AI paper summaries via Slack.',
+  };
+}
 
 export default async function SlackNoticePage({ params }: { params: Promise<{ lang: string }> }) {
   const { lang } = await params;
