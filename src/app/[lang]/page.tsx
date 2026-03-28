@@ -1,4 +1,5 @@
 import { Suspense } from 'react';
+import type { Metadata } from 'next';
 import { db } from "@/lib/db";
 import { papers } from "@/lib/db/schema";
 import { desc, isNotNull, eq, inArray, notInArray, and } from "drizzle-orm";
@@ -6,6 +7,42 @@ import { PaperFeed } from "@/components/paper-feed";
 import type { PaperListItem } from "@/lib/types";
 
 export const revalidate = 3600;
+
+const BASE = process.env.NEXT_PUBLIC_SITE_URL || 'https://paper-digest.app'
+
+export async function generateMetadata({
+  params: routeParams,
+}: {
+  params: Promise<{ lang: string }>
+}): Promise<Metadata> {
+  const { lang } = await routeParams
+  const isKo = lang === 'ko'
+  return {
+    title: isKo
+      ? 'AI Paper Digest — AI·LLM 논문 매일 한글 요약'
+      : 'AI Paper Digest — Daily AI/LLM Paper Summaries',
+    description: isKo
+      ? '매일 업데이트되는 AI/LLM 논문 한글 요약. arXiv 최신 논문을 Claude가 요약합니다.'
+      : 'Daily AI/LLM paper summaries in Korean and English. Latest arXiv papers summarized by Claude.',
+    alternates: {
+      canonical: `${BASE}/${lang}`,
+      languages: {
+        'ko-KR': `${BASE}/ko`,
+        'en-US': `${BASE}/en`,
+      },
+    },
+    openGraph: {
+      title: 'AI Paper Digest',
+      description: isKo
+        ? '매일 업데이트되는 AI/LLM 논문 한글 요약'
+        : 'Daily AI/LLM paper summaries',
+      url: `${BASE}/${lang}`,
+      siteName: 'AI Paper Digest',
+      type: 'website',
+      locale: isKo ? 'ko_KR' : 'en_US',
+    },
+  }
+}
 
 export default async function Home({
   params: routeParams,
