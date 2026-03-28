@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import type { Metadata } from 'next';
 import { t } from '@/lib/i18n';
 import type { Lang } from '@/lib/i18n';
 
@@ -28,6 +29,22 @@ const ERROR_MESSAGES: Record<string, { ko: string; en: string }> = {
     en: 'Installation was cancelled.',
   },
 };
+
+export async function generateMetadata({
+  params: routeParams,
+}: {
+  params: Promise<{ lang: string }>;
+}): Promise<Metadata> {
+  const { lang } = await routeParams;
+  const isKo = lang === 'ko';
+  return {
+    title: isKo ? 'Slack 알림 설치' : 'Install Slack Notifications',
+    description: isKo
+      ? 'AI Paper Digest Slack 알림을 설치하세요.'
+      : 'Install AI Paper Digest Slack notifications.',
+    robots: { index: false },
+  };
+}
 
 export default async function InstallPage({
   params: routeParams,
