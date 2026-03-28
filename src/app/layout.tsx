@@ -20,7 +20,6 @@ export const metadata: Metadata = {
     url: process.env.NEXT_PUBLIC_SITE_URL || 'https://paper-digest.app',
     siteName: 'AI Paper Digest',
     type: "website",
-    locale: "ko_KR",
   },
   robots: {
     index: true,

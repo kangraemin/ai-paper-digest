@@ -41,6 +41,13 @@ export async function generateMetadata({
       type: 'website',
       locale: isKo ? 'ko_KR' : 'en_US',
     },
+    twitter: {
+      card: 'summary_large_image',
+      title: isKo ? 'AI Paper Digest — AI·LLM 논문 매일 한글 요약' : 'AI Paper Digest — Daily AI/LLM Paper Summaries',
+      description: isKo
+        ? '매일 업데이트되는 AI/LLM 논문 한글 요약. arXiv 최신 논문을 Claude가 요약합니다.'
+        : 'Daily AI/LLM paper summaries in Korean and English. Latest arXiv papers summarized by Claude.',
+    },
   }
 }
 
