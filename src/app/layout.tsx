@@ -7,8 +7,10 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 const mono = JetBrains_Mono({ subsets: ["latin"], variable: "--font-mono" });
 
+const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL || 'https://paper-digest.app').trim();
+
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://paper-digest.app'),
+  metadataBase: new URL(SITE_URL),
   title: {
     default: "AI Paper Digest",
     template: "%s | AI Paper Digest",
@@ -17,7 +19,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "AI Paper Digest",
     description: "매일 업데이트되는 AI/LLM 논문 한글 요약",
-    url: process.env.NEXT_PUBLIC_SITE_URL || 'https://paper-digest.app',
+    url: SITE_URL,
     siteName: 'AI Paper Digest',
     type: "website",
   },
@@ -42,11 +44,11 @@ const websiteJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'WebSite',
   name: 'AI Paper Digest',
-  url: process.env.NEXT_PUBLIC_SITE_URL || 'https://paper-digest.app',
+  url: SITE_URL,
   description: '매일 업데이트되는 AI/LLM 논문 한글 요약. arXiv 최신 논문을 Claude가 요약합니다.',
   potentialAction: {
     '@type': 'SearchAction',
-    target: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://paper-digest.app'}/ko?q={search_term_string}`,
+    target: `${SITE_URL}/ko?q={search_term_string}`,
     'query-input': 'required name=search_term_string',
   },
 };

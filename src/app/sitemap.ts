@@ -5,7 +5,7 @@ import { isNotNull, desc } from 'drizzle-orm'
 import { SUPPORTED_LANGS } from '@/lib/i18n'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const BASE = process.env.NEXT_PUBLIC_SITE_URL || 'https://paper-digest.app'
+  const BASE = (process.env.NEXT_PUBLIC_SITE_URL || 'https://paper-digest.app').trim()
 
   const rows = await db
     .select({ id: papers.id, publishedAt: papers.publishedAt, summarizedAt: papers.summarizedAt })
