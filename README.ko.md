@@ -9,7 +9,7 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript&logoColor=white)](https://typescriptlang.org)
 [![License](https://img.shields.io/badge/license-MIT-22C55E)](LICENSE)
 
-**[ai-paper-delta.vercel.app](https://ai-paper-delta.vercel.app)** · [English](README.md)
+**[paper-digest.app](https://paper-digest.app)** · [English](README.md)
 
 </div>
 

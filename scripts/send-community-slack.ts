@@ -22,7 +22,7 @@ async function main() {
     console.log(`  - ${r.id} | ${r.title?.slice(0, 60)}`);
   }
 
-  const siteUrl = process.env.SITE_URL || 'https://ai-paper-delta.vercel.app';
+  const siteUrl = process.env.SITE_URL || 'https://paper-digest.app';
   const workspaces = await db.select().from(slackWorkspaces);
 
   for (const paper of rows) {

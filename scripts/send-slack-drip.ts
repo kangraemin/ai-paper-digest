@@ -38,7 +38,7 @@ async function main() {
     return;
   }
 
-  const siteUrl = process.env.SITE_URL || 'https://ai-paper-delta.vercel.app';
+  const siteUrl = process.env.SITE_URL || 'https://paper-digest.app';
   const REVOKED_ERRORS = ['token_revoked', 'account_inactive', 'not_authed', 'invalid_auth'];
   let allOk = true;
 
