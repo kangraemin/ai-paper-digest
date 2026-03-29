@@ -82,6 +82,18 @@ export async function fetchRedditAI(
   return allPosts;
 }
 
+export async function fetchRedditPostContent(permalink: string): Promise<string> {
+  try {
+    const url = `https://www.reddit.com${permalink}.json?limit=0`;
+    const res = await fetch(url, { headers: { 'User-Agent': USER_AGENT } });
+    if (!res.ok) return '';
+    const data = await res.json();
+    return data[0]?.data?.children?.[0]?.data?.selftext ?? '';
+  } catch {
+    return '';
+  }
+}
+
 export async function fetchRedditComments(permalink: string, limit = 10): Promise<string[]> {
   try {
     const url = `https://www.reddit.com${permalink}.json?limit=${limit}&depth=1`;
