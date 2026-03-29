@@ -86,15 +86,6 @@ export const trendSnapshots = sqliteTable('trend_snapshots', {
   topKeywords: text('top_keywords'), // JSON array
 });
 
-export const slackNotifications = sqliteTable('slack_notifications', {
-  id: text('id').primaryKey(), // `${paperId}_${workspaceId}`
-  paperId: text('paper_id').notNull(),
-  workspaceId: text('workspace_id').notNull(),
-  sentAt: text('sent_at').notNull(),
-  ok: integer('ok', { mode: 'boolean' }).notNull(),
-  error: text('error'),
-});
-
 export const slackWorkspaces = sqliteTable('slack_workspaces', {
   id: integer('id').primaryKey({ autoIncrement: true }),
   teamId: text('team_id').notNull().unique(),
@@ -104,4 +95,6 @@ export const slackWorkspaces = sqliteTable('slack_workspaces', {
   lang: text('lang').default('ko'),
   webhookUrl: text('webhook_url'),
   createdAt: integer('created_at', { mode: 'timestamp' }).notNull().default(sql`(unixepoch())`),
+  failCount: integer('fail_count').default(0).notNull(),
+  lastFailedAt: text('last_failed_at'),
 });

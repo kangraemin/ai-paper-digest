@@ -1,11 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
-import { papers, slackWorkspaces, slackNotifications } from '@/lib/db/schema';
+import { papers, slackWorkspaces } from '@/lib/db/schema';
 import { sendSlackNotification } from '@/lib/slack/notify';
 import { isNull, isNotNull, and, asc, eq, gte, sql } from 'drizzle-orm';
 
-const DAILY_LIMIT = 20;
+const DAILY_LIMIT = 15;
+const FAIL_LIMIT = 10;
 const REVOKED_ERRORS = ['token_revoked', 'account_inactive', 'not_authed', 'invalid_auth'];
+
+const kstDateStr = () => new Date(Date.now() + 9 * 3600 * 1000).toISOString().slice(0, 10);
+const kstTodayStartUTC = () => new Date(kstDateStr() + 'T00:00:00+09:00').toISOString();
 
 export async function GET(req: NextRequest) {
   const secret = req.nextUrl.searchParams.get('secret') ?? req.headers.get('authorization')?.replace('Bearer ', '');
@@ -19,11 +23,10 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ skipped: true, reason: `Outside KST hours (${kstHour}h)` });
   }
 
-  const todayStart = new Date();
-  todayStart.setUTCHours(0, 0, 0, 0);
+  // KST 오늘 발송 건수 체크
   const [{ count }] = await db.select({ count: sql<number>`count(*)` })
     .from(papers)
-    .where(gte(papers.slackNotifiedAt, todayStart.toISOString()));
+    .where(gte(papers.slackNotifiedAt, kstTodayStartUTC()));
 
   if (Number(count) >= DAILY_LIMIT) {
     return NextResponse.json({ skipped: true, reason: `Daily limit reached (${count}/${DAILY_LIMIT})` });
@@ -32,7 +35,7 @@ export async function GET(req: NextRequest) {
   const [paper] = await db.select()
     .from(papers)
     .where(and(isNotNull(papers.summarizedAt), isNull(papers.slackNotifiedAt)))
-    .orderBy(asc(papers.publishedAt))
+    .orderBy(asc(papers.summarizedAt))
     .limit(1);
 
   if (!paper) {
@@ -50,40 +53,34 @@ export async function GET(req: NextRequest) {
   for (const ws of workspaces) {
     if (!ws.botToken || !ws.channelId) continue;
 
-    // 이미 성공 발송된 채널 스킵
-    const [existing] = await db.select().from(slackNotifications)
-      .where(and(
-        eq(slackNotifications.paperId, paper.id),
-        eq(slackNotifications.workspaceId, String(ws.id)),
-        eq(slackNotifications.ok, true)
-      )).limit(1);
-    if (existing) continue;
-
     const result = await sendSlackNotification(paper, ws.botToken, ws.channelId, siteUrl, ws.lang ?? 'ko');
     console.log(`[slack-drip] ${ws.teamName}: ${result.ok ? 'OK' : `FAIL (${result.error})`}`);
 
-    // 성공/실패 무조건 기록
-    await db.insert(slackNotifications)
-      .values({
-        id: `${paper.id}_${ws.id}`,
-        paperId: paper.id,
-        workspaceId: String(ws.id),
-        sentAt: new Date().toISOString(),
-        ok: result.ok,
-        error: result.error ?? null,
-      })
-      .onConflictDoUpdate({
-        target: slackNotifications.id,
-        set: { sentAt: new Date().toISOString(), ok: result.ok, error: result.error ?? null },
-      });
-
-    if (!result.ok && result.error && REVOKED_ERRORS.includes(result.error)) {
-      await db.delete(slackWorkspaces).where(eq(slackWorkspaces.id, ws.id));
+    if (result.ok) {
+      if ((ws.failCount ?? 0) > 0) {
+        await db.update(slackWorkspaces)
+          .set({ failCount: 0, lastFailedAt: null })
+          .where(eq(slackWorkspaces.id, ws.id));
+      }
+    } else {
+      if (REVOKED_ERRORS.includes(result.error ?? '')) {
+        await db.delete(slackWorkspaces).where(eq(slackWorkspaces.id, ws.id));
+      } else {
+        const today = kstDateStr();
+        const newCount = ws.lastFailedAt !== today ? (ws.failCount ?? 0) + 1 : (ws.failCount ?? 0);
+        if (newCount >= FAIL_LIMIT) {
+          await db.delete(slackWorkspaces).where(eq(slackWorkspaces.id, ws.id));
+        } else {
+          await db.update(slackWorkspaces)
+            .set({ failCount: newCount, lastFailedAt: today })
+            .where(eq(slackWorkspaces.id, ws.id));
+        }
+      }
     }
+
     results.push({ team: ws.teamName, ok: result.ok, error: result.error });
   }
 
-  // 무조건 slackNotifiedAt 기록 (중복 발송 방지)
   await db.update(papers)
     .set({ slackNotifiedAt: new Date().toISOString() })
     .where(eq(papers.id, paper.id));
