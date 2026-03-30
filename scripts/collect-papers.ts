@@ -26,6 +26,13 @@ async function main() {
   // 15일 지난 스크리닝 캐시 정리
   await db.delete(screenedItems).where(sql`screened_at < datetime('now', '-15 days')`);
 
+  // === 주말 스킵 (arXiv는 금/토 발표 없음) ===
+  const utcDay = new Date().getUTCDay(); // 0=Sun, 6=Sat
+  if (utcDay === 0 || utcDay === 6) {
+    console.log('📄 주말 — arXiv/HF 수집 스킵 (새 논문 없음)');
+    process.exit(0);
+  }
+
   // === arXiv ===
   console.log('📄 Fetching papers from arXiv...');
   const arxivFetched = await fetchRecentPapers(100);
