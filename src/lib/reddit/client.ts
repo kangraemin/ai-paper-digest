@@ -83,15 +83,27 @@ export async function fetchRedditAI(
 }
 
 export async function fetchRedditPostContent(permalink: string): Promise<string> {
-  try {
-    const url = `https://www.reddit.com${permalink}.json?limit=0`;
-    const res = await fetch(url, { headers: { 'User-Agent': USER_AGENT } });
-    if (!res.ok) return '';
-    const data = await res.json();
-    return data[0]?.data?.children?.[0]?.data?.selftext ?? '';
-  } catch {
-    return '';
+  const url = `https://www.reddit.com${permalink}.json?limit=0`;
+  for (let attempt = 1; attempt <= 3; attempt++) {
+    try {
+      const res = await fetch(url, { headers: { 'User-Agent': USER_AGENT } });
+      if (res.status === 429 || res.status === 403) {
+        console.log(`  [Reddit] ${res.status} on ${permalink.slice(0, 40)}, retry ${attempt}/3 in ${attempt * 3}s...`);
+        await new Promise(r => setTimeout(r, attempt * 3000));
+        continue;
+      }
+      if (!res.ok) return '';
+      const data = await res.json();
+      return data[0]?.data?.children?.[0]?.data?.selftext ?? '';
+    } catch {
+      if (attempt < 3) {
+        await new Promise(r => setTimeout(r, attempt * 3000));
+        continue;
+      }
+      return '';
+    }
   }
+  return '';
 }
 
 export async function fetchRedditComments(permalink: string, limit = 10): Promise<string[]> {

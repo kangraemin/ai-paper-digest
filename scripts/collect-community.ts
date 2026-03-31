@@ -121,6 +121,7 @@ async function main() {
       // 본문 fetch: RSS selftext → JSON API → 외부 링크 fetchContent → 없으면 skip
       let selftext = p.selftext;
       if (!selftext) {
+        await new Promise(r => setTimeout(r, 2000)); // rate limit 방지
         selftext = await fetchRedditPostContent(`/r/${p.subreddit}/comments/${p.id}/`);
       }
       if (!selftext && p.url && !p.url.includes('reddit.com')) {
