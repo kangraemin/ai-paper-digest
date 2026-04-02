@@ -14,17 +14,20 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     .orderBy(desc(papers.publishedAt))
 
   const entries: MetadataRoute.Sitemap = []
+  const latestDate = rows[0]
+    ? new Date(rows[0].summarizedAt ?? rows[0].publishedAt)
+    : new Date()
 
   for (const lang of SUPPORTED_LANGS) {
     entries.push({
       url: `${BASE}/${lang}`,
-      lastModified: new Date(),
+      lastModified: latestDate,
       changeFrequency: 'daily',
       priority: 1,
     })
     entries.push({
       url: `${BASE}/${lang}/trends`,
-      lastModified: new Date(),
+      lastModified: latestDate,
       changeFrequency: 'daily',
       priority: 0.7,
     })
@@ -32,7 +35,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       entries.push({
         url: `${BASE}/${lang}/papers/${p.id}`,
         lastModified: new Date(p.summarizedAt ?? p.publishedAt),
-        changeFrequency: 'weekly',
+        changeFrequency: 'monthly',
         priority: 0.8,
       })
     }

@@ -20,12 +20,15 @@ export async function generateMetadata({
   return {
     alternates: {
       canonical: `${BASE}/${lang}`,
-      languages: Object.fromEntries(
-        SUPPORTED_LANGS.map((l) => [
-          l === 'ko' ? 'ko-KR' : 'en-US',
-          `${BASE}/${l}`,
-        ])
-      ),
+      languages: {
+        ...Object.fromEntries(
+          SUPPORTED_LANGS.map((l) => [
+            l === 'ko' ? 'ko-KR' : 'en-US',
+            `${BASE}/${l}`,
+          ])
+        ),
+        'x-default': `${BASE}/en`,
+      },
     },
   }
 }

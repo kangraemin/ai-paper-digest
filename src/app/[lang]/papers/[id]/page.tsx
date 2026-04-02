@@ -70,7 +70,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (result.length === 0) return {};
   const paper = result[0];
   const title = lang === 'en' ? paper.title : (paper.titleKo || paper.title);
-  const description = (lang === 'en' ? paper.oneLinerEn : paper.oneLiner) || paper.abstract?.slice(0, 160) || '';
+  const description = (lang === 'en' ? paper.oneLinerEn : paper.oneLiner)
+    || paper.abstract?.slice(0, 160)
+    || (lang === 'en' ? `${paper.title} — AI research summary` : `${paper.titleKo || paper.title} — AI 논문 요약`);
   const authorList = JSON.parse(paper.authors || '[]') as string[];
 
   return {
@@ -81,6 +83,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       languages: {
         'ko-KR': `${BASE}/ko/papers/${id}`,
         'en-US': `${BASE}/en/papers/${id}`,
+        'x-default': `${BASE}/en/papers/${id}`,
       },
     },
     openGraph: {

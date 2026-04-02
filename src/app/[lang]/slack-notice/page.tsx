@@ -18,6 +18,7 @@ export async function generateMetadata({
     description: isKo
       ? 'Slack으로 AI 논문 요약을 매일 받아보세요.'
       : 'Receive daily AI paper summaries via Slack.',
+    robots: { index: false, follow: false },
   };
 }
 
