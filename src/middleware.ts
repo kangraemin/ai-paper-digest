@@ -7,7 +7,11 @@ export function middleware(req: NextRequest) {
 
   // Already has lang prefix
   const firstSegment = pathname.split('/')[1];
-  if (SUPPORTED.includes(firstSegment)) return NextResponse.next();
+  if (SUPPORTED.includes(firstSegment)) {
+    const res = NextResponse.next();
+    res.headers.set('x-lang', firstSegment);
+    return res;
+  }
 
   // Detect lang: cookie → Accept-Language → default ko
   const cookie = req.cookies.get('lang')?.value;

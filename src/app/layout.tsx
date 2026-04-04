@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { headers } from "next/headers";
 import { Inter, JetBrains_Mono } from "next/font/google";
 import { GoogleAnalytics } from "@next/third-parties/google";
 import { ThemeProvider } from "next-themes";
@@ -15,10 +16,10 @@ export const metadata: Metadata = {
     default: "AI Paper Digest",
     template: "%s | AI Paper Digest",
   },
-  description: "매일 업데이트되는 AI/LLM 논문 한글 요약. arXiv 최신 논문을 Claude가 요약합니다.",
+  description: "Daily AI/LLM paper summaries. Latest arXiv papers summarized by Claude.",
   openGraph: {
     title: "AI Paper Digest",
-    description: "매일 업데이트되는 AI/LLM 논문 한글 요약",
+    description: "Daily AI/LLM paper summaries. Latest arXiv papers summarized by Claude.",
     url: SITE_URL,
     siteName: 'AI Paper Digest',
     type: "website",
@@ -36,7 +37,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'AI Paper Digest',
-    description: '매일 업데이트되는 AI/LLM 논문 한글 요약',
+    description: 'Daily AI/LLM paper summaries. Latest arXiv papers summarized by Claude.',
   },
 };
 
@@ -45,7 +46,7 @@ const websiteJsonLd = {
   '@type': 'WebSite',
   name: 'AI Paper Digest',
   url: SITE_URL,
-  description: '매일 업데이트되는 AI/LLM 논문 한글 요약. arXiv 최신 논문을 Claude가 요약합니다.',
+  description: 'Daily AI/LLM paper summaries. Latest arXiv papers summarized by Claude.',
   potentialAction: {
     '@type': 'SearchAction',
     target: `${SITE_URL}/ko?q={search_term_string}`,
@@ -53,11 +54,13 @@ const websiteJsonLd = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
+  const headerList = await headers();
+  const lang = headerList.get('x-lang') || 'ko';
   return (
-    <html lang="ko" suppressHydrationWarning>
+    <html lang={lang} suppressHydrationWarning>
       <body className={`${inter.variable} ${mono.variable} font-sans antialiased bg-background text-foreground min-h-screen flex flex-col`}>
         <script
           type="application/ld+json"
