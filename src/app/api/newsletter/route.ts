@@ -10,7 +10,7 @@ const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL || 'https://paper-digest.app'
 async function sendWelcomeEmail(email: string, token: string): Promise<boolean> {
   const resend = new Resend(process.env.RESEND_API_KEY);
   const { error } = await resend.emails.send({
-    from: 'AI Paper Digest <newsletter@aipapers.dev>',
+    from: 'AI Paper Digest <newsletter@send.paper-digest.app>',
     to: email,
     subject: 'Welcome to AI Paper Digest!',
     html: renderWelcomeEmail({ unsubscribeToken: token, siteUrl: SITE_URL }),
