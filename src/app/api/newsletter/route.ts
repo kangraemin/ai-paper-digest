@@ -2,37 +2,62 @@ import { db } from '@/lib/db';
 import { subscribers } from '@/lib/db/schema';
 import { eq } from 'drizzle-orm';
 import { NextRequest, NextResponse } from 'next/server';
+import { Resend } from 'resend';
+import { renderWelcomeEmail } from '@/lib/email/templates';
+
+const resend = new Resend(process.env.RESEND_API_KEY);
+const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL || 'https://paper-digest.app').trim();
+
+async function sendWelcomeEmail(email: string, token: string): Promise<boolean> {
+  const { error } = await resend.emails.send({
+    from: 'AI Paper Digest <newsletter@aipapers.dev>',
+    to: email,
+    subject: 'Welcome to AI Paper Digest!',
+    html: renderWelcomeEmail({ unsubscribeToken: token, siteUrl: SITE_URL }),
+  });
+  return !error;
+}
 
 export async function POST(req: NextRequest) {
   try {
     const { email } = await req.json();
 
     if (!email || !email.includes('@')) {
-      return NextResponse.json({ error: '유효한 이메일을 입력하세요.' }, { status: 400 });
+      return NextResponse.json({ error: 'Invalid email', code: 'INVALID_EMAIL' }, { status: 400 });
     }
 
     const existing = await db.select().from(subscribers).where(eq(subscribers.email, email)).limit(1);
     if (existing.length > 0) {
       if (existing[0].isActive) {
-        return NextResponse.json({ error: '이미 구독 중입니다.' }, { status: 409 });
+        return NextResponse.json({ error: 'Already subscribed', code: 'ALREADY_SUBSCRIBED' }, { status: 409 });
+      }
+      const token = existing[0].unsubscribeToken || crypto.randomUUID();
+      const sent = await sendWelcomeEmail(email, token);
+      if (!sent) {
+        return NextResponse.json({ error: 'Email send failed', code: 'EMAIL_SEND_FAILED' }, { status: 422 });
       }
       await db.update(subscribers)
-        .set({ isActive: true, unsubscribedAt: null, unsubscribeToken: existing[0].unsubscribeToken || crypto.randomUUID() })
+        .set({ isActive: true, unsubscribedAt: null, unsubscribeToken: token })
         .where(eq(subscribers.email, email));
-      return NextResponse.json({ message: '구독이 재활성화되었습니다.' });
+      return NextResponse.json({ message: 'Reactivated' });
     }
 
-    const id = crypto.randomUUID();
+    const token = crypto.randomUUID();
+    const sent = await sendWelcomeEmail(email, token);
+    if (!sent) {
+      return NextResponse.json({ error: 'Email send failed', code: 'EMAIL_SEND_FAILED' }, { status: 422 });
+    }
+
     await db.insert(subscribers).values({
-      id,
+      id: crypto.randomUUID(),
       email,
       isActive: true,
       subscribedAt: new Date().toISOString(),
-      unsubscribeToken: crypto.randomUUID(),
+      unsubscribeToken: token,
     });
 
-    return NextResponse.json({ message: '구독이 완료되었습니다.' }, { status: 201 });
+    return NextResponse.json({ message: 'Subscribed' }, { status: 201 });
   } catch {
-    return NextResponse.json({ error: '서버 오류가 발생했습니다.' }, { status: 500 });
+    return NextResponse.json({ error: 'Server error', code: 'SERVER_ERROR' }, { status: 500 });
   }
 }

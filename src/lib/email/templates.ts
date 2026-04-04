@@ -15,6 +15,53 @@ interface DailyDigestData {
   siteUrl: string;
 }
 
+interface WelcomeEmailData {
+  unsubscribeToken: string;
+  siteUrl: string;
+}
+
+export function renderWelcomeEmail(data: WelcomeEmailData): string {
+  const { unsubscribeToken, siteUrl } = data;
+  return `<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"></head>
+<body style="margin: 0; padding: 0; background: #f5f5f5; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+  <table role="presentation" style="width: 100%; background: #f5f5f5;">
+    <tr>
+      <td align="center" style="padding: 20px 0;">
+        <table role="presentation" style="width: 100%; max-width: 600px; background: #ffffff; border-radius: 8px; overflow: hidden;">
+          <tr>
+            <td style="padding: 24px; background: #1a1a2e; color: #ffffff; text-align: center;">
+              <h1 style="margin: 0; font-size: 20px;">Welcome to AI Paper Digest!</h1>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding: 32px 24px;">
+              <p style="margin: 0 0 16px; font-size: 16px; color: #333; line-height: 1.6;">
+                구독해 주셔서 감사합니다! 🎉
+              </p>
+              <p style="margin: 0 0 16px; font-size: 14px; color: #666; line-height: 1.6;">
+                매일 아침 최신 AI/LLM 논문 요약을 이메일로 보내드립니다.<br>
+                Every morning, you'll receive a summary of the latest AI/LLM papers.
+              </p>
+              <p style="margin: 0; font-size: 14px; color: #666; line-height: 1.6;">
+                더 많은 논문은 <a href="${siteUrl}" style="color: #2563eb;">AI Paper Digest</a>에서 확인하세요.
+              </p>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding: 24px; background: #f9f9f9; text-align: center; font-size: 12px; color: #999;">
+              <a href="${siteUrl}/api/newsletter/unsubscribe?token=${unsubscribeToken}" style="color: #999; text-decoration: underline;">구독 해지 / Unsubscribe</a>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>`;
+}
+
 export function renderDailyDigest(data: DailyDigestData): string {
   const { date, hotPapers, devPapers, categorySummary, unsubscribeToken, siteUrl } = data;
 

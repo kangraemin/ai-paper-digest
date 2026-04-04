@@ -27,6 +27,7 @@ const dict: Record<string, Record<Lang, string>> = {
   'newsletter.success': { ko: '구독 완료!', en: 'Subscribed!' },
   'newsletter.error': { ko: '구독 실패', en: 'Failed to subscribe' },
   'newsletter.networkError': { ko: '네트워크 오류', en: 'Network error' },
+  'newsletter.emailFailed': { ko: '이메일 발송 실패. 유효한 이메일인지 확인해주세요.', en: 'Failed to send email. Please check your email address.' },
   'notice.banner.text': {
     ko: '⚠️ Slack 알림 오류 안내 — 영향받으신 분은 재설치를 요청드립니다.',
     en: '⚠️ Slack notification issue — Please reinstall if you were affected.',

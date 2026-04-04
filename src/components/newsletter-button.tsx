@@ -30,7 +30,8 @@ export function NewsletterButton({ lang }: { lang: Lang }) {
       } else {
         const data = await res.json();
         setStatus('error');
-        setMessage(data.error || t('newsletter.error', lang));
+        const key = data.code === 'EMAIL_SEND_FAILED' ? 'newsletter.emailFailed' : 'newsletter.error';
+        setMessage(t(key, lang));
       }
     } catch {
       setStatus('error');
