@@ -1,4 +1,5 @@
 #!/bin/bash
+
 # data-quality-gate: Stop hook
 # 오늘 요약한 논문/커뮤니티 데이터 품질 검사
 # - glossary 형식 (object 필수, array 금지) → 자동 수정
