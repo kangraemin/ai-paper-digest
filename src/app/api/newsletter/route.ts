@@ -5,10 +5,10 @@ import { NextRequest, NextResponse } from 'next/server';
 import { Resend } from 'resend';
 import { renderWelcomeEmail } from '@/lib/email/templates';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
 const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL || 'https://paper-digest.app').trim();
 
 async function sendWelcomeEmail(email: string, token: string): Promise<boolean> {
+  const resend = new Resend(process.env.RESEND_API_KEY);
   const { error } = await resend.emails.send({
     from: 'AI Paper Digest <newsletter@aipapers.dev>',
     to: email,
