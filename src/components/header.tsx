@@ -3,12 +3,13 @@ import { Bookmark } from 'lucide-react';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { HeaderSearch } from '@/components/header-search';
 import { AddToSlackButton } from '@/components/add-to-slack-button';
+import { NewsletterButton } from '@/components/newsletter-button';
 import { LangToggle } from '@/components/lang-toggle';
 import type { Lang } from '@/lib/i18n';
 
 export function Header({ lang }: { lang: Lang }) {
   return (
-    <header className="sticky top-0 z-50 flex items-center justify-between border-b border-border bg-background/95 backdrop-blur px-4 sm:px-6 h-14 w-full">
+    <header className="sticky top-0 z-50 relative flex items-center justify-between border-b border-border bg-background/95 backdrop-blur px-4 sm:px-6 h-14 w-full">
       <Link href={`/${lang}`} className="font-mono text-sm font-medium tracking-tight">
         <span className="text-muted-foreground">{'>'}</span> paper.digest_
       </Link>
@@ -16,6 +17,7 @@ export function Header({ lang }: { lang: Lang }) {
         <LangToggle lang={lang} />
         <ThemeToggle />
         <HeaderSearch lang={lang} />
+        <NewsletterButton lang={lang} />
         <AddToSlackButton lang={lang} />
         <Link
           href={`/${lang}/bookmarks`}

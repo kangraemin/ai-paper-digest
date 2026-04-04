@@ -20,6 +20,13 @@ const dict: Record<string, Record<Lang, string>> = {
   'install.fail.title': { ko: '설치 실패', en: 'Installation Failed' },
   'install.fail.error': { ko: '오류 코드: {code}', en: 'Error code: {code}' },
   'install.fail.link': { ko: '다시 시도하기', en: 'Try Again' },
+  'newsletter.label': { ko: '매일 아침 AI 논문 요약 받기', en: 'Get daily AI paper digest' },
+  'newsletter.placeholder': { ko: '이메일 주소', en: 'Email address' },
+  'newsletter.subscribe': { ko: '구독', en: 'Subscribe' },
+  'newsletter.loading': { ko: '구독 중...', en: 'Subscribing...' },
+  'newsletter.success': { ko: '구독 완료!', en: 'Subscribed!' },
+  'newsletter.error': { ko: '구독 실패', en: 'Failed to subscribe' },
+  'newsletter.networkError': { ko: '네트워크 오류', en: 'Network error' },
   'notice.banner.text': {
     ko: '⚠️ Slack 알림 오류 안내 — 영향받으신 분은 재설치를 요청드립니다.',
     en: '⚠️ Slack notification issue — Please reinstall if you were affected.',
