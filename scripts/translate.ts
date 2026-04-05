@@ -1,6 +1,6 @@
 import { db } from '../src/lib/db';
 import { papers } from '../src/lib/db/schema';
-import { runClaude } from '../src/lib/claude/runner';
+import { callGemma } from '../src/lib/gemma/client';
 import { eq, and, isNotNull, or, isNull } from 'drizzle-orm';
 
 const TRANSLATE_PROMPT = `You are a technical translator specializing in AI/ML content. Translate the following Korean fields to English.
@@ -80,7 +80,7 @@ async function main() {
         .replace('{input}', JSON.stringify(input, null, 2))
         .replace('{outputKeys}', outputKeys);
 
-      const raw = await runClaude(prompt, { model: 'sonnet', timeout: 120000, jsonOutput: true });
+      const raw = await callGemma(prompt);
       const jsonMatch = raw.match(/\{[\s\S]*\}/);
       if (!jsonMatch) throw new Error('Failed to parse translation response');
       const result = JSON.parse(jsonMatch[0]);
