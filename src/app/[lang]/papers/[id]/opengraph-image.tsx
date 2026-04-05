@@ -8,20 +8,24 @@ export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
 
 interface Props {
-  params: Promise<{ id: string }>;
+  params: Promise<{ id: string; lang: string }>;
 }
 
 export default async function Image({ params }: Props) {
-  const { id } = await params;
+  const { id, lang } = await params;
   const result = await db
-    .select({ titleKo: papers.titleKo, title: papers.title, oneLiner: papers.oneLiner })
+    .select({ titleKo: papers.titleKo, title: papers.title, oneLiner: papers.oneLiner, oneLinerEn: papers.oneLinerEn })
     .from(papers)
     .where(eq(papers.id, id))
     .limit(1);
 
   const paper = result[0];
-  const title = paper?.titleKo || paper?.title || 'AI Paper Digest';
-  const description = paper?.oneLiner || '매일 업데이트되는 AI/LLM 논문 한글 요약';
+  const title = lang === 'en'
+    ? (paper?.title || 'AI Paper Digest')
+    : (paper?.titleKo || paper?.title || 'AI Paper Digest');
+  const description = lang === 'en'
+    ? (paper?.oneLinerEn || paper?.oneLiner || 'Daily AI/LLM paper summaries')
+    : (paper?.oneLiner || '매일 업데이트되는 AI/LLM 논문 한글 요약');
 
   return new ImageResponse(
     (
