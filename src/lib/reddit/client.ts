@@ -54,6 +54,14 @@ export async function fetchRedditAI(
         const authorName = String((entry.author as Record<string, string>)?.name ?? '').replace('/u/', '');
         const updated = String(entry.updated ?? '');
 
+        // RSS <content> HTML에서 텍스트 추출
+        const contentHtml = String((entry.content as Record<string, string>)?.['#text'] ?? entry.content ?? '');
+        const contentText = contentHtml
+          .replace(/<[^>]*>/g, ' ')
+          .replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>')
+          .replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&#32;/g, ' ')
+          .replace(/\s+/g, ' ').trim();
+
         return {
           id,
           title: String(entry.title ?? ''),
@@ -64,7 +72,7 @@ export async function fetchRedditAI(
           num_comments: 0,
           permalink: permalink.replace('https://www.reddit.com', ''),
           subreddit: sub,
-          selftext: '',
+          selftext: contentText.length > 50 ? contentText : '',
         };
       });
 

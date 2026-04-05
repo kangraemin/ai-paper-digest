@@ -1,8 +1,7 @@
 import { db } from '../src/lib/db';
 import { papers, screenedItems } from '../src/lib/db/schema';
 import { fetchHNTopAI } from '../src/lib/hacker-news/client';
-import { fetchRedditAI, fetchRedditPostContent } from '../src/lib/reddit/client';
-import { fetchContent } from '../src/lib/content-fetcher';
+import { fetchRedditAI } from '../src/lib/reddit/client';
 import { screenBatch } from '../src/lib/claude/screener';
 import { eq, inArray, sql } from 'drizzle-orm';
 
@@ -117,20 +116,7 @@ async function main() {
       }).onConflictDoNothing();
     } else {
       const p = c.post;
-
-      // 본문 fetch: RSS selftext → JSON API → 외부 링크 fetchContent → 없으면 skip
-      let selftext = p.selftext;
-      if (!selftext) {
-        await new Promise(r => setTimeout(r, 2000)); // rate limit 방지
-        selftext = await fetchRedditPostContent(`/r/${p.subreddit}/comments/${p.id}/`);
-      }
-      if (!selftext && p.url && !p.url.includes('reddit.com')) {
-        selftext = await fetchContent(p.url);
-      }
-      if (!selftext) {
-        console.log(`  [SKIP] 본문 없음: ${p.title.slice(0, 60)}`);
-        continue;
-      }
+      const selftext = p.selftext || p.title;
 
       const hotScore = Math.min(c.score * 10, 100);
       await db.insert(papers).values({
