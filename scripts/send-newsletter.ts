@@ -74,7 +74,7 @@ async function main() {
 
   // 6. Resend batch 발송
   const emails = activeSubscribers.map(sub => ({
-    from: 'AI Papers <newsletter@send.paper-digest.app>',
+    from: 'AI Papers <newsletter@paper-digest.app>',
     to: sub.email,
     subject: `[AI Papers] ${today} 데일리 다이제스트 (${todayPapers.length}편)`,
     html: renderDailyDigest({
