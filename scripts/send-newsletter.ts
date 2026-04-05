@@ -1,6 +1,6 @@
 import { db } from '../src/lib/db';
 import { papers, subscribers } from '../src/lib/db/schema';
-import { eq, and, like, isNull, desc } from 'drizzle-orm';
+import { eq, and, like, isNull, desc, sql } from 'drizzle-orm';
 import { Resend } from 'resend';
 import { renderDailyDigest } from '../src/lib/email/templates';
 
@@ -13,11 +13,11 @@ const SITE_URL = process.env.SITE_URL || 'https://localhost:3000';
 const BATCH_SIZE = 100;
 
 async function main() {
-  const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+  const today = new Date(Date.now() + 9 * 60 * 60 * 1000).toISOString().split('T')[0]; // KST YYYY-MM-DD
 
   // 1. 오늘 요약된 논문 조회
   const todayPapers = await db.select().from(papers)
-    .where(like(papers.summarizedAt, `${today}%`))
+    .where(sql`DATE(datetime(${papers.summarizedAt}, '+9 hours')) = ${today}`)
     .orderBy(desc(papers.devRelevance))
     .limit(50);
 
