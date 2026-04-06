@@ -44,6 +44,7 @@ function runClaudeCLI(prompt: string, options: RunClaudeOptions): Promise<string
           }
           resolve(envelope.result ?? '');
         } catch {
+          console.warn('[claude-runner] JSON parse failed, returning raw output');
           resolve(stdout.trim());
         }
       } else {

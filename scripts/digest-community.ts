@@ -43,7 +43,9 @@ export async function digestCommunity(): Promise<number> {
             const post = data[0]?.data?.children?.[0]?.data;
             content = post?.selftext || post?.title || '';
           }
-        } catch {}
+        } catch (e) {
+          console.warn(`  [Reddit JSON API] ${item.id}: ${(e as Error).message}`);
+        }
         if (!content) content = await fetchContent(item.arxivUrl);
       } else {
         content = await fetchContent(item.arxivUrl);
@@ -71,7 +73,12 @@ export async function digestCommunity(): Promise<number> {
 
       console.log('  🤖 정리 중...');
       const raw = await runClaude(prompt, { model: 'sonnet', timeout: 120000 });
-      const result = JSON.parse(extractJson(raw));
+      let result;
+      try { result = JSON.parse(extractJson(raw)); }
+      catch (e) {
+        console.error(`  [digest] JSON parse failed for ${item.id}:`, (e as Error).message);
+        continue;
+      }
 
       // 4. DB 업데이트
       await db.update(papers).set({

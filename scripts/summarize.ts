@@ -13,6 +13,7 @@ async function main() {
   if (unsummarized.length === 0) return;
 
   let done = 0;
+  let failed = 0;
   for (const p of unsummarized) {
     try {
       let abstract = p.abstract;
@@ -68,10 +69,11 @@ async function main() {
       console.log(`[${done}/${unsummarized.length}] ✅ ${p.title?.slice(0, 60)}`);
     } catch (e) {
       console.error(`❌ ${p.id}:`, e);
+      failed++;
     }
   }
 
-  console.log(`✅ Done ${done}/${unsummarized.length}`);
+  console.log(`✅ Done ${done}/${unsummarized.length} (failed: ${failed})`);
 }
 
 main().catch(console.error);

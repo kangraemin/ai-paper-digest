@@ -28,7 +28,12 @@ export async function summarizePaper(
     console.error(`[summarize] 파싱 실패. claude 응답:\n${raw.slice(0, 300)}`);
     throw new Error('Failed to parse summary response');
   }
-  return JSON.parse(jsonMatch[0]);
+  try {
+    return JSON.parse(jsonMatch[0]);
+  } catch (e) {
+    console.error('[summarize] JSON parse failed:', jsonMatch[0].slice(0, 200));
+    throw new Error('Failed to parse summary JSON');
+  }
 }
 
 export async function summarizeBatch(

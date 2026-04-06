@@ -1,6 +1,7 @@
 import { db } from '../src/lib/db';
 import { papers } from '../src/lib/db/schema';
 import { callGemma } from '../src/lib/gemma/client';
+import { withRetry } from '../src/lib/utils/retry';
 import { eq, and, isNotNull, or, isNull } from 'drizzle-orm';
 
 const TRANSLATE_PROMPT = `You are a technical translator specializing in AI/ML content. Translate the following Korean fields to English.
@@ -80,10 +81,12 @@ async function main() {
         .replace('{input}', JSON.stringify(input, null, 2))
         .replace('{outputKeys}', outputKeys);
 
-      const raw = await callGemma(prompt);
+      const raw = await withRetry(() => callGemma(prompt), { label: `translate:${p.id}`, retries: 2 });
       const jsonMatch = raw.match(/\{[\s\S]*\}/);
       if (!jsonMatch) throw new Error('Failed to parse translation response');
-      const result = JSON.parse(jsonMatch[0]);
+      let result;
+      try { result = JSON.parse(jsonMatch[0]); }
+      catch { throw new Error(`Invalid JSON from Gemma: ${jsonMatch[0].slice(0, 100)}`); }
 
       // 누락됐던 필드만 업데이트
       const update: Record<string, string> = {};
