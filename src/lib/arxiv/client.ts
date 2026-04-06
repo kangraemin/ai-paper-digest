@@ -19,7 +19,7 @@ export async function fetchRecentPapers(maxResults = 100): Promise<ArxivEntry[]>
   const url = `${ARXIV_API}?search_query=${query}&sortBy=submittedDate&sortOrder=descending&max_results=${maxResults}`;
 
   let res!: Response;
-  for (let attempt = 1; attempt <= 100; attempt++) {
+  for (let attempt = 1; attempt <= 10; attempt++) {
     res = await fetch(url);
     if (res.status === 429) {
       console.log(`[arXiv] 429 rate limited, ${attempt}/100 retry in 60s...`);
