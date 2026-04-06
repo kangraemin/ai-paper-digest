@@ -85,10 +85,14 @@ async function main() {
 
   // === 스크리닝 ===
   console.log('🔍 Screening community posts...');
-  const [hnResults, redditResults] = await Promise.all([
+  const [hnSettled, redditSettled] = await Promise.allSettled([
     screenBatch(toScreenHN.map(s => ({ id: `hn_${s.id}`, title: s.title, abstract: s.title })), 3, 'hn'),
     screenBatch(toScreenReddit.map(p => ({ id: `reddit_${p.subreddit}_${p.id}`, title: p.title, abstract: p.selftext || p.title })), 3, 'reddit'),
   ]);
+  const hnResults = hnSettled.status === 'fulfilled' ? hnSettled.value : new Map<string, { pass: boolean; score: number; reason: string }>();
+  const redditResults = redditSettled.status === 'fulfilled' ? redditSettled.value : new Map<string, { pass: boolean; score: number; reason: string }>();
+  if (hnSettled.status === 'rejected') console.error('[screening] HN failed:', hnSettled.reason);
+  if (redditSettled.status === 'rejected') console.error('[screening] Reddit failed:', redditSettled.reason);
 
   // 스크리닝 결과 캐시 저장
   const now = new Date().toISOString();

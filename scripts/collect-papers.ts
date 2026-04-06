@@ -3,6 +3,7 @@ import { papers, screenedItems } from '../src/lib/db/schema';
 import { fetchRecentPapers } from '../src/lib/arxiv/client';
 import { calculateHotScore } from '../src/lib/hot-scorer';
 import { screenBatch } from '../src/lib/claude/screener';
+import { withRetry } from '../src/lib/utils/retry';
 import { eq, inArray, sql } from 'drizzle-orm';
 
 const HF_API = 'https://huggingface.co/api/papers?limit=40';
@@ -47,9 +48,11 @@ async function main() {
 
   // === HuggingFace ===
   console.log('📄 Fetching papers from HuggingFace...');
-  const hfRes = await fetch(HF_API);
-  if (!hfRes.ok) throw new Error(`HF API error: ${hfRes.status}`);
-  const hfFetched: HfPaper[] = await hfRes.json();
+  const hfFetched = await withRetry(async () => {
+    const res = await fetch(HF_API);
+    if (!res.ok) throw new Error(`HF API error: ${res.status}`);
+    return await res.json() as HfPaper[];
+  }, { label: 'HF API' });
   console.log(`HuggingFace: ${hfFetched.length}개 fetch`);
 
   const newHf = [];
@@ -78,10 +81,14 @@ async function main() {
 
   // === 스크리닝 ===
   console.log('🔍 Screening papers...');
-  const [arxivResults, hfResults] = await Promise.all([
+  const [arxivSettled, hfSettled] = await Promise.allSettled([
     screenBatch(toScreenArxiv.map(p => ({ id: p.id, title: p.title, abstract: p.abstract }))),
     screenBatch(toScreenHf.map(p => ({ id: p.id, title: p.title, abstract: p.summary ?? p.title }))),
   ]);
+  const arxivResults = arxivSettled.status === 'fulfilled' ? arxivSettled.value : new Map<string, { pass: boolean; score: number; reason: string }>();
+  const hfResults = hfSettled.status === 'fulfilled' ? hfSettled.value : new Map<string, { pass: boolean; score: number; reason: string }>();
+  if (arxivSettled.status === 'rejected') console.error('[screening] arXiv failed:', arxivSettled.reason);
+  if (hfSettled.status === 'rejected') console.error('[screening] HF failed:', hfSettled.reason);
 
   // 스크리닝 결과 캐시 저장
   const now = new Date().toISOString();

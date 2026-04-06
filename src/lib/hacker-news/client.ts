@@ -1,3 +1,5 @@
+import { withRetry } from '../utils/retry';
+
 const HN_API = 'https://hacker-news.firebaseio.com/v0';
 
 export interface HNItem {
@@ -29,8 +31,11 @@ const AI_KEYWORDS = [
 ];
 
 export async function fetchHNTopAI(limit = 30): Promise<HNItem[]> {
-  const res = await fetch(`${HN_API}/topstories.json`);
-  const ids: number[] = await res.json();
+  const ids = await withRetry(async () => {
+    const res = await fetch(`${HN_API}/topstories.json`);
+    if (!res.ok) throw new Error(`HN API error: ${res.status}`);
+    return await res.json() as number[];
+  }, { label: 'HN topstories' });
 
   // 상위 200개만 fetch (API 부담 최소화)
   const settled = await Promise.allSettled(
@@ -80,10 +85,11 @@ export async function fetchHNStoriesAlgolia(
 
   for (let page = 0; page < maxPages; page++) {
     const url = `https://hn.algolia.com/api/v1/search?tags=story&numericFilters=created_at_i>${since},points>${minScore}&hitsPerPage=100&page=${page}`;
-    const res = await fetch(url);
-    if (!res.ok) throw new Error(`Algolia HN API error: ${res.status}`);
-
-    const data = await res.json();
+    const data = await withRetry(async () => {
+      const res = await fetch(url);
+      if (!res.ok) throw new Error(`Algolia HN API error: ${res.status}`);
+      return await res.json();
+    }, { label: 'HN Algolia' });
     const hits: AlgoliaHNHit[] = data.hits ?? [];
     if (hits.length === 0) break;
 
