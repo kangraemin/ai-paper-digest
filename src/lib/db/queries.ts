@@ -3,7 +3,8 @@ import { papers } from './schema';
 import { desc, like, or, and, sql, isNotNull } from 'drizzle-orm';
 
 export async function searchPapers(query: string, limit = 20, offset = 0) {
-  const pattern = `%${query}%`;
+  const escaped = query.replace(/%/g, '\\%').replace(/_/g, '\\_');
+  const pattern = `%${escaped}%`;
 
   const searchCondition = and(
     isNotNull(papers.summarizedAt),

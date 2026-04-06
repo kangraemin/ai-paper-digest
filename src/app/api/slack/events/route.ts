@@ -16,7 +16,9 @@ function verifySlackSignature(req: NextRequest, body: string): boolean {
 
 export async function POST(req: NextRequest) {
   const body = await req.text();
-  const payload = JSON.parse(body);
+  let payload;
+  try { payload = JSON.parse(body); }
+  catch { return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 }); }
 
   // url_verification은 signature 검증 없이 즉시 응답
   if (payload.type === 'url_verification') {

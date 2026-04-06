@@ -11,8 +11,8 @@ export async function GET(req: NextRequest) {
   }
   const category = searchParams.get('category');
   const source = searchParams.get('source');
-  const page = parseInt(searchParams.get('page') || '1');
-  const limit = parseInt(searchParams.get('limit') || '20');
+  const page = Math.max(1, parseInt(searchParams.get('page') || '1') || 1);
+  const limit = Math.min(Math.max(1, parseInt(searchParams.get('limit') || '20') || 20), 100);
   const offset = (page - 1) * limit;
 
   const conditions = [];
@@ -39,38 +39,43 @@ export async function GET(req: NextRequest) {
 
   const where = conditions.length > 0 ? and(...conditions) : undefined;
 
-  const [results, countResult] = await Promise.all([
-    db.select({
-      id: papers.id,
-      title: papers.title,
-      titleKo: papers.titleKo,
-      oneLiner: papers.oneLiner,
-      oneLinerEn: papers.oneLinerEn,
-      aiCategory: papers.aiCategory,
-      devRelevance: papers.devRelevance,
-      targetAudience: papers.targetAudience,
-      tags: papers.tags,
-      source: papers.source,
-      isHot: papers.isHot,
-      publishedAt: papers.publishedAt,
-      authors: papers.authors,
-      venue: papers.venue,
-      affiliations: papers.affiliations,
-    })
-      .from(papers)
-      .where(where)
-      .orderBy(desc(papers.publishedAt))
-      .limit(limit)
-      .offset(offset),
-    db.select({ count: sql<number>`count(*)` })
-      .from(papers)
-      .where(where),
-  ]);
+  try {
+    const [results, countResult] = await Promise.all([
+      db.select({
+        id: papers.id,
+        title: papers.title,
+        titleKo: papers.titleKo,
+        oneLiner: papers.oneLiner,
+        oneLinerEn: papers.oneLinerEn,
+        aiCategory: papers.aiCategory,
+        devRelevance: papers.devRelevance,
+        targetAudience: papers.targetAudience,
+        tags: papers.tags,
+        source: papers.source,
+        isHot: papers.isHot,
+        publishedAt: papers.publishedAt,
+        authors: papers.authors,
+        venue: papers.venue,
+        affiliations: papers.affiliations,
+      })
+        .from(papers)
+        .where(where)
+        .orderBy(desc(papers.publishedAt))
+        .limit(limit)
+        .offset(offset),
+      db.select({ count: sql<number>`count(*)` })
+        .from(papers)
+        .where(where),
+    ]);
 
-  const total = countResult[0].count;
+    const total = countResult[0].count;
 
-  return NextResponse.json(
-    { papers: results, total, page, limit, hasMore: page * limit < total },
-    { headers: { 'Cache-Control': 'public, s-maxage=3600, stale-while-revalidate=86400' } }
-  );
+    return NextResponse.json(
+      { papers: results, total, page, limit, hasMore: page * limit < total },
+      { headers: { 'Cache-Control': 'public, s-maxage=3600, stale-while-revalidate=86400' } }
+    );
+  } catch (e) {
+    console.error('[api/papers]', e);
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+  }
 }

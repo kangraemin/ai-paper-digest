@@ -5,7 +5,7 @@ export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const q = searchParams.get('q');
   const page = parseInt(searchParams.get('page') || '1');
-  const limit = parseInt(searchParams.get('limit') || '20');
+  const limit = Math.min(Math.max(1, parseInt(searchParams.get('limit') || '20') || 20), 100);
 
   if (!q || q.trim().length === 0) {
     return NextResponse.json({ papers: [], total: 0 });
