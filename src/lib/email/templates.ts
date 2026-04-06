@@ -1,3 +1,5 @@
+import { escapeHtml } from '../utils/safe-json';
+
 interface PaperItem {
   title: string;
   titleKo?: string | null;
@@ -69,9 +71,9 @@ export function renderDailyDigest(data: DailyDigestData): string {
     <tr>
       <td style="padding: 12px 0; border-bottom: 1px solid #eee;">
         <a href="${paper.arxivUrl}" style="color: #2563eb; text-decoration: none; font-weight: 600;">
-          ${paper.titleKo || paper.title}
+          ${escapeHtml(paper.titleKo || paper.title)}
         </a>
-        ${paper.oneLiner ? `<p style="margin: 4px 0 0; color: #666; font-size: 14px;">${paper.oneLiner}</p>` : ''}
+        ${paper.oneLiner ? `<p style="margin: 4px 0 0; color: #666; font-size: 14px;">${escapeHtml(paper.oneLiner)}</p>` : ''}
         ${paper.aiCategory ? `<span style="display: inline-block; margin-top: 4px; padding: 2px 8px; background: #f0f0f0; border-radius: 4px; font-size: 12px; color: #888;">${paper.aiCategory}</span>` : ''}
       </td>
     </tr>`;

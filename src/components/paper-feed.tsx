@@ -87,7 +87,7 @@ export function PaperFeed({ initialPapers, initialSource = 'all', initialCategor
         if (data.papers.length === 0) {
           trackEvent('search_no_results', { search_term: searchQuery });
         }
-      } finally {
+      } catch {
         setSearching(false);
       }
     }, 300);
@@ -98,11 +98,15 @@ export function PaperFeed({ initialPapers, initialSource = 'all', initialCategor
     setSearchLoadingMore(true);
     const nextPage = searchPage + 1;
     trackEvent('load_more', { page: nextPage });
-    const res = await fetch(`/api/search?q=${encodeURIComponent(searchQuery)}&limit=20&page=${nextPage}`);
-    const data = await res.json();
-    setSearchResults(prev => [...prev, ...data.papers]);
-    setSearchPage(nextPage);
-    setSearchHasMore(data.papers.length === 20 && (searchResults.length + data.papers.length) < data.total);
+    try {
+      const res = await fetch(`/api/search?q=${encodeURIComponent(searchQuery)}&limit=20&page=${nextPage}`);
+      const data = await res.json();
+      setSearchResults(prev => [...prev, ...data.papers]);
+      setSearchPage(nextPage);
+      setSearchHasMore(data.papers.length === 20 && (searchResults.length + data.papers.length) < data.total);
+    } catch {
+      // search load more failed silently
+    }
     setSearchLoadingMore(false);
   }, [searchPage, searchQuery, searchResults.length]);
 
@@ -126,7 +130,8 @@ export function PaperFeed({ initialPapers, initialSource = 'all', initialCategor
         setAllPapers(data.papers);
         setHasMore(data.hasMore);
         setLoading(false);
-      });
+      })
+      .catch(() => { setLoading(false); });
   }, [source, category, router]);
 
   // Load More
@@ -140,10 +145,14 @@ export function PaperFeed({ initialPapers, initialSource = 'all', initialCategor
     params.set('page', String(nextPage));
     params.set('limit', '20');
 
-    const data = await fetch(`/api/papers?${params}`).then(r => r.json());
-    setAllPapers(prev => [...prev, ...data.papers]);
-    setHasMore(data.hasMore);
-    setPage(nextPage);
+    try {
+      const data = await fetch(`/api/papers?${params}`).then(r => r.json());
+      setAllPapers(prev => [...prev, ...data.papers]);
+      setHasMore(data.hasMore);
+      setPage(nextPage);
+    } catch {
+      // load more failed silently
+    }
     setLoadingMore(false);
   }, [page, source, category]);
 

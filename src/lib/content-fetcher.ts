@@ -24,7 +24,7 @@ export async function fetchContent(url: string, maxChars = 5000): Promise<string
 
     return text.slice(0, maxChars);
   } catch (e) {
-    console.warn('[content-fetcher] fetch failed:', (e as Error).message);
+    console.warn(`[content-fetcher] fetch failed for ${url}:`, (e as Error).message);
     return '';
   }
 }

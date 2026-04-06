@@ -21,7 +21,8 @@ export default function TrendsClient() {
       .then(res => {
         setData(res.data);
         setLoading(false);
-      });
+      })
+      .catch(() => { setLoading(false); });
   }, [period]);
 
   return (

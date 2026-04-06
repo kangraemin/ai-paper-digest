@@ -87,14 +87,16 @@ async function main() {
     }),
   }));
 
-  const { data, error } = await resend.batch.send(emails);
-
-  if (error) {
-    console.error('❌ 발송 실패:', error);
-    process.exit(1);
+  let sendResult;
+  for (let attempt = 1; attempt <= 2; attempt++) {
+    const { data, error } = await resend.batch.send(emails);
+    if (!error) { sendResult = data; break; }
+    if (attempt === 2) { console.error('❌ 발송 실패 (2회 시도):', error); process.exit(1); }
+    console.warn(`⚠️ 발송 실패 (${attempt}/2), 5초 후 재시도:`, error);
+    await new Promise(r => setTimeout(r, 5000));
   }
 
-  console.log(`✅ ${activeSubscribers.length}명에게 발송 완료`, data);
+  console.log(`✅ ${activeSubscribers.length}명에게 발송 완료`, sendResult);
 }
 
 main().catch(console.error);

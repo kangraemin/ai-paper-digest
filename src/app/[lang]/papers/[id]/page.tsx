@@ -9,6 +9,7 @@ import { BookmarkButton } from '@/components/bookmark-button';
 import { CopyButton } from '@/components/copy-button';
 import { getLocalizedField } from '@/lib/i18n';
 import type { Lang } from '@/lib/i18n';
+import { safeJsonParse } from '@/lib/utils/safe-json';
 import Link from 'next/link';
 import { Calendar, Users, FileText, Zap, ChevronDown } from 'lucide-react';
 import { PaperViewTracker } from '@/components/paper-view-tracker';
@@ -73,7 +74,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const description = (lang === 'en' ? paper.oneLinerEn : paper.oneLiner)
     || paper.abstract?.slice(0, 160)
     || (lang === 'en' ? `${paper.title} — AI research summary` : `${paper.titleKo || paper.title} — AI 논문 요약`);
-  const authorList = JSON.parse(paper.authors || '[]') as string[];
+  const authorList = safeJsonParse<string[]>(paper.authors, []);
 
   return {
     title,
@@ -112,7 +113,7 @@ export default async function PaperDetail({ params }: Props) {
 
   if (result.length === 0) notFound();
   const paper = result[0];
-  const authorList = JSON.parse(paper.authors) as string[];
+  const authorList = safeJsonParse<string[]>(paper.authors, []);
   const catColor = paper.aiCategory ? (categoryColorMap[paper.aiCategory] ?? '#888') : '#888';
   const catName = paper.aiCategory ? (categoryDisplayName[paper.aiCategory] ?? paper.aiCategory) : null;
   const displayTitle = lang === 'en' ? paper.title : (paper.titleKo || paper.title);

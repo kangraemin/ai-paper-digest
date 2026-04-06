@@ -22,7 +22,7 @@ export async function fetchRecentPapers(maxResults = 100): Promise<ArxivEntry[]>
   for (let attempt = 1; attempt <= 10; attempt++) {
     res = await fetch(url);
     if (res.status === 429) {
-      console.log(`[arXiv] 429 rate limited, ${attempt}/100 retry in 60s...`);
+      console.log(`[arXiv] 429 rate limited, ${attempt}/10 retry in 60s...`);
       await new Promise(r => setTimeout(r, 60000));
       continue;
     }

@@ -69,7 +69,7 @@ export default function BookmarksPage() {
     ).then(results => {
       setPapers(results.filter(Boolean));
       setLoading(false);
-    });
+    }).catch(() => { setLoading(false); });
   }, [bookmarks]);
 
   const filtered = papers.filter(p => {
