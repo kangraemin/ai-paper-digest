@@ -15,7 +15,38 @@ async function main() {
   let done = 0;
   for (const p of unsummarized) {
     try {
-      const result = await summarizePaper(p.title, p.abstract, p.pdfUrl ?? undefined);
+      let abstract = p.abstract;
+
+      // 안전망: Reddit 글인데 abstract가 title과 같으면 → fallback 체인
+      if (p.source === 'reddit' && abstract.trim() === p.title.trim()) {
+        const permalink = p.arxivUrl?.match(/reddit\.com(\/r\/[^?]+)/)?.[1];
+        if (permalink) {
+          const { fetchRedditPostContent, fetchRedditComments } = await import('../src/lib/reddit/client');
+
+          // 본문: JSON API
+          const body = await fetchRedditPostContent(permalink);
+
+          // 댓글: JSON API
+          const comments = await fetchRedditComments(permalink, 5);
+          const commentText = comments.length > 0
+            ? '\n\n[Top Comments]\n' + comments.join('\n\n')
+            : '';
+
+          const combined = ((body || '') + commentText).trim();
+
+          if (combined.length > 50) {
+            abstract = combined;
+            await db.update(papers).set({ abstract: combined }).where(eq(papers.id, p.id));
+            console.log(`  📥 [fallback OK] ${p.id} (body: ${(body||'').length}, comments: ${comments.length})`);
+          } else {
+            await db.delete(papers).where(eq(papers.id, p.id));
+            console.log(`  🗑️ [skip] ${p.id} — no content, deleted`);
+            continue;
+          }
+        }
+      }
+
+      const result = await summarizePaper(p.title, abstract, p.pdfUrl ?? undefined);
       await db.update(papers)
         .set({
           titleKo: result.titleKo,

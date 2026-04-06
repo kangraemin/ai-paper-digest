@@ -1,7 +1,7 @@
 import { db } from '../src/lib/db';
 import { papers, screenedItems } from '../src/lib/db/schema';
 import { fetchHNTopAI } from '../src/lib/hacker-news/client';
-import { fetchRedditAI } from '../src/lib/reddit/client';
+import { fetchRedditAI, fetchRedditPostContent, fetchRedditComments } from '../src/lib/reddit/client';
 import { screenBatch } from '../src/lib/claude/screener';
 import { eq, inArray, sql } from 'drizzle-orm';
 
@@ -42,10 +42,36 @@ async function main() {
   }
   console.log(`[중복제거] Reddit ${posts.length}개 중 ${newPosts.length}개 신규`);
 
+  // === Reddit content enrichment ===
+  const enrichedPosts = [];
+  for (const p of newPosts) {
+    if (p.selftext && p.selftext.trim().length > 50) {
+      enrichedPosts.push(p);
+      continue;
+    }
+    // selftext 없으면 JSON API로 본문 + 댓글 시도
+    const content = await fetchRedditPostContent(p.permalink);
+    if (content && content.length > 50) {
+      p.selftext = content;
+      enrichedPosts.push(p);
+      console.log(`  📥 [enrich] ${p.id} — selftext fetched (${content.length} chars)`);
+      continue;
+    }
+    const comments = await fetchRedditComments(p.permalink, 5);
+    if (comments.length > 0) {
+      p.selftext = comments.join('\n\n');
+      enrichedPosts.push(p);
+      console.log(`  💬 [enrich] ${p.id} — comments fallback (${comments.length})`);
+      continue;
+    }
+    console.log(`  ⛔ [skip] ${p.id} — no content, no comments`);
+  }
+  console.log(`[enrichment] Reddit ${newPosts.length}개 중 ${enrichedPosts.length}개 내용 확보`);
+
   // === 스크리닝 캐시 체크 ===
   const allIds = [
     ...newStories.map(s => `hn_${s.id}`),
-    ...newPosts.map(p => `reddit_${p.subreddit}_${p.id}`),
+    ...enrichedPosts.map(p => `reddit_${p.subreddit}_${p.id}`),
   ];
   const cachedScreenings = allIds.length > 0
     ? await db.select().from(screenedItems).where(inArray(screenedItems.id, allIds))
@@ -53,9 +79,9 @@ async function main() {
   const cachedIds = new Set(cachedScreenings.map(r => r.id));
 
   const toScreenHN = newStories.filter(s => !cachedIds.has(`hn_${s.id}`));
-  const toScreenReddit = newPosts.filter(p => !cachedIds.has(`reddit_${p.subreddit}_${p.id}`));
+  const toScreenReddit = enrichedPosts.filter(p => !cachedIds.has(`reddit_${p.subreddit}_${p.id}`));
   console.log(`[스크리닝캐시] HN ${newStories.length}개 중 ${toScreenHN.length}개 신규 스크리닝`);
-  console.log(`[스크리닝캐시] Reddit ${newPosts.length}개 중 ${toScreenReddit.length}개 신규 스크리닝`);
+  console.log(`[스크리닝캐시] Reddit ${enrichedPosts.length}개 중 ${toScreenReddit.length}개 신규 스크리닝`);
 
   // === 스크리닝 ===
   console.log('🔍 Screening community posts...');
@@ -86,7 +112,7 @@ async function main() {
     ...newStories
       .filter(s => hnResults.get(`hn_${s.id}`)?.pass && (hnResults.get(`hn_${s.id}`)?.score ?? 0) >= MIN_SCORE)
       .map(s => ({ source: 'hacker_news' as const, story: s, id: `hn_${s.id}`, score: hnResults.get(`hn_${s.id}`)!.score })),
-    ...newPosts
+    ...enrichedPosts
       .filter(p => redditResults.get(`reddit_${p.subreddit}_${p.id}`)?.pass && (redditResults.get(`reddit_${p.subreddit}_${p.id}`)?.score ?? 0) >= MIN_SCORE)
       .map(p => ({ source: 'reddit' as const, post: p, id: `reddit_${p.subreddit}_${p.id}`, score: redditResults.get(`reddit_${p.subreddit}_${p.id}`)!.score })),
   ].sort((a, b) => b.score - a.score).slice(0, MAX_POSTS);
