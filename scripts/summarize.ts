@@ -2,6 +2,7 @@ import { db } from '../src/lib/db';
 import { papers } from '../src/lib/db/schema';
 import { summarizePaper } from '../src/lib/claude/client';
 import { eq, isNull } from 'drizzle-orm';
+import { isRedditUIText } from '../src/lib/reddit/client';
 
 async function main() {
   const unsummarized = await db.select()
@@ -18,8 +19,13 @@ async function main() {
     try {
       let abstract = p.abstract;
 
-      // 안전망: Reddit 글인데 abstract가 title과 같으면 → fallback 체인
-      if (p.source === 'reddit' && abstract.trim() === p.title.trim()) {
+      // 안전망: Reddit 글인데 내용이 부실하면 → fallback 체인
+      const needsFallback = p.source === 'reddit' && (
+        abstract.trim() === p.title.trim() ||
+        abstract.trim().length < 150 ||
+        isRedditUIText(abstract)
+      );
+      if (needsFallback) {
         const permalink = p.arxivUrl?.match(/reddit\.com(\/r\/[^?]+)/)?.[1];
         if (permalink) {
           const { fetchRedditPostContent, fetchRedditComments } = await import('../src/lib/reddit/client');

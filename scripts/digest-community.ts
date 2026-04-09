@@ -63,12 +63,21 @@ export async function digestCommunity(): Promise<number> {
         console.log(`  댓글: ${comments.length}개`);
       }
 
+      // 내용 유효성 검사: 내용과 댓글 모두 부족하면 삭제
+      const hasContent = content.length >= 150;
+      const hasComments = comments.length >= 3;
+      if (!hasContent && !hasComments) {
+        console.log(`  ⛔ [insufficient] ${item.id} — 내용(${content.length}자) + 댓글(${comments.length}개) 부족, 삭제`);
+        await db.delete(papers).where(eq(papers.id, item.id));
+        continue;
+      }
+
       // 3. claude -p로 정리
       const template = item.source === 'reddit' ? REDDIT_DIGEST_PROMPT : COMMUNITY_DIGEST_PROMPT;
       const prompt = template
         .replace('{title}', item.title)
         .replace('{url}', item.arxivUrl)
-        .replace('{content}', content || '(원문을 가져올 수 없습니다)')
+        .replace('{content}', content || '(원문 없음 - 댓글 참고)')
         .replace('{comments}', comments.length > 0 ? comments.join('\n---\n') : '(댓글 없음)');
 
       console.log('  🤖 정리 중...');
@@ -77,6 +86,12 @@ export async function digestCommunity(): Promise<number> {
       try { result = JSON.parse(extractJson(raw)); }
       catch (e) {
         console.error(`  [digest] JSON parse failed for ${item.id}:`, (e as Error).message);
+        continue;
+      }
+
+      if (result.insufficient_content) {
+        console.log(`  ⛔ [insufficient] ${item.id} — Claude 내용 부족 감지, 삭제`);
+        await db.delete(papers).where(eq(papers.id, item.id));
         continue;
       }
 

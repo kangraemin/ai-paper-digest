@@ -59,6 +59,9 @@ export const COMMUNITY_DIGEST_PROMPT = `당신은 AI 커뮤니티 소식을 개�
 커뮤니티 댓글:
 {comments}
 
+원문 내용이 150자 미만이고 댓글도 없으면 JSON 대신 {"insufficient_content": true}만 반환하세요.
+그 외의 경우는 반드시 완전한 JSON을 출력하세요.
+
 JSON만 출력하세요:`;
 
 export const REDDIT_DIGEST_PROMPT = `당신은 AI 커뮤니티 소식을 개발자에게 정리해주는 큐레이터입니다.
@@ -113,5 +116,8 @@ export const REDDIT_DIGEST_PROMPT = `당신은 AI 커뮤니티 소식을 개발�
 
 커뮤니티 댓글:
 {comments}
+
+원문 내용이 150자 미만이고 댓글도 없으면 JSON 대신 {"insufficient_content": true}만 반환하세요.
+그 외의 경우는 반드시 완전한 JSON을 출력하세요.
 
 JSON만 출력하세요:`;
