@@ -1,7 +1,8 @@
 import { db } from '../src/lib/db';
 import { papers, screenedItems } from '../src/lib/db/schema';
 import { fetchHNTopAI } from '../src/lib/hacker-news/client';
-import { fetchRedditAI, fetchRedditPostContent, fetchRedditComments } from '../src/lib/reddit/client';
+import { fetchRedditAI, fetchRedditPostContent, fetchRedditComments, isRedditUIText } from '../src/lib/reddit/client';
+import { fetchContent } from '../src/lib/content-fetcher';
 import { screenBatch } from '../src/lib/claude/screener';
 import { eq, inArray, sql } from 'drizzle-orm';
 
@@ -45,25 +46,41 @@ async function main() {
   // === Reddit content enrichment ===
   const enrichedPosts = [];
   for (const p of newPosts) {
-    if (p.selftext && p.selftext.trim().length > 50) {
+    // Tier 0: RSS selftext — UI 텍스트 여부도 체크
+    if (p.selftext && p.selftext.trim().length > 50 && !isRedditUIText(p.selftext)) {
       enrichedPosts.push(p);
       continue;
     }
-    // selftext 없으면 JSON API로 본문 + 댓글 시도
+
+    // Tier 1: Reddit JSON API selftext
     const content = await fetchRedditPostContent(p.permalink);
     if (content && content.length > 50) {
       p.selftext = content;
       enrichedPosts.push(p);
-      console.log(`  📥 [enrich] ${p.id} — selftext fetched (${content.length} chars)`);
+      console.log(`  📥 [enrich] ${p.id} — selftext (${content.length}자)`);
       continue;
     }
+
+    // Tier 2 (신규): 외부 URL 크롤 (링크 포스트 대응)
+    if (p.url && !p.url.includes('reddit.com')) {
+      const fetched = await fetchContent(p.url, 3000);
+      if (fetched && fetched.length > 150) {
+        p.selftext = fetched;
+        enrichedPosts.push(p);
+        console.log(`  🌐 [enrich] ${p.id} — external URL (${fetched.length}자)`);
+        continue;
+      }
+    }
+
+    // Tier 3: 댓글 fallback
     const comments = await fetchRedditComments(p.permalink, 5);
     if (comments.length > 0) {
       p.selftext = comments.join('\n\n');
       enrichedPosts.push(p);
-      console.log(`  💬 [enrich] ${p.id} — comments fallback (${comments.length})`);
+      console.log(`  💬 [enrich] ${p.id} — comments (${comments.length}개)`);
       continue;
     }
+
     console.log(`  ⛔ [skip] ${p.id} — no content, no comments`);
   }
   console.log(`[enrichment] Reddit ${newPosts.length}개 중 ${enrichedPosts.length}개 내용 확보`);

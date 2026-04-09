@@ -62,6 +62,8 @@ export async function fetchRedditAI(
           .replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&#32;/g, ' ')
           .replace(/\s+/g, ' ').trim();
 
+        const cleaned = contentText.trim();
+
         return {
           id,
           title: String(entry.title ?? ''),
@@ -72,7 +74,7 @@ export async function fetchRedditAI(
           num_comments: 0,
           permalink: permalink.replace('https://www.reddit.com', ''),
           subreddit: sub,
-          selftext: contentText.length > 50 ? contentText : '',
+          selftext: (cleaned.length > 50 && !isRedditUIText(cleaned)) ? cleaned : '',
         };
       });
 
@@ -88,6 +90,11 @@ export async function fetchRedditAI(
   }
 
   return allPosts;
+}
+
+export function isRedditUIText(text: string): boolean {
+  const patterns = [/submitted by \/u\//i, /\[link\]/i, /\[comments\]/i];
+  return patterns.filter(p => p.test(text)).length >= 2;
 }
 
 export async function fetchRedditPostContent(permalink: string): Promise<string> {
