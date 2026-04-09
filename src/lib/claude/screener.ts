@@ -63,6 +63,9 @@ When in doubt, REJECT. Quality over quantity.
 Rate score 1-10 if PASS (10 = apply tomorrow, 6 = interesting but less urgent).
 
 Title: {title}
+Content preview: {abstract}
+
+If content preview is fewer than 100 characters or clearly contains no substantive information (e.g., only Reddit UI text like "[link] [comments]"), REJECT.
 
 Answer in JSON only: {"pass": true/false, "score": 1-10, "reason": "one line explanation"}`;
 
@@ -86,6 +89,9 @@ REJECT if the post is:
 Rate score 1-10 if PASS (10 = apply tomorrow, 6 = useful but less urgent).
 
 Title: {title}
+Post content: {abstract}
+
+If post content is fewer than 100 characters or contains no actual information, REJECT immediately.
 
 Answer in JSON only: {"pass": true/false, "score": 1-10, "reason": "one line explanation"}`;
 
