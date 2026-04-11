@@ -102,8 +102,11 @@ export async function fetchRedditPostContent(permalink: string): Promise<string>
   for (let attempt = 1; attempt <= 3; attempt++) {
     try {
       const res = await fetch(url, { headers: { 'User-Agent': USER_AGENT } });
-      if (res.status === 429 || res.status === 403) {
-        console.log(`  [Reddit] ${res.status} on ${permalink.slice(0, 40)}, retry ${attempt}/3 in ${attempt * 3}s...`);
+      if (res.status === 403) {
+        return ''; // IP ban — retry won't help
+      }
+      if (res.status === 429) {
+        console.log(`  [Reddit] 429 on ${permalink.slice(0, 40)}, retry ${attempt}/3 in ${attempt * 3}s...`);
         await new Promise(r => setTimeout(r, attempt * 3000));
         continue;
       }
@@ -125,6 +128,7 @@ export async function fetchRedditComments(permalink: string, limit = 10): Promis
   try {
     const url = `https://www.reddit.com${permalink}.json?limit=${limit}&depth=1`;
     const res = await fetch(url, { headers: { 'User-Agent': USER_AGENT } });
+    if (res.status === 403) return []; // IP ban
     if (!res.ok) return [];
 
     const data = await res.json();
