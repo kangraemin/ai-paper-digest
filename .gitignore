@@ -46,3 +46,6 @@ next-env.d.ts
 # ralph-x runs (임시 파일)
 .claude/ralph-x-runs/*/samples.json
 .claude/ralph-x-runs/*/eval.md
+
+# Claude Code 자동 수정 파일
+.claude/settings.local.json
