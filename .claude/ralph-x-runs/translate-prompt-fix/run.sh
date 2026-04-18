@@ -110,9 +110,9 @@ for i in $(seq 1 $MAX_ITER); do
   echo "▶ Step 1: 프롬프트 개선 (opus)"
   claude -p --model claude-opus-4-6 "$(cat "$PROMPT_DIR/step1.txt")"
 
-  # Step 2: 랜덤 100개 샘플 번역 → 파일 저장 (DB 안 건드림)
-  echo "▶ Step 2: 100개 샘플 번역 → 파일 저장 (sonnet)"
-  claude -p --model claude-sonnet-4-6 "$(cat "$PROMPT_DIR/step2.txt")"
+  # Step 2: 랜덤 100개 샘플 번역 → 파일 저장 (DB 안 건드림, 스크립트 직접 실행)
+  echo "▶ Step 2: 100개 샘플 번역 → 파일 저장 (스크립트)"
+  source .env && TURSO_DATABASE_URL=$TURSO_DATABASE_URL TURSO_AUTH_TOKEN=$TURSO_AUTH_TOKEN GEMINI_API_KEY=$GEMINI_API_KEY npx tsx scripts/test-translate.ts
 
   # Step 3: 평가 + 회고 (sonnet)
   echo "▶ Step 3: 평가 + 회고 (sonnet)"
