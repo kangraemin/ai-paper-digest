@@ -30,6 +30,9 @@ What to do:
 4. Append summary of what you changed to .claude/ralph-x-runs/translate-prompt-fix/log.md
 
 Work autonomously. Do NOT ask questions. Do NOT commit or push.
+
+IMPORTANT — FILE WRITE PERMISSION:
+log.md in .claude/ralph-x-runs/ is NOT source code. Write it directly WITHOUT calling /dev-bounce.
 S1EOF
 
 cat > "$PROMPT_DIR/step2.txt" << 'S2EOF'
@@ -100,6 +103,11 @@ What to do:
 7. If FAIL: leave checklist as-is so next iteration runs
 
 Work autonomously. Do NOT ask questions. Do NOT write to the DB.
+
+IMPORTANT — FILE WRITE PERMISSION:
+eval.md, log.md, checklist.md in .claude/ralph-x-runs/ are NOT source code files.
+They are loop output files. You MUST write them directly using Write/Edit tools WITHOUT calling /dev-bounce.
+Do NOT ask for permission. Do NOT skip writing. Just write them.
 S3EOF
 
 # Main loop
