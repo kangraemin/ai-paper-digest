@@ -183,3 +183,27 @@ scripts/translate.ts의 oneLinerEn 규칙을 단순화 + 모순 제거:
 
 ### 다음 단계
 - 재번역 실행 후 평가. 목표: 25% → 10% 이하
+
+
+## Iteration 8: Evaluation Result
+
+**Status: FAIL**
+
+- Total samples evaluated: 49/50 (1 Gemma API 429 error excluded)
+- Awkward count: 35/49 (71%)
+- Threshold: ≤5
+
+**Field breakdown:**
+- `oneLinerEn`: 34 issues
+- `keyFindingsEn`: 1 issue (`77b7336a` — "This provides a practical approach to...")
+- `howToApplyEn`: 0 issues
+
+**Dominant patterns (frequency order):**
+1. **Two-sentence one_liner (18 cases)**: Model writes good first sentence, appends editorial trailer. Word limit 15-30 not preventing it — two short sentences each fit within range. Period-count Rule being ignored.
+2. **"A/An [noun/type]..." openers (12 cases)**: Rule 2 banning A/An starters ignored. Model defaults to training-data descriptor patterns for academic/technical content.
+3. **"This [type]..." openers (3 cases)**: Early-iteration banned pattern still appearing.
+4. **"Researchers/Research [verb]..." (2 cases)**: Still present despite explicit ban.
+
+**Why current approach is failing:** After 8 iterations of adding constraints (HARD RULES, word limits, BANNED PATTERNS, SELF-CHECK), total prompt complexity has reached a point where the model ignores rules under cognitive load and falls back to training defaults.
+
+**Next action:** Replace HARD RULES with mandatory output template: `[SUBJECT not A/An/This/The/Researchers] [active verb] [specific result]`. Add explicit: "Count the periods. If 2 or more — DELETE second sentence, compress into first." Provide 6 Bad→Good rewrites targeting two-sentence compression and A/An descriptor openers.
