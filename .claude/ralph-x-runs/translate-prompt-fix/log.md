@@ -354,3 +354,28 @@ scripts/translate.ts에 두 가지 근본적 변경:
 
 ### 다음 단계
 - 재번역 실행 후 평가. 목표: 38/50 → 10 이하
+
+## Iteration 16: Evaluation Result
+
+**Status: FAIL**
+
+- Total samples evaluated: 50/50 (file has 50 entries, not 100 as stated in task prompt)
+- Awkward count: 28/50 (56%)
+- Threshold: ≤5
+
+**Field breakdown:**
+- oneLinerEn: 28 issues
+- keyFindingsEn: 0 issues
+- howToApplyEn: 0 issues
+
+**Pattern breakdown:**
+- Two-sentence editorial trailers: 14 cases (most common — post-processing not catching "It's gaining traction", "The project is designed", "The release details" starters)
+- A/An [noun phrase] openers: 5 cases (DOWN from 19 in iter 12 — post-processing working)
+- This [noun]... openers: 4 cases
+- Researchers [verb]... openers: 3 cases
+- [Name] is a [type] that... openers: 2 cases
+- Fragments (no predicate verb): 2 cases
+
+**Progress vs iter 12:** 43/50 (86%) → 28/50 (56%) — significant improvement from post-processing pass. A/An openers reduced 74%.
+
+**Remaining gap:** Post-processing detector regex is too narrow — only catches "This/It demonstrates" style trailers but misses "It's gaining traction", "The release details", "Developers can now" second sentences. Also not flagging A/An descriptor openers (novel/comprehensive/new) or noun-phrase fragments.
