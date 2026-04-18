@@ -40,3 +40,20 @@ Started: 2026-04-18
 
 ### 다음 단계
 - 재번역 실행 후 "This is" 패턴 비율 측정 (목표: 40% → 5% 이하)
+
+## Iteration 2: Evaluation Result
+
+**Status: FAIL**
+
+- Valid samples: 10/50 (40 failed with 429 rate limit errors)
+- Awkward `one_liner_en`: 5/10 (50%) — far exceeds ≤5% threshold
+- `key_findings_en` and `how_to_apply_en`: 0 issues across all 10 samples
+
+**Root cause:** Iteration 1 fixed literal "This is a/an..." but the model bypasses it with equivalent patterns:
+- Noun phrase descriptors: "A comprehensive paper detailing..."
+- Noun phrase frameworks: "A three-step framework for..."
+- Vague actor: "A developer shares..."
+- Product definition: "[Name] is a [type] for..."
+- "This project...": "This project details building..."
+
+**Next action:** Add structural blocking rules to the prompt — target the 4 bypass patterns + add a positive constraint ("must be a complete sentence with finding/result as subject"). Also address API 429 errors with retry/backoff before next eval run.
