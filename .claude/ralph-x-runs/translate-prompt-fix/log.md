@@ -238,3 +238,28 @@ Replace constraint-based approach with mandatory positive fill-in-the-blank temp
 Where "A/An [noun]", "This [noun]", "Researchers", "X is a [type]" are prohibited as SUBJECTS.
 Add: AFTER WRITING — count periods, if >1, delete everything after first period.
 Provide 5 Bad→Good rewrites targeting specific remaining patterns from this eval.
+
+
+## Iteration 10: Evaluation Result
+
+**Status: FAIL**
+
+- Total samples evaluated: 50/50 (file has 50 entries, not 100 as stated in task prompt)
+- Awkward count: 36/50 (72%)
+- Threshold: ≤5
+
+**Field breakdown:**
+- `oneLinerEn`: 35 issues
+- `keyFindingsEn`: 1 issue (2401.14196 — sentence fragment, no predicate verb)
+- `howToApplyEn`: 0 issues
+
+**Dominant patterns (frequency order):**
+1. Two-sentence editorial trailer (16 cases): Model writes good first sentence, appends generic second sentence starting with "This approach...", "It lowers...", "The platform also..."
+2. "A/An [descriptor noun]" opener (15 cases): Meta-describes content type instead of stating finding — "A comprehensive survey...", "A benchmark dataset...", "A developer shares..."
+3. "This/Researchers [verb]" opener (6 cases): Still bypassing all previous bans
+4. Other (passive voice, fragment, missing subject): 3 cases
+
+**Root cause:** After 10 iterations of constraint-based prompting (HARD RULES, SELF-CHECK, word limits, BANNED PATTERNS, mandatory templates), awkward rate has not meaningfully improved — iter 9 was 66%, iter 10 is 72% on a different sample set. The model generates correct output 28% of the time (14/50 clean), proving this is a generation-bias problem, not a capability gap. Adding more rules during generation will not solve this.
+
+**Next action (Iter 11):**
+Pivot to post-processing rewrite pass (Option A): After Gemma generates oneLinerEn, run a second LLM call that detects ≥2 periods, banned openers, or noun-phrase-without-predicate, and rewrites to a valid single-sentence format. Does not depend on Gemma following rules during generation.
