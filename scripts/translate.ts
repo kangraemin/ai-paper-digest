@@ -9,34 +9,35 @@ const TRANSLATE_PROMPT = `You are a technical translator specializing in AI/ML c
 Rules:
 - Keep technical terms, model names (GPT-4, Llama, etc.), numbers, and code syntax in English
 - For array fields: translate each string item naturally
-- For oneLinerEn: Write like a Hacker News headline or Ars Technica subheading. Max 2 sentences.
-  GRAMMAR RULE: Every sentence MUST be grammatically complete with a subject AND a finite verb. A noun phrase alone (e.g. "A framework for X", "A technique to Y", "A study quantifying Z") is NEVER acceptable.
-  FIRST-WORD RULE: The FIRST WORD must be one of:
-  (a) A proper noun (company, product, person) — "Google", "GPT-4", "DeepSeek"
-  (b) A gerund/verb phrase leading to finding — "Running", "Switching", "Combining"
-  (c) A concrete plural/uncountable noun — "LLMs", "RAG pipelines", "Fine-tuning"
-  (d) A number — "48%", "Three techniques", "Only 6 out of 15"
-  BANNED OPENERS (NEVER use any of these patterns to start):
-  - "This [anything]..." — "This project", "This experiment", "This tool", "This paper", "This open-source"
-  - "A/An [adjective/descriptor] [noun]..." — "A novel method", "A new benchmark", "A comprehensive survey", "A practical recipe", "A single-sample method", "A three-step framework", "A candid thread"
-  - "A [role] [verb]s..." — "A developer shares", "A developer details", "Researchers present"
-  - "[Name] is a [type]..." or "[Name], a [description], is..." — definition-style openers
-  - "The paper/study/research..." — academic framing
-  - "It is...", "Here...", "There..."
-  CONTENT RULE: State the FINDING, RESULT, or ACTION — not what the paper/project IS. Ask "what did they discover or build?" not "what kind of thing is this?"
-  Good: "Google releases Gemma 3 with 128K context, rivaling GPT-4 at half the cost"
-  Good: "LLM responses shrink 48% with a single system-prompt tweak"
-  Good: "Fine-tuning a 7B model on 50K synthetic samples matches GPT-4 on medical QA"
-  Good: "Combining Verbalized Confidence and Self-Consistency with just two samples outperforms using a single method with eight samples"
-  Good: "Only 6 out of 15 MCP servers proved useful after 3 months of real Claude Code usage"
-  Good: "RAG pipelines drop 30% of relevant docs — hybrid search fixes it"
-  Good: "Railway cut frontend build times from 10+ minutes to under 2 by migrating from Next.js to Vite + TanStack Start"
-  Bad: "This project connects an LLM to Animal Crossing" → starts with "This project"
-  Bad: "A novel method identifies when LLMs should abstain" → starts with "A novel method"
-  Bad: "A developer details a successful self-hosting experience" → starts with "A developer"
-  Bad: "STELLAR is a testing framework that automatically uncovers bugs" → "[Name] is a [type]" definition
-  Bad: "A three-step framework for detecting LLM hallucinations" → incomplete noun phrase, no verb
-  Bad: "A comprehensive survey paper consolidates optimization techniques" → starts with "A comprehensive"
+- For oneLinerEn: Write like an Ars Technica subheading. Max 2 sentences.
+
+  MANDATORY STRUCTURE: [WHO or WHAT] + [ACTIVE VERB] + [CONCRETE RESULT/FINDING]
+  The subject must be a specific entity (company, model, technique name, concrete noun like "LLMs") — never "a method", "a framework", "a study", "a developer", "this project", "this tool".
+  The verb must be finite and active (present or past tense): "cuts", "reveals", "achieves", "outperforms", "reduces", "built", "found".
+
+  SELF-CHECK before outputting oneLinerEn — reject your draft if ANY of these are true:
+  (1) It has no finite verb (just a noun phrase like "A technique for X" or "A framework that Y")
+  (2) The first two words match: "This [noun]", "A/An [adjective]", "A/An [role]", "The [noun]"
+  (3) It defines what something IS instead of what it DOES/FOUND ("X is a tool for..." → bad)
+  (4) The subject is vague: "a method", "a novel approach", "a study", "a new benchmark", "researchers"
+  If any check fails, REWRITE starting with the actual finding, metric, or named entity.
+
+  REWRITE EXAMPLES (Bad → Fixed):
+  "This project connects an LLM to Animal Crossing" → "An LLM now powers Animal Crossing NPC dialogue on a 24-year-old GameCube via memory sharing, no code mods needed"
+  "A novel method identifies when LLMs should abstain" → "Reverse-engineering an LLM's reasoning trace reveals when it answered a different question than asked"
+  "A developer details a successful self-hosting experience" → "Self-hosting on a $379 mini PC with Tailscale and Claude Code automates server setup without sysadmin expertise"
+  "STELLAR is a testing framework that automatically uncovers bugs" → "STELLAR finds 2.5x more failure cases in LLM apps than conventional testing by using evolutionary algorithms"
+  "A three-step framework for detecting LLM hallucinations" → "Detecting and reducing LLM hallucinations by root cause takes three steps in high-stakes domains like finance and law"
+  "A comprehensive survey paper consolidates optimization techniques" → "Every major LLM agent optimization technique — fine-tuning, RL, prompt engineering — mapped in one survey"
+  "A study quantifying 40,285 Claude Skills" → "40,285 Claude Skills from a public marketplace reveal what gets built, how skills get used, and where risks hide"
+  "AGENTS.md, a project guide for AI coding agents, is already in use" → "Over 60,000 open-source projects now use AGENTS.md to give AI coding agents project-specific instructions"
+
+  GOOD OPENERS for reference:
+  "Google releases Gemma 3 with 128K context, rivaling GPT-4 at half the cost"
+  "LLM responses shrink 48% with a single system-prompt tweak"
+  "Railway cut frontend build times from 10+ minutes to under 2 by migrating from Next.js to Vite"
+  "Giving Claude Code 16 GPUs yielded 910 experiments in 8 hours, improving validation loss by 2.87%"
+  "Only 6 out of 15 MCP servers proved useful after 3 months of real Claude Code usage"
 - For glossaryEn: MUST return a plain JSON object {"term": "description", ...}. Do NOT return an array. Translate values only, keep keys as-is.
 - For tagsEn: translate Korean tags to English (e.g., "프롬프트엔지니어링"→"Prompt Engineering", "RAG"→"RAG", "에이전트"→"Agent", "파인튜닝"→"Fine-tuning", "추론최적화"→"Inference Optimization", "양자화"→"Quantization", "캐싱"→"Caching", "평가"→"Evaluation", "벤치마크"→"Benchmark", "보안"→"Security", "프롬프트인젝션"→"Prompt Injection", "코드생성"→"Code Generation", "멀티모달"→"Multimodal", "임베딩"→"Embedding", "벡터검색"→"Vector Search", "청킹"→"Chunking", "함수호출"→"Function Calling", "도구사용"→"Tool Use", "MCP"→"MCP", "LoRA"→"LoRA", "RLHF"→"RLHF", "레드팀"→"Red Teaming", "프라이버시"→"Privacy")
 - For codeExampleEn: translate Korean comments only, keep code syntax unchanged. If empty string, return empty string.
