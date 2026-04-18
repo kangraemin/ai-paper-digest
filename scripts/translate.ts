@@ -9,33 +9,29 @@ const TRANSLATE_PROMPT = `You are a technical translator specializing in AI/ML c
 Rules:
 - Keep technical terms, model names (GPT-4, Llama, etc.), numbers, and code syntax in English
 - For array fields: translate each string item naturally
-- For oneLinerEn: ONE sentence, 15–35 words. Write it like an Ars Technica subheading. After writing, count: if there is more than one period, DELETE everything after the first period and fold that info into the first sentence using commas or dashes.
+- For oneLinerEn: Write EXACTLY ONE sentence, 15–30 words. Style: Ars Technica subheading.
 
-  STRUCTURE: [Named entity or concrete noun] + [active verb] + [specific result]
-  Start with a proper noun (company, model, tool name) or a concrete plural noun (LLMs, AI agents). NEVER start with "This", "The", "A", "An", or "Researchers".
+  FIRST WORD must be a proper noun (Google, Claude, GPT-4) or a concrete plural noun (LLMs, AI agents). No other opener is acceptable.
 
-  BANNED PATTERNS — if your draft matches any of these, rewrite from scratch:
-  × Starts with "This [anything]" — "This framework", "This project", "This work", "This guide", "This open-source", "This RAG-based"
-  × Starts with "A/An [anything]" — "A study", "A developer", "A vulnerability", "A comprehensive"
-  × Two sentences — ANY text after the first period
-  × Defines what something IS: "X is a tool for..."
-  × Vague subject: "a method", "a novel approach", "researchers"
+  HARD RULES — violating ANY ONE means you must rewrite:
+  1. More than one period (.) in the output → FAILED. Keep only the first sentence, fold extra info using commas/dashes.
+  2. First word is "This" or "The" or "A" or "An" or "Researchers" → FAILED. Rewrite with a named subject.
+  3. Contains "is a [type] for/that" → FAILED. Use an active verb instead.
 
-  REWRITE EXAMPLES (Bad → Good):
-  "This project connects an LLM to Animal Crossing" → "An LLM now powers Animal Crossing NPC dialogue on a 24-year-old GameCube via memory sharing, no code mods needed"
-  "This framework measures uncertainty in multimodal LLMs by detecting queries likely to elicit wrong answers" → "Multimodal LLMs now flag their own likely-wrong answers and auto-route them to experts, no external tools needed"
-  "This open-source MCP server resolves raw output bloating context windows" → "MCP Context Forge compresses 315KB tool outputs to 5.4KB, extending Claude session durations by 6x"
-  "This guide details running Gemma 4 locally on macOS" → "Gemma 4 26B runs locally on macOS via LM Studio's CLI and plugs directly into Claude Code"
-  "A vulnerability in legal AI SaaS exposed over 100,000 files. The issue was responsibly disclosed." → "Legal AI SaaS Filevine leaked 100,000+ confidential law firm files through an unauthenticated API endpoint returning a Box admin token"
-  "Apple open-sources Parlor for real-time AI voice conversations. The project eliminates cloud costs." → "Apple open-sources Parlor, a real-time multimodal voice-and-video AI system running entirely on local Apple Silicon M3 Pro"
-  "Multiple AI agents debating boost rare disease diagnosis. The collaboration significantly improves performance." → "AI agents debating in simulated MDT meetings boost rare disease diagnosis accuracy beyond standalone GPT-4"
+  Bad → Good (memorize these transformations):
+  "This framework measures uncertainty in multimodal LLMs by detecting queries likely to elicit wrong answers." → "Multimodal LLMs now flag their own likely-wrong answers and auto-route them to experts, no external tools needed."
+  "This open-source MCP server resolves raw output bloating. It extends session durations by 6x." → "MCP Context Forge compresses 315KB tool outputs to 5.4KB, extending Claude session durations by 6x."
+  "A vulnerability in legal AI SaaS exposed over 100,000 files. The issue was responsibly disclosed." → "Legal AI SaaS Filevine leaked 100,000+ confidential law firm files through an unauthenticated API endpoint."
+  "Apple open-sources Parlor for real-time AI voice conversations. The project eliminates cloud costs." → "Apple open-sources Parlor, a real-time multimodal voice-and-video AI system running entirely on local Apple Silicon."
+  "This guide details running Gemma 4 locally on macOS with LM Studio." → "Gemma 4 26B runs locally on macOS via LM Studio's CLI and plugs directly into Claude Code."
+  "Multiple AI agents debating boost rare disease diagnosis. The collaboration significantly improves performance." → "AI agents debating in simulated MDT meetings boost rare disease diagnosis accuracy beyond standalone GPT-4."
+  "Anthropic launches Claude Opus 4.6 with 1M tokens. The release introduces multi-agent team functionality." → "Claude Opus 4.6 ships with a 1M-token context window and multi-agent teams that outperform GPT-5.2 on several benchmarks."
 
-  GOOD EXAMPLES (study these — notice: one sentence, named subject, active verb, specific detail):
-  "Google releases Gemma 3 with 128K context, rivaling GPT-4 at half the cost"
-  "LLM responses shrink 48% with a single system-prompt tweak"
-  "Railway cut frontend build times from 10+ minutes to under 2 by migrating from Next.js to Vite"
-  "STELLAR finds 2.5x more failure cases in LLM apps than conventional testing by using evolutionary algorithms"
-  "Over 60,000 open-source projects now use AGENTS.md to give AI coding agents project-specific instructions"
+  GOOD EXAMPLES (all start with a named subject, one sentence, no trailer):
+  "Google releases Gemma 3 with 128K context, rivaling GPT-4 at half the cost."
+  "LLM responses shrink 48% with a single system-prompt tweak."
+  "Railway cut frontend build times from 10+ minutes to under 2 by migrating from Next.js to Vite."
+  "GPT-4o convinces users of conspiracy theories as effectively as it debunks them — even OpenAI's guardrails can't prevent it."
 - For glossaryEn: MUST return a plain JSON object {"term": "description", ...}. Do NOT return an array. Translate values only, keep keys as-is.
 - For tagsEn: translate Korean tags to English (e.g., "프롬프트엔지니어링"→"Prompt Engineering", "RAG"→"RAG", "에이전트"→"Agent", "파인튜닝"→"Fine-tuning", "추론최적화"→"Inference Optimization", "양자화"→"Quantization", "캐싱"→"Caching", "평가"→"Evaluation", "벤치마크"→"Benchmark", "보안"→"Security", "프롬프트인젝션"→"Prompt Injection", "코드생성"→"Code Generation", "멀티모달"→"Multimodal", "임베딩"→"Embedding", "벡터검색"→"Vector Search", "청킹"→"Chunking", "함수호출"→"Function Calling", "도구사용"→"Tool Use", "MCP"→"MCP", "LoRA"→"LoRA", "RLHF"→"RLHF", "레드팀"→"Red Teaming", "프라이버시"→"Privacy")
 - For codeExampleEn: translate Korean comments only, keep code syntax unchanged. If empty string, return empty string.
