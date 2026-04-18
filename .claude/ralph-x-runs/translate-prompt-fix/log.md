@@ -76,3 +76,38 @@ scripts/translate.ts의 oneLinerEn 규칙을 전면 재구성:
 
 ### 다음 단계
 - 재번역 실행 후 평가. 목표: 43% → 10% 이하
+
+## Iteration 4: Evaluation Result
+
+**Status: FAIL**
+
+- Total samples evaluated: 100/100
+- Awkward count: 16/100 (16%)
+- Threshold: ≤5
+
+**Field breakdown:**
+- `oneLinerEn`: 15 issues
+- `keyFindingsEn`: 1 issue (hn_46319826 — "Researchers at..." opener)
+- `howToApplyEn`: 0 issues
+
+**Major improvement vs Iter 3:** 43% → 16% awkward rate.
+
+**Root cause — dominant pattern (11/16): Multi-sentence oneLinerEn**
+Model generates a solid first sentence, then appends a second generic editorial sentence:
+- "This approach directly leverages..." trailer
+- "This highlights fundamental..." second sentence
+- "It serves as a hands-on reference..." filler
+- "This is significant as it aims for..." opener
+
+The prompt says "max 2 sentences" — model treats this as permission. Need: "EXACTLY ONE sentence."
+
+**Other patterns (5/16):**
+- "Researchers [verb]..." opener (3 cases): discovered, explore, introduce
+- "This [type]..." opener (2 cases): "This framework...", "This educational project..."
+
+**Next action (Iter 5):**
+1. Change "max 2 sentences" → "EXACTLY ONE sentence. Never write two."
+2. SELF-CHECK: add "Starts with 'This'?" → hard fail
+3. SELF-CHECK: add "Starts with 'Researchers [verb]'?" → hard fail
+4. SELF-CHECK: add "Second sentence appended?" → hard fail
+5. Add 3 Bad→Fixed examples for two-sentence compression
