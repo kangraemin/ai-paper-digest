@@ -207,3 +207,34 @@ scripts/translate.ts의 oneLinerEn 규칙을 단순화 + 모순 제거:
 **Why current approach is failing:** After 8 iterations of adding constraints (HARD RULES, word limits, BANNED PATTERNS, SELF-CHECK), total prompt complexity has reached a point where the model ignores rules under cognitive load and falls back to training defaults.
 
 **Next action:** Replace HARD RULES with mandatory output template: `[SUBJECT not A/An/This/The/Researchers] [active verb] [specific result]`. Add explicit: "Count the periods. If 2 or more — DELETE second sentence, compress into first." Provide 6 Bad→Good rewrites targeting two-sentence compression and A/An descriptor openers.
+
+
+## Iteration 9: Evaluation Result
+
+**Status: FAIL**
+
+- Total samples evaluated: 50/50
+- Awkward count: 33/50 (66%)
+- Threshold: ≤5
+
+**Field breakdown:**
+- `oneLinerEn`: 33 issues
+- `keyFindingsEn`: 0 issues
+- `howToApplyEn`: 0 issues
+
+**Issue breakdown (by pattern):**
+1. Two-sentence oneLinerEn (16 cases): Model appends editorial second sentence — "This approach...", "It lowers...", "The platform also..."
+2. "A/An [descriptor noun]..." openers (12+ cases): "A comprehensive survey...", "A benchmark dataset...", "A developer shares...", "An experiment prompting..." — meta-describing content type instead of stating finding
+3. "This [noun]..." + "X is a [type] that..." openers (8 cases): "This multi-agent framework...", "ProofShot is an open-source CLI that...", "CanIRun.ai is a web tool that..."
+4. "Researchers/Research [verb]..." openers (3 cases)
+
+**Good news:** keyFindingsEn and howToApplyEn are fully clean across all 50 samples. Those fields are solved.
+
+**Root cause:** After 9 iterations of negative constraints (banned patterns, HARD RULES, SELF-CHECK, word limits), the model bypasses them via infinite pattern variations. Negative rules cannot enumerate all bypass paths.
+
+**Next action (Iter 10):**
+Replace constraint-based approach with mandatory positive fill-in-the-blank template:
+`[SPECIFIC SUBJECT (product/company/concept)] [ACTIVE VERB] [RESULT]`
+Where "A/An [noun]", "This [noun]", "Researchers", "X is a [type]" are prohibited as SUBJECTS.
+Add: AFTER WRITING — count periods, if >1, delete everything after first period.
+Provide 5 Bad→Good rewrites targeting specific remaining patterns from this eval.
