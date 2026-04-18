@@ -57,3 +57,22 @@ Started: 2026-04-18
 - "This project...": "This project details building..."
 
 **Next action:** Add structural blocking rules to the prompt — target the 4 bypass patterns + add a positive constraint ("must be a complete sentence with finding/result as subject"). Also address API 429 errors with retry/backoff before next eval run.
+
+
+## Iteration 4: Prompt restructure — self-check + rewrite examples
+
+### 변경 내용
+scripts/translate.ts의 oneLinerEn 규칙을 전면 재구성:
+
+1. MANDATORY STRUCTURE 추가: [WHO/WHAT] + [ACTIVE VERB] + [RESULT] 포맷 강제
+2. SELF-CHECK 단계 추가: 출력 전 4가지 체크리스트로 자체 검증 → 실패 시 rewrite
+3. Bad→Fixed 변환 예시 8쌍: iter 3 eval에서 실제 실패한 문장을 Bad로 사용
+4. BANNED OPENERS 리스트 제거: SELF-CHECK의 4개 조건으로 통합
+
+### 근거
+- Iter 3에서 BANNED OPENERS에 나열된 패턴도 여전히 43% 발생 → 나열식 금지는 Gemma에서 한계
+- 생성→검증→재작성 프레임이 생성 시 금지 프레임보다 LLM에서 더 잘 작동
+- 실제 실패 사례의 Bad→Fixed 변환이 추상적 규칙보다 패턴 학습에 효과적
+
+### 다음 단계
+- 재번역 실행 후 평가. 목표: 43% → 10% 이하
