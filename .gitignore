@@ -42,3 +42,7 @@ next-env.d.ts
 .vscode/
 *.swp
 *.swo
+
+# ralph-x runs (임시 파일)
+.claude/ralph-x-runs/*/samples.json
+.claude/ralph-x-runs/*/eval.md
