@@ -4,7 +4,23 @@ import { callGemma } from '../src/lib/gemma/client';
 import { withRetry } from '../src/lib/utils/retry';
 import { eq, and, isNotNull, or, isNull } from 'drizzle-orm';
 
-const REWRITE_PROMPT = `Rewrite this one-liner to start with a named subject (product/company/concept name) + active verb + concrete result. ONE sentence only. Keep all facts and numbers.
+const REWRITE_PROMPT = `Rewrite this one-liner as a single Ars Technica headline sentence.
+
+RULES:
+- EXACTLY ONE sentence. If you write two sentences, you fail.
+- First word must be a proper noun (product name, company, person, or specific concept).
+- NEVER start with: A, An, The, This, These, Researchers, Research
+- NEVER use "[Name] is a [type] that/for" pattern
+- Use an active verb (launches, achieves, reduces, ships, reveals, outperforms)
+- Keep all facts, numbers, and technical terms from the input
+
+BAD → GOOD:
+- "A token pruning framework reduces compute by 40%..." → "FastPrune cuts multimodal LLM compute by 40% without accuracy loss."
+- "This framework measures uncertainty in multimodal LLMs..." → "UncertaintyBench probes multimodal LLM confidence, flagging unreliable outputs before deployment."
+- "Researchers demonstrate an RL-based agent that surpasses GUI manipulation..." → "WebAgent surpasses state-of-the-art GUI manipulation using RL with only 0.02% of typical training data."
+- "A comprehensive survey reveals current LLM limitations..." → "GPT-4 and Claude still fail at multi-step reasoning, scoring below 40% on compositional benchmarks."
+- "Hypura is a Rust-based open-source project that enables running LLMs larger than physical memory." → "Hypura runs LLMs larger than a Mac's physical RAM by swapping layers to disk in Rust."
+- "OpenAI launches GPT-5.2-Codex, sparking debate. Initial benchmarks suggest comparable coding ability." → "OpenAI ships GPT-5.2-Codex with coding benchmarks rivaling Claude Opus 4.5 but lagging in agentic tasks."
 
 Input: {input}
 Output:`;
