@@ -294,3 +294,42 @@ Pivot to post-processing rewrite pass:
 1. Deterministic detector flags: >=2 periods, banned first-word starters, [X] is a [type] that pattern
 2. Second LLM call (Claude Haiku) rewrites flagged oneLinerEn with strict template
 3. Does not depend on Gemma following rules during generation
+
+
+## Iteration 12: Evaluation Result
+
+**Status: FAIL**
+
+- Total samples evaluated: 50/50
+- Awkward count: 43/50 (86%)
+- Threshold: ≤5
+
+**Field breakdown:**
+- oneLinerEn: 43 issues
+- keyFindingsEn: 0 issues
+- howToApplyEn: 0 issues
+
+**Dominant patterns (frequency order):**
+1. "A/An [noun phrase]" openers (19 cases, 44%): Largest single pattern — model meta-describes content instead of stating finding
+2. Two-sentence editorial trailer (12 cases, 28%): "The study highlights...", "This demonstrates...", "It addresses..."
+3. "This [noun]..." openers (5 cases, 12%)
+4. "Researchers [verb]" openers (3 cases, 7%)
+5. "X is a [type] that" / passive / meta-reference (4 cases, 9%)
+
+**Trend vs prior iterations:**
+| Iter | Awkward | Rate |
+|------|---------|------|
+| 9    | 33/50   | 66%  |
+| 10   | 36/50   | 72%  |
+| 11   | 38/50   | 76%  |
+| 12   | 43/50   | 86%  |
+
+**Rate is monotonically increasing.** Prompt constraints are actively worsening results — cognitive overload causes Gemma to default to its safest template (A/An [noun]).
+
+**Root cause (final):** 12 iterations of constraint-based prompting have produced a worsening trend. No further prompt constraint iterations are warranted.
+
+**Next action (Iter 13):**
+Implement post-processing rewrite pass:
+1. Deterministic detector: count periods ≥2, check banned starters (This/A/An/Researchers/[Name] is a), check for editorial trailer `. This [demonstrates|highlights|shows]`
+2. Feed flagged outputs to Claude Haiku with template: `[NAMED SUBJECT or KEY FINDING] [STRONG ACTIVE VERB] [CONCRETE MEASURABLE RESULT]`
+3. The 7 clean samples confirm the pattern works — post-hoc enforcement is the only viable path
