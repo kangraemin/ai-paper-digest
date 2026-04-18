@@ -379,3 +379,31 @@ scripts/translate.ts에 두 가지 근본적 변경:
 **Progress vs iter 12:** 43/50 (86%) → 28/50 (56%) — significant improvement from post-processing pass. A/An openers reduced 74%.
 
 **Remaining gap:** Post-processing detector regex is too narrow — only catches "This/It demonstrates" style trailers but misses "It's gaining traction", "The release details", "Developers can now" second sentences. Also not flagging A/An descriptor openers (novel/comprehensive/new) or noun-phrase fragments.
+
+
+## Iteration 16 (re-eval): Final Evaluation Result
+
+**Status: FAIL**
+
+- Total samples evaluated: 50/50
+- Awkward count: 36/50 (72%)
+- Threshold: ≤5
+
+**Field breakdown:**
+- oneLinerEn: 36 issues
+- keyFindingsEn: 2 issues
+- howToApplyEn: 0 issues
+
+**Pattern breakdown:**
+- Two-sentence editorial trailers: 26 cases (post-processing missing . The [noun], . Its [noun] patterns)
+- A/An vague meta openers: 8 cases (not addressed by post-processing)
+- [Name] is a [type] openers: 4 cases (not addressed by post-processing)
+- This [noun] openers: 4 cases (overlapping with two-sentence cases)
+- Research/Researchers [verb] openers: 1 case
+
+**Root cause:** Post-processing detector from iter 16 only catches . This/It demonstrates|highlights trailer starters. Misses . The [noun], . Its [noun], all A/An meta openers, and all [Name] is a openers.
+
+**Next action (Iter 17):** Expand post-processing:
+1. Catch ALL two-sentence oneLinerEn with re.search(r'[.]\s+[A-Z]', text.rstrip('.')) -- deterministic, covers 26 cases
+2. Add A/An meta opener detection to rewrite trigger
+3. Add [Name] is a [type] detection to rewrite trigger

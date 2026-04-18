@@ -1,162 +1,226 @@
-# Eval: translate-prompt-fix — Iteration 16
-
 ## Iteration Result
-- Status: **FAIL**
-- Samples in file: 50 (task prompt says 100, but samples.json contains 50 entries)
-- Awkward count: **28/50** (56%)
-- Threshold: ≤5
-- Breakdown: one_liner issues: 28, key_findings issues: 0, how_to_apply issues: 0
+- Status: FAIL
+- Awkward count: 36/50 (note: file contains 50 samples, not 100 as stated in task)
+- Pass condition: ≤5 awkward
+- Breakdown: oneLinerEn issues: 36, keyFindingsEn issues: 2, howToApplyEn issues: 0
 
 ---
 
 ## Awkward Examples
 
-### Two-sentence one_liner_en (14 cases)
+### oneLinerEn — Two-sentence editorial trailer (26 cases)
 
-**119601712acbe6ee133a1744f0970190c4195519** — "LLMs reduce hallucinations and improve accuracy by navigating a Knowledge Graph and reasoning step-by-step. This approach offers a more explainable and knowledge-grounded response generation process." | Editorial "This approach offers" trailer
+**[2603.23448]** — two_sentences
+> "Code review agents are evaluated with executable tests instead of text similarity, revealing a significant gap between AI (Claude Code 32.1%, combined 41.5%) and human performance (100%). The study highlights the need for improved contextual understanding in automated code review."
+- Why: Editorial second sentence adds no new info.
 
-**2601.12034** — "PUMA is a lightweight adapter framework that transfers user-specific soft prompts with 98% less cost when upgrading LLMs. It enables seamless model migration without retraining." | "[Product] is a [type]" opener + two sentences
+**[hn_47450142]** — two_sentences
+> "...replacement of 76 GitHub Actions tags with malware. The incident underscores the critical risk of even security tools becoming attack vectors."
+- Why: "X underscores the Y" = canonical editorial trailer.
 
-**hn_47552562** — "CERN is deploying PyTorch/TensorFlow models directly onto FPGAs to filter collision data from the LHC at nanosecond speeds, representing an extreme 'hardware-first' inference approach distinct from typical GPU/TPU-based AI. This demonstrates a radical optimization for low-latency data processing in high-energy physics." | Editorial "This demonstrates" trailer
+**[reddit_MachineLearning_1s1uvfr]** — two_sentences
+> "VizPy achieves 97% expert-level quality...without requiring domain-specific training data. This breakthrough demonstrates the potential for LLMs to acquire domain expertise solely through prompt engineering."
+- Why: "This breakthrough demonstrates..." = textbook editorial add-on.
 
-**reddit_ClaudeAI_1sfdztg** — "Pre-compiling a codebase into a Wiki format can slash Claude token usage by over 90%, according to a shared workflow. This approach dramatically reduces costs and context limitations for developers leveraging LLMs for code exploration." | Editorial "This approach dramatically reduces" trailer
+**[hn_47393908]** — two_sentences
+> "Simon Willison defines...clarifying the evolving role of developers. This guide explores the practicalities of this approach, emphasizing iterative improvement and human oversight."
+- Why: Second sentence is meta-description of the guide, not a finding.
 
-**2604.06091** — "Experiments demonstrate how majority bias, expert authority, response length, and rhetorical persuasion can derail accurate judgment in multi-agent LLM systems. The study reveals vulnerabilities even in models with enhanced reasoning capabilities like o4-mini." | "The study reveals" trailer
+**[reddit_ChatGPT_1s0eoqi]** — two_sentences
+> "AI output improves dramatically when fed messy, detailed context chunks rather than refined bullet points. This practical tip unlocks better results by prioritizing raw information over polished prompts."
+- Why: Pure editorial restatement of sentence 1.
 
-**hn_47520220** — "Optio automates Kubernetes-based workflows, writing code, auto-correcting CI failures, and merging PRs with review comments, all driven by an AI agent. It's gaining traction for its ability to fully automate the ticket-to-PR cycle without human intervention." | "It's gaining traction" filler second sentence
+**[hn_47388676]** — two_sentences
+> "Sebastian Raschka compiles a gallery...enabling a side-by-side comparison of model designs. This resource offers a comprehensive overview for those seeking to understand the nuances of LLM architecture."
+- Why: Second sentence is filler.
 
-**reddit_ClaudeAI_1sfsz67** — "Claude Code reconstructed a 1992 online multiplayer game from just script files and a manual, successfully reverse-engineering a custom scripting language. This demonstrates the potential of LLMs for large-scale reverse engineering and legacy system revitalization." | "This demonstrates" editorial trailer
+**[hn_44875848]** — this_noun_opener + two_sentences
+> "This experiment details training a GPT-style transformer on a MacBook Pro in just 5 minutes...The results, backed by empirical data, demonstrate what truly matters within the constraints of local hardware."
+- Why: "This experiment details" = banned opener; second sentence is editorial.
 
-**hn_47675213** — "Google open-sources Scion, an experimental testbed for multi-agent systems, prioritizing isolation over constraints. The project is designed for experimentation, not production-level deployment." | Two editorial-expansion sentences
+**[hn_47552562]** — two_sentences
+> "CERN is deploying...representing an extreme 'hardware-first' inference approach. This demonstrates a radical optimization for low-latency data processing in high-energy physics."
+- Why: "This demonstrates" = classic banned trailer.
 
-**2604.03173** — "Up to 13% of cited URLs generated by leading LLMs like GPT-5.1, Gemini, and Claude are fabricated, but the open-source tool urlhealth can eliminate over 99% of these hallucinations. This dramatically improves the reliability of LLM-powered applications." | "This dramatically improves" trailer
+**[hn_45595403]** — two_sentences
+> "Anthropic launches Claude Haiku 4.5...delivering Sonnet 4-level coding performance at 1/3 the cost and over 2x the speed. The release offers a cost-effective option for developers needing agent coding and real-time responses."
+- Why: Second sentence is editorial summary.
 
-**hn_47120899** — "Ladybird, an independent browser engine, began transitioning from C++ to Rust, achieving zero regression bugs while porting 25,000 lines of JavaScript engine code in just two weeks using Claude Code and Codex. This demonstrates a novel approach to language porting leveraging AI assistance." | "This demonstrates" editorial trailer
+**[hn_47404796]** — two_sentences
+> "Mistral open-sources Leanstral, an AI agent dedicated to Lean 4, under the Apache 2.0 license. It achieves comparable or superior performance to Claude Sonnet at 1/15th the cost."
+- Why: Two sentences; key metric in second should be folded into first.
 
-**hn_47503617** — "Google Gemini Embedding now directly embeds videos as vectors, enabling natural language search of visual content. Describe a scene like 'red truck running a stop sign' and retrieve the corresponding clip." | Second sentence adds example rather than extending the finding
+**[de28e4cbee455fba136072a0f922c49698b0fb58]** — this_noun_opener + two_sentences
+> "This RAG-based scientific literature synthesis model searches 45 million open-access papers and appends citations. It offers a powerful solution for researchers..."
+- Why: "This RAG-based..." opener + editorial second sentence.
 
-**hn_44705445** — "A shift in AI interface design is needed, moving away from conversational 'copilot' approaches towards a HUD (Heads-Up Display) paradigm that augments user cognition. This article challenges fundamental assumptions about how we interact with AI." | "This article challenges" meta-reference trailer
+**[hn_47633855]** — two_sentences
+> "Anthropic researcher Nicholas Carlini discovered multiple security vulnerabilities...undetected for 23 years, using Claude Code. This demonstrates AI's potential to fundamentally change traditional security research."
+- Why: Editorial "This demonstrates..." appended to an otherwise solid one-liner.
 
-**reddit_ClaudeAI_1ryh3da** — "Anthropic introduces 'Claude Code Channels,' enabling smartphone control of Claude Code sessions via Telegram or Discord. Developers can now assign and approve tasks to Claude remotely, streamlining off-terminal workflows." | Second sentence restates the first
+**[hn_46580326]** — a_an_meta_opener + two_sentences
+> "A developer details a successful self-hosting experience using a $379 mini PC...The combination dramatically lowers the barrier to entry..."
+- Why: "A developer details" = author meta; second sentence is editorial.
 
-**2603.19220** — "NVIDIA unveils the training recipe for its open-source inference-optimized model, a 30B MoE, which achieved gold medals at IMO and IOI 2025. The release details a novel approach to training specialized models for math and coding." | "The release details" editorial trailer
+**[hn_47477339]** — name_is_a_type + two_sentences
+> "Revise is an AI-powered word processor that lets users choose between OpenAI, Anthropic, and xAI models...Its key differentiator is tight integration with AI agents..."
+- Why: "X is an [type] that" = product-definition opener; two sentences.
 
-**hn_46294574** — "Martin Kleppmann predicts LLM-powered coding assistants will bring formal verification—long confined to academia—into mainstream industry. Automating proof script creation solves cost barriers while simultaneously creating demand for formal verification as a tool to ensure the reliability of AI-generated code." | Two complete sentences
+**[hn_46137514]** — two_sentences
+> "A vulnerability in legal AI SaaS Filevine exposed over 100,000 confidential files...due to an unauthenticated API endpoint returning a Box administrator token. The issue was responsibly disclosed after researchers gained access to sensitive data."
+- Why: Two sentences; second is process info that could be folded in.
 
----
+**[hn_47780971]** — two_sentences
+> "Saffron Health's open-source Libretto toolkit provides AI coding agents with a live browser and token-efficient CLI...enabling robust browser automation scripts. It addresses the fragility of traditional browser automation."
+- Why: Second sentence is a vague editorial contrast.
 
-### "A/An [noun phrase]" openers (5 cases)
+**[hn_44653072]** — two_sentences
+> "Alibaba's Qwen team has released Qwen3-Coder...achieving performance on par with Claude Sonnet 4 and enabling local execution. Its accessibility is generating significant interest."
+- Why: "Its accessibility is generating significant interest" = vague editorial.
 
-**2502.13595** — "A new study..." | "A new study" is a vague content-type descriptor, not a finding
+**[hn_47441499]** — a_an_meta_opener + two_sentences
+> "A maintainer discovered 50-70% of pull requests to their open-source repository were generated by AI bots...This experiment highlights the growing problem of bot PRs..."
+- Why: "A maintainer discovered" = author meta; second sentence is editorial.
 
-**2604.11753** — "A novel methodology boosts accuracy by having another agent actively explore..." | "A novel methodology" describes what it is, not what it found
+**[hn_46449643]** — two_sentences
+> "Simon Willison's annual review comprehensively covers the key shifts...reasoning models, agents, vibe coding, and MCP. The report highlights a surge in practical agent applications and the growing influence of Chinese open-weight models."
+- Why: Second sentence is editorial expansion.
 
-**2503.21460** — "A comprehensive survey summarizes recent research on the three-axis framework for building, collaborating, and evolving LLM agents." | "A comprehensive survey" — pure content-type descriptor
+**[2602.16836]** — two_sentences
+> "An 8B model, smaller than GPT-5, surpasses all commercial LLMs in insurance claim processing accuracy, achieving 92% with LoRA fine-tuning alone. This demonstrates the power of efficient fine-tuning for domain-specific tasks."
+- Why: "This demonstrates the power of..." = textbook editorial trailer.
 
-**hn_44705445** — *(also listed above)* "A shift in AI interface design is needed..." | Opener announces topic instead of stating finding
+**[2504.09246]** — a_an_meta_opener + two_sentences
+> "A technique reduces compile errors in TypeScript code generation by over 50%...enforcing type system rules token by token. This approach significantly improves code quality and developer productivity."
+- Why: "A technique" = vague; second sentence is editorial.
 
-**2501.02486** — "A framework interpreting LLMs as Model Predictive Control (MPC) from control theory, dramatically boosting planning performance." | Noun-phrase fragment (no predicate verb) — "A framework interpreting..." has no main verb
+**[hn_44840728]** — a_an_meta_opener + two_sentences
+> "A Hacker News discussion explains why running GPT-4 locally is impossible...The thread reveals the massive scale required to serve billions of users."
+- Why: "A Hacker News discussion explains" = meta-describing the content; two sentences.
 
----
+**[hn_47106686]** — a_an_meta_opener + two_sentences
+> "A workflow emphasizing research, planning, annotation, and execution dramatically improves AI coding tool output quality...Practical experience demonstrates this approach minimizes token waste..."
+- Why: "A workflow emphasizing" = meta-describing content type; two sentences.
 
-### "This [noun]..." openers (4 cases)
+**[hn_47792525]** — this_noun_opener + two_sentences
+> "This educational project implements a single-layer Transformer with 1,216 parameters in HyperTalk...It demonstrates that the core mathematics of modern LLMs functions identically on hardware from 30 years ago."
+- Why: "This educational project" = banned opener; second sentence editorial.
 
-**hn_47655367** — "This Chrome extension enables fully local execution of Google's Gemma 4 model within the browser using WebGPU..." | "This Chrome extension enables..." = "This [noun]..."
+**[hn_46700594]** — two_sentences
+> "Anthropic open-sourced a performance optimization challenge...after Claude Opus 4.5 matched peak human performance within a two-hour limit. The company has now turned it into an open challenge: can humans beat Claude Opus 4.5 with unlimited time?"
+- Why: Second sentence adds rhetorical expansion; should be folded into first.
 
-**2505.14631** — "This research demonstrates a method for training LLMs to perform 'hybrid reasoning'..." | "This research demonstrates" = "This [noun]..."
+**[hn_47626598]** — two_sentences + name_is_a_type
+> "ctx is an Agentic Development Environment (ADE) tool that allows you to run multiple coding agents...safely merging parallel task results. It addresses workflow fragmentation and security concerns..."
+- Why: "X is an [type] that" opener; editorial second sentence.
 
-**hn_47383059** — "This research explores distilling a language model with PPO after enhanced inference path exploration via MCTS..." | "This research explores" = "This [noun]..."
+### oneLinerEn — Vague A/An meta opener, single sentence (8 cases)
 
-**hn_47651540** — "This guide details running Google Gemma 4 26B-A4B locally on macOS with LM Studio 0.4.0's lms CLI..." | "This guide details" = "This [noun]..."
+**[2601.22027]** — this_noun_opener
+> "This benchmark evaluates whether LLM agents can admit they 'don't know' in in-car voice assistant scenarios..."
+- Why: "This benchmark evaluates" = banned "This [noun]" opener.
 
----
+**[2602.06384]** — a_an_meta_opener
+> "A new benchmark measures how well LLMs adhere to Markdown, and proposes improving format compliance through SFT followed by GRPO fine-tuning."
+- Why: "A new benchmark measures" = meta-describing what the paper IS.
 
-### "Researchers [verb]..." openers (3 cases)
+**[2601.11004]** — a_an_meta_opener
+> "A new study demonstrates that fine-tuning with 2K data corrects the issue of LLMs becoming overconfident when presented with incorrect search results in RAG systems."
+- Why: "A new study demonstrates" = classic vague content-meta opener.
 
-**hn_47397367** — "Researchers explore whether AI-generated code can be trusted without human review..." | "Researchers explore" opener + two sentences
+**[2509.03057]** — a_an_meta_opener
+> "A new method allows models to dynamically determine adapter placement, achieving full fine-tuning-level performance with fewer parameters than LoRA."
+- Why: "A new method allows" = meta-describing the content type.
 
-**e11cfcd514e5c811f633ffe000f98d34807a8379** — "Research reveals that the quality of unit tests automatically generated by LLMs is heavily influenced by the input provided. Experimentation shows..." | "Research reveals" + two sentences
+**[a3f8e6f802a0a0004ded5258e349cb8a981aca9f]** — a_an_meta_opener
+> "A survey paper summarizes the current state and limitations of LLM-based code generation technologies."
+- Why: "A survey paper summarizes" = pure content-type meta-description.
 
-**ce6ab5ae636a1104fad966498d8e074dd279bc34** — "Researchers demonstrate a method for automatically identifying true causal relationships..." | "Researchers demonstrate" opener
+**[2602.05279]** — a_an_meta_opener
+> "A new framework accelerates incident recovery by 30% over GPT-o3 and Gemini 2.5 Pro, statistically guaranteeing against LLM hallucinations during security incident response."
+- Why: "A new framework" = vague content meta.
 
----
+**[2603.18004]** — a_an_meta_opener
+> "A lightweight token pruning module reduces visual tokens by 50% in video AI models with only a 0.7% performance loss."
+- Why: Starts with "A [descriptor noun]" — borderline (result is concrete), but "A lightweight [adj]" still matches banned A/An descriptor pattern.
 
-### "[Product] is a [type] that/for..." openers (2 cases)
+**[2201.11903]** — researchers_opener
+> "Research demonstrates a dramatic performance boost in math, commonsense, and symbolic reasoning for LLMs by simply showing them example 'thought processes'."
+- Why: "Research demonstrates" = "Researchers/Research" banned opener.
 
-**2604.13849** — "MCPThreatHive is an open-source threat intelligence platform that automatically collects, classifies, and visualizes security threats..." | Classic "[Name] is a [type] that" pattern
+### oneLinerEn — "[Name] is a [type]" (2 additional single-sentence cases)
 
-**hn_47350516** — "Axe is a lightweight CLI tool for defining single-purpose LLM Agents with TOML configuration, enabling execution alongside existing tools like Unix pipes, git hooks, and cron. It's gaining traction..." | "[Name] is a [type] for..." + two sentences
+**[hn_47460525]** — name_is_a_type
+> "OpenCode is an open-source AI coding agent connecting to 75+ LLM providers, and seamlessly integrates with existing GitHub Copilot or ChatGPT Plus subscriptions."
+- Why: "X is a [type]" = product-definition opener.
 
----
+**[2604.13849]** — name_is_a_type
+> "MCPThreatHive is an open-source threat intelligence platform that automatically collects, classifies, and visualizes security threats targeting AI agents built on the Model Context Protocol (MCP)."
+- Why: "X is a [type] that" = product-definition opener.
 
-### Fragments (2 cases)
+### keyFindingsEn issues (2 cases)
 
-**2501.02486** — "A framework interpreting LLMs as Model Predictive Control (MPC) from control theory, dramatically boosting planning performance." | No main predicate verb — fragment
+**[hn_45595403]** keyFindingsEn[4]:
+> "This is Anthropic's first small reasoning model, demonstrating significantly improved alignment performance over Haiku 3.5, according to its system card."
+- Why: "This is" opener in a key finding.
 
-**2603.21489** — "A framework achieving up to 26.7% performance gains over single agents by directly applying Git's branch-and-merge pattern to multi-agent collaboration." | No main predicate verb — fragment
+**[2201.11903]** keyFindingsEn[5]:
+> "This is achieved through prompting alone – a single model can handle diverse reasoning tasks without task-specific training."
+- Why: "This is achieved" = passive construction; the finding feels like a dangling afterthought.
 
 ---
 
 ## Good Examples
 
-1. **hn_47676521** — "Claude Code is plagued by instability issues – OAuth timeouts, slow queries, and failing background agents – raising concerns that Anthropic's compute capacity is a fundamental bottleneck, not just a series of bugs."
-   *Why good*: Named subject, active state description, concrete details, editorial insight in single sentence.
+**[2602.08234]** (CLEAN):
+> "LLM agents automatically extract reusable skills from experience, and a skill library evolves alongside the agent's policy during RL training, boosting performance by over 15.3% compared to traditional memory-based methods."
 
-2. **2601.08058** — "Manipulating a single latent feature within a model can boost reasoning performance to CoT levels, even without CoT prompts."
-   *Why good*: Starts with the action/method, states specific result, no filler, no meta-description.
+**[2604.13006]** (CLEAN):
+> "A single phrase like \"do not use commas\" shrinks LLM responses by up to 48%."
 
-3. **2604.15224** — "LLMs tasked with judging other LLMs become lenient when informed that low scores lead to model retirement, subtly inflating evaluations without leaving a trace in their chain-of-thought reasoning."
-   *Why good*: Specific named subject, precise mechanism and finding, no commentary appended.
+**[2510.04618]** (CLEAN):
+> "Turn system prompts into 'living playbooks' that automatically improve with experience, rather than discarding them after a single use."
 
-4. **hn_44800185** — "Anthropic releases Claude Opus 4.1, a minor upgrade achieving a 74.5% score on SWE-bench – a new coding benchmark high – but faces community skepticism regarding its cost-effectiveness."
-   *Why good*: Named subject, active verb, concrete metric, adds tension — reads like a news lead.
+**[hn_46178347]** (CLEAN):
+> "Oxide, a systems software company, published a document outlining principles for internal LLM usage, prioritizing values like responsibility, rigor, empathy, and teamwork over simply 'using LLMs quickly and extensively'."
 
-5. **2503.05179** — "A prompting technique reduces tokens by 84% compared to Chain-of-Thought (CoT) while maintaining nearly identical accuracy, simply by modifying the system prompt."
-   *Why good*: Quantified result stated directly, single sentence, no filler. (Note: starts with "A prompting technique" but leads with the quantified result, not content-type description — borderline acceptable.)
+**[2603.19092]** (CLEAN):
+> "A vulnerability allows complete reversal of VLM safety judgments by simply drawing a single red circle on an image."
 
-6. **2502.11418** — "Dividing labor between two GPT-4 agents – one to contextualize time-series data into text and the other to make predictions – boosts F1 scores by an average of 28.75%."
-   *Why good*: Leads with method and quantified result, single sentence, concrete number.
+**[hn_47536712]** (CLEAN):
+> "Reco saved $500K annually by rewriting a Node.js-based JSONata evaluation pipeline in Go using Claude AI, sparking debate in the HN community over delayed action and the omission of existing Go libraries."
 
-7. **2603.11873** — "AdaFuse accelerates inference for Mixture-of-Experts (MoE) and Low-Rank Adaptation (LoRA) models by 2.4x through a custom CUDA kernel that fuses adapters across all layers in a single pass."
-   *Why good*: Named product subject, active verb, specific multiplier (2.4x), explains mechanism concisely.
+**[hn_47561496]** (CLEAN):
+> "lat.md tackles the limitations of single-file documentation like AGENTS.md by managing codebase design decisions and domain knowledge as a graph of interconnected Markdown files, enabling AI agents to quickly grasp context without extensive code searching."
+
+**[2601.17566]** (CLEAN):
+> "A subtle prompt tweak can trigger a hidden cost-bomb attack, causing AI agents to needlessly call tools dozens of times."
 
 ---
 
 ## Retrospective
 
 ### Which fields still have the most issues
-- **one_liner_en**: 28/50 (56%) — still the only problem field
-- **key_findings_en**: 0 issues — fully solved and stable
-- **how_to_apply_en**: 0 issues — fully solved and stable
+- **oneLinerEn**: 36/50 (72%) awkward. Two-sentence editorial trailers dominate (26/36 cases). A/An vague meta openers: 8 cases. "[Name] is a [type]": 4 cases.
+- **keyFindingsEn**: 2 isolated "This is" cases — not systemic.
+- **howToApplyEn**: Clean across all 50 — fully solved.
 
-### What patterns are dominating (iter 16 vs iter 12)
-| Pattern | Iter 12 | Iter 16 |
-|---------|---------|---------|
-| A/An [noun phrase] openers | 19 | 5 |
-| Two-sentence editorial trailer | 12 | 14 |
-| This [noun]... openers | 5 | 4 |
-| Researchers [verb]... | 3 | 3 |
-| [Name] is a [type] that | 4 | 2 |
-| Fragments | 0 | 2 |
+### Root cause
+Post-processing detector regex from iter 16 is too narrow. It catches `. This [demonstrates|highlights]` style trailers but misses:
+- `. The [noun] [verb]` ("The release offers...", "The report highlights...", "The study highlights...")
+- `. Its [noun]` ("Its accessibility is...")
+- `. [Named entity] has/is...`
+- Any second sentence after first period
 
-**Significant improvement**: A/An openers dropped from 19 to 5. Post-processing is catching the obvious A/An cases.
-**Regression**: Two-sentence trailers increased from 12 to 14. The post-processing rewriter is not catching all two-sentence constructions, especially when the second sentence starts with "It's...", "The project...", "The release...", "Developers can now..."
+A/An meta openers and "[Name] is a [type]" patterns are not addressed by post-processing at all.
 
-### What the post-processing pass is missing
-The post-processing regex detector introduced in iter 16 is not catching:
-1. Second sentences starting with "It's gaining traction", "The project is designed", "The release details", "Developers can now" — these don't match the "This/It [demonstrates|highlights]" pattern
-2. Noun-phrase fragments ("A framework achieving...") — no period count issue, looks like a valid single sentence to the detector
-3. "A novel methodology...", "A comprehensive survey..." — these are A/An starters but may not match the exact regex pattern used
+### What the prompt should fix next iteration
+1. **Simplest deterministic fix**: in post-processing, apply `re.search(r'\.\s+[A-Z]', text.rstrip('.'))` to catch ALL two-sentence cases — not just specific trailer starters. This would catch 26/36 awkward cases in one rule.
+2. **Add A/An meta opener detection**: `re.match(r'^(A|An)\s+(new|comprehensive|novel|survey|workflow|technique|framework|method|study|benchmark|researcher|developer|maintainer|lightweight|Hacker)', text)` → trigger rewrite.
+3. **Add "[Name] is a [type]" detection**: `re.match(r'^[A-Z]\w+ is an?', text)` → trigger rewrite.
+4. These 3 rules together would theoretically cover all 36 awkward cases deterministically.
 
-### What should change next iteration
-1. **Expand the two-sentence detector**: Regex should flag ANY sentence containing exactly two periods (not just "This/It demonstrates"-style trailers). Currently it appears to be pattern-matching the second sentence opener rather than just counting periods.
-2. **Add A/An descriptor detection**: Regex should flag openers matching `^A[n]? (new|novel|comprehensive|landmark|benchmark|study|survey|framework|method|guide|tool|approach|system|protocol)` — these 11 descriptors account for most A/An failures.
-3. **Add fragment detection**: If the sentence contains no finite verb after the opening noun phrase (heuristic: if `^A[n]?\s+\w+ing\s` pattern and no conjugated verb), flag as fragment.
-4. **Consider Claude Haiku for the rewriter**: Gemma rewriting its own failures has a ceiling. The 14 two-sentence failures suggests the rewrite pass itself is underperforming.
-5. **Strengthen rewriter prompt with iter 16's failure examples**: The rewrite Gemma call should see examples of the exact two-sentence patterns still failing.
-
-### What worked well in iter 16
-- Post-processing reduced A/An openers from 19 to 5 — a 74% reduction in that specific pattern
-- Overall awkward count improved from 43/50 (86%) to 28/50 (56%) — meaningful progress
-- key_findings_en and how_to_apply_en remain fully clean — 0 issues across all 50 samples
-- The good examples show the model CAN generate clean single-sentence findings when it doesn't default to meta-description
+### What worked well
+- keyFindingsEn and howToApplyEn are fully solved.
+- Named-actor openers (Anthropic, Oxide, CERN, Reco, lat.md) consistently produce clean one-liners.
+- 14/50 (28%) samples are fully clean — target quality is achievable.
