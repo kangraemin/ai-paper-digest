@@ -9,42 +9,33 @@ const TRANSLATE_PROMPT = `You are a technical translator specializing in AI/ML c
 Rules:
 - Keep technical terms, model names (GPT-4, Llama, etc.), numbers, and code syntax in English
 - For array fields: translate each string item naturally
-- For oneLinerEn: Write like an Ars Technica subheading. EXACTLY ONE sentence — never two. A period followed by more text is always wrong.
+- For oneLinerEn: ONE sentence, 15–35 words. Write it like an Ars Technica subheading. After writing, count: if there is more than one period, DELETE everything after the first period and fold that info into the first sentence using commas or dashes.
 
-  MANDATORY STRUCTURE: [WHO or WHAT] + [ACTIVE VERB] + [CONCRETE RESULT/FINDING]
-  The subject must be a specific entity (company, model, technique name, concrete noun like "LLMs") — never "a method", "a framework", "a study", "a developer", "this project", "this tool".
-  The verb must be finite and active (present or past tense): "cuts", "reveals", "achieves", "outperforms", "reduces", "built", "found".
-  Pack multiple details into one sentence using dashes, commas, or subordinate clauses — never by appending a second sentence.
+  STRUCTURE: [Named entity or concrete noun] + [active verb] + [specific result]
+  Start with a proper noun (company, model, tool name) or a concrete plural noun (LLMs, AI agents). NEVER start with "This", "The", "A", "An", or "Researchers".
 
-  SELF-CHECK before outputting oneLinerEn — reject your draft if ANY of these are true:
-  (1) It contains more than one sentence (count the periods — only one allowed, at the very end)
-  (2) It has no finite verb (just a noun phrase like "A technique for X" or "Compressing X by Y")
-  (3) The first word is "This" or "The" or "Researchers"
-  (4) The first two words match: "A/An [adjective]", "A/An [role]", "A/An [content-type]" (e.g. "A comprehensive", "A developer", "A post", "A study", "A vulnerability")
-  (5) It defines what something IS instead of what it DOES/FOUND ("X is a tool for..." → bad)
-  (6) The subject is vague: "a method", "a novel approach", "a study", "a new benchmark", "researchers"
-  (7) It ends with a generic editorial clause ("This highlights...", "This demonstrates...", "It serves as...", "This is significant...")
-  If any check fails, REWRITE starting with the actual finding, metric, or named entity.
+  BANNED PATTERNS — if your draft matches any of these, rewrite from scratch:
+  × Starts with "This [anything]" — "This framework", "This project", "This work", "This guide", "This open-source", "This RAG-based"
+  × Starts with "A/An [anything]" — "A study", "A developer", "A vulnerability", "A comprehensive"
+  × Two sentences — ANY text after the first period
+  × Defines what something IS: "X is a tool for..."
+  × Vague subject: "a method", "a novel approach", "researchers"
 
-  REWRITE EXAMPLES (Bad → Fixed):
+  REWRITE EXAMPLES (Bad → Good):
   "This project connects an LLM to Animal Crossing" → "An LLM now powers Animal Crossing NPC dialogue on a 24-year-old GameCube via memory sharing, no code mods needed"
-  "A novel method identifies when LLMs should abstain" → "Reverse-engineering an LLM's reasoning trace reveals when it answered a different question than asked"
-  "Researchers discovered an HSL color structure within FLUX.1's latent space" → "FLUX.1's latent space contains an HSL color structure that enables direct color control during image generation without additional training"
-  "STELLAR is a testing framework that automatically uncovers bugs" → "STELLAR finds 2.5x more failure cases in LLM apps than conventional testing by using evolutionary algorithms"
-  "A comprehensive survey paper consolidates optimization techniques" → "Every major LLM agent optimization technique — fine-tuning, RL, prompt engineering — mapped in one survey"
-  "AGENTS.md, a project guide for AI coding agents, is already in use" → "Over 60,000 open-source projects now use AGENTS.md to give AI coding agents project-specific instructions"
+  "This framework measures uncertainty in multimodal LLMs by detecting queries likely to elicit wrong answers" → "Multimodal LLMs now flag their own likely-wrong answers and auto-route them to experts, no external tools needed"
+  "This open-source MCP server resolves raw output bloating context windows" → "MCP Context Forge compresses 315KB tool outputs to 5.4KB, extending Claude session durations by 6x"
+  "This guide details running Gemma 4 locally on macOS" → "Gemma 4 26B runs locally on macOS via LM Studio's CLI and plugs directly into Claude Code"
+  "A vulnerability in legal AI SaaS exposed over 100,000 files. The issue was responsibly disclosed." → "Legal AI SaaS Filevine leaked 100,000+ confidential law firm files through an unauthenticated API endpoint returning a Box admin token"
+  "Apple open-sources Parlor for real-time AI voice conversations. The project eliminates cloud costs." → "Apple open-sources Parlor, a real-time multimodal voice-and-video AI system running entirely on local Apple Silicon M3 Pro"
+  "Multiple AI agents debating boost rare disease diagnosis. The collaboration significantly improves performance." → "AI agents debating in simulated MDT meetings boost rare disease diagnosis accuracy beyond standalone GPT-4"
 
-  TWO-SENTENCE → ONE-SENTENCE compression examples:
-  "Anthropic demonstrates backdoors can be implanted in LLMs with just 250 documents. The research overturns conventional assumptions about model size." → "Anthropic shows backdoors can be implanted in any LLM from 600M to 13B parameters with just 250 malicious documents, regardless of model size or training data volume"
-  "Zed editor now executes Claude Code directly, bypassing the terminal. This is significant as it aims for a common protocol." → "Zed editor executes Claude Code directly via ACP, an open standard aiming to connect any AI agent to any editor without terminal intermediaries"
-  "Atuin v18.13 launches with fuzzy search and AI-powered bash generation. The update significantly enhances usability." → "Atuin v18.13 launches with in-memory fuzzy search, a PTY proxy for improved rendering, and AI-powered bash command generation"
-
-  GOOD OPENERS for reference:
+  GOOD EXAMPLES (study these — notice: one sentence, named subject, active verb, specific detail):
   "Google releases Gemma 3 with 128K context, rivaling GPT-4 at half the cost"
   "LLM responses shrink 48% with a single system-prompt tweak"
   "Railway cut frontend build times from 10+ minutes to under 2 by migrating from Next.js to Vite"
-  "Giving Claude Code 16 GPUs yielded 910 experiments in 8 hours, improving validation loss by 2.87%"
-  "Only 6 out of 15 MCP servers proved useful after 3 months of real Claude Code usage"
+  "STELLAR finds 2.5x more failure cases in LLM apps than conventional testing by using evolutionary algorithms"
+  "Over 60,000 open-source projects now use AGENTS.md to give AI coding agents project-specific instructions"
 - For glossaryEn: MUST return a plain JSON object {"term": "description", ...}. Do NOT return an array. Translate values only, keep keys as-is.
 - For tagsEn: translate Korean tags to English (e.g., "프롬프트엔지니어링"→"Prompt Engineering", "RAG"→"RAG", "에이전트"→"Agent", "파인튜닝"→"Fine-tuning", "추론최적화"→"Inference Optimization", "양자화"→"Quantization", "캐싱"→"Caching", "평가"→"Evaluation", "벤치마크"→"Benchmark", "보안"→"Security", "프롬프트인젝션"→"Prompt Injection", "코드생성"→"Code Generation", "멀티모달"→"Multimodal", "임베딩"→"Embedding", "벡터검색"→"Vector Search", "청킹"→"Chunking", "함수호출"→"Function Calling", "도구사용"→"Tool Use", "MCP"→"MCP", "LoRA"→"LoRA", "RLHF"→"RLHF", "레드팀"→"Red Teaming", "프라이버시"→"Privacy")
 - For codeExampleEn: translate Korean comments only, keep code syntax unchanged. If empty string, return empty string.
