@@ -333,3 +333,24 @@ Implement post-processing rewrite pass:
 1. Deterministic detector: count periods ≥2, check banned starters (This/A/An/Researchers/[Name] is a), check for editorial trailer `. This [demonstrates|highlights|shows]`
 2. Feed flagged outputs to Claude Haiku with template: `[NAMED SUBJECT or KEY FINDING] [STRONG ACTIVE VERB] [CONCRETE MEASURABLE RESULT]`
 3. The 7 clean samples confirm the pattern works — post-hoc enforcement is the only viable path
+
+
+## Iteration 16: Post-processing rewrite pass 구현
+
+### 변경 내용
+scripts/translate.ts에 두 가지 근본적 변경:
+
+1. **TRANSLATE_PROMPT 대폭 단순화**: HARD RULES 3개, Bad→Good 7쌍, GOOD EXAMPLES 4개 등 제거 → oneLinerEn 규칙을 3줄 + 2예시로 축소. Gemma 인지 부하 감소.
+
+2. **Post-processing rewrite pass 추가**:
+   - needsOneLinerFix(): 정규식 기반 탐지 (2문장, 금지 opener, is a [type] that 패턴)
+   - fixOneLiner(): 탐지된 경우 두 번째 Gemma 호출로 재작성 (짧은 focused 프롬프트)
+   - 재작성도 탐지 실패 시 원본 유지 (무한루프 방지)
+
+### 근거
+- 15 iterations에서 프롬프트 제약만으로 16%→86%로 악화
+- 생성과 검증 분리 → 각 LLM 호출 인지 부하 최소화
+- 탐지기가 정규식 기반이므로 100% 결정적
+
+### 다음 단계
+- 재번역 실행 후 평가. 목표: 38/50 → 10 이하

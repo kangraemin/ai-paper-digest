@@ -4,34 +4,34 @@ import { callGemma } from '../src/lib/gemma/client';
 import { withRetry } from '../src/lib/utils/retry';
 import { eq, and, isNotNull, or, isNull } from 'drizzle-orm';
 
+const REWRITE_PROMPT = `Rewrite this one-liner to start with a named subject (product/company/concept name) + active verb + concrete result. ONE sentence only. Keep all facts and numbers.
+
+Input: {input}
+Output:`;
+
+function needsOneLinerFix(text: string): boolean {
+  if (/\.\s+[A-Z]/.test(text)) return true;
+  if (/^(This |The |A |An |Researchers )/i.test(text) && /^(This |The |A |An |Researchers )/.test(text)) return true;
+  if (/\bis an? [\w\s-]+ (that|for|which) /i.test(text)) return true;
+  return false;
+}
+
+async function fixOneLiner(text: string): Promise<string> {
+  if (!needsOneLinerFix(text)) return text;
+  const prompt = REWRITE_PROMPT.replace('{input}', text);
+  const raw = await withRetry(() => callGemma(prompt), { label: 'fix-oneliner', retries: 2 });
+  const fixed = raw.trim().replace(/^["']|["']$/g, '').replace(/^Output:\s*/i, '');
+  return needsOneLinerFix(fixed) ? text : fixed;
+}
+
 const TRANSLATE_PROMPT = `You are a technical translator specializing in AI/ML content. Translate the following Korean fields to English.
 
 Rules:
 - Keep technical terms, model names (GPT-4, Llama, etc.), numbers, and code syntax in English
 - For array fields: translate each string item naturally
-- For oneLinerEn: Write EXACTLY ONE sentence, 15–30 words. Style: Ars Technica subheading.
-
-  FIRST WORD must be a proper noun (Google, Claude, GPT-4) or a concrete plural noun (LLMs, AI agents). No other opener is acceptable.
-
-  HARD RULES — violating ANY ONE means you must rewrite:
-  1. More than one period (.) in the output → FAILED. Keep only the first sentence, fold extra info using commas/dashes.
-  2. First word is "This" or "The" or "A" or "An" or "Researchers" → FAILED. Rewrite with a named subject.
-  3. Contains "is a [type] for/that" → FAILED. Use an active verb instead.
-
-  Bad → Good (memorize these transformations):
-  "This framework measures uncertainty in multimodal LLMs by detecting queries likely to elicit wrong answers." → "Multimodal LLMs now flag their own likely-wrong answers and auto-route them to experts, no external tools needed."
-  "This open-source MCP server resolves raw output bloating. It extends session durations by 6x." → "MCP Context Forge compresses 315KB tool outputs to 5.4KB, extending Claude session durations by 6x."
-  "A vulnerability in legal AI SaaS exposed over 100,000 files. The issue was responsibly disclosed." → "Legal AI SaaS Filevine leaked 100,000+ confidential law firm files through an unauthenticated API endpoint."
-  "Apple open-sources Parlor for real-time AI voice conversations. The project eliminates cloud costs." → "Apple open-sources Parlor, a real-time multimodal voice-and-video AI system running entirely on local Apple Silicon."
-  "This guide details running Gemma 4 locally on macOS with LM Studio." → "Gemma 4 26B runs locally on macOS via LM Studio's CLI and plugs directly into Claude Code."
-  "Multiple AI agents debating boost rare disease diagnosis. The collaboration significantly improves performance." → "AI agents debating in simulated MDT meetings boost rare disease diagnosis accuracy beyond standalone GPT-4."
-  "Anthropic launches Claude Opus 4.6 with 1M tokens. The release introduces multi-agent team functionality." → "Claude Opus 4.6 ships with a 1M-token context window and multi-agent teams that outperform GPT-5.2 on several benchmarks."
-
-  GOOD EXAMPLES (all start with a named subject, one sentence, no trailer):
-  "Google releases Gemma 3 with 128K context, rivaling GPT-4 at half the cost."
-  "LLM responses shrink 48% with a single system-prompt tweak."
-  "Railway cut frontend build times from 10+ minutes to under 2 by migrating from Next.js to Vite."
-  "GPT-4o convinces users of conspiracy theories as effectively as it debunks them — even OpenAI's guardrails can't prevent it."
+- For oneLinerEn: One sentence, Ars Technica headline style. Start with a named subject (product name, company, or specific concept), then active verb, then concrete result. Never start with "This", "A/An", "The", or "Researchers".
+  Good: "Google releases Gemma 3 with 128K context, rivaling GPT-4 at half the cost."
+  Good: "Claude Opus 4.6 ships with a 1M-token context window and multi-agent teams that outperform GPT-5.2 on several benchmarks."
 - For glossaryEn: MUST return a plain JSON object {"term": "description", ...}. Do NOT return an array. Translate values only, keep keys as-is.
 - For tagsEn: translate Korean tags to English (e.g., "프롬프트엔지니어링"→"Prompt Engineering", "RAG"→"RAG", "에이전트"→"Agent", "파인튜닝"→"Fine-tuning", "추론최적화"→"Inference Optimization", "양자화"→"Quantization", "캐싱"→"Caching", "평가"→"Evaluation", "벤치마크"→"Benchmark", "보안"→"Security", "프롬프트인젝션"→"Prompt Injection", "코드생성"→"Code Generation", "멀티모달"→"Multimodal", "임베딩"→"Embedding", "벡터검색"→"Vector Search", "청킹"→"Chunking", "함수호출"→"Function Calling", "도구사용"→"Tool Use", "MCP"→"MCP", "LoRA"→"LoRA", "RLHF"→"RLHF", "레드팀"→"Red Teaming", "프라이버시"→"Privacy")
 - For codeExampleEn: translate Korean comments only, keep code syntax unchanged. If empty string, return empty string.
@@ -110,6 +110,11 @@ async function main() {
       let result;
       try { result = JSON.parse(jsonMatch[0]); }
       catch { throw new Error(`Invalid JSON from Gemma: ${jsonMatch[0].slice(0, 100)}`); }
+
+      // oneLinerEn 후처리: 어색한 패턴 감지 → 재작성
+      if (missing.oneLiner && result.oneLinerEn) {
+        result.oneLinerEn = await fixOneLiner(result.oneLinerEn);
+      }
 
       // 누락됐던 필드만 업데이트
       const update: Record<string, string> = {};
