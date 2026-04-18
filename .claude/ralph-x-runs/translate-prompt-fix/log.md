@@ -139,3 +139,23 @@ Bypass forms: "This work...", "This guide...", "This project...", "This framewor
 **Note on regression vs iter 4 (16% -> 25%):** Different sample set; the 2-sentence count increased (11->18) while "This/Researchers" openers decreased (8->6).
 
 **Next action:** Explicitly enumerate banned trailer starters in SELF-CHECK + add 2-sentence->1-sentence compression examples + strengthen one-sentence enforcement with explicit compression instruction.
+
+
+## Iteration 7: Prompt strategy overhaul — word limit + simplified rules
+
+### 변경 내용
+scripts/translate.ts의 oneLinerEn 규칙을 근본적으로 재설계:
+
+1. **Word limit 추가**: 15-35 words 하드 제약 — 물리적으로 2문장 생성 어렵게
+2. **Post-generation truncation 지시**: period 이후 텍스트 있으면 DELETE하고 첫 문장에 fold
+3. **SELF-CHECK 7개 항목 제거 → BANNED PATTERNS 5개로 단순화**: Gemma가 다단계 체크리스트를 안정적으로 실행 못함
+4. **Rewrite 예시를 iter 6 실패 사례 기반으로 교체**: 7쌍 (2-sentence compression 4쌍 + This opener 3쌍)
+5. **This 차단 강화**: STRUCTURE + BANNED PATTERNS 양쪽에서 이중 차단
+
+### 근거
+- Iter 4→6에서 SELF-CHECK 항목 늘렸지만 16%→25%로 악화 → 복잡한 체크리스트는 역효과
+- Word limit은 모델 생성 길이를 직접 제한, 규칙 이해 능력에 의존 안 함
+- 실제 실패 사례 기반 예시가 추상 규칙보다 효과적 (iter 4에서 검증)
+
+### 다음 단계
+- 재번역 실행 후 평가. 목표: 25% → 10% 이하
