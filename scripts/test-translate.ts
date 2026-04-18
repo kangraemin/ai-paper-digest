@@ -48,7 +48,7 @@ async function main() {
     args: [],
   });
 
-  const BATCH = 10; // 병렬 처리 배치 크기
+  const BATCH = 3; // 병렬 처리 배치 크기 (Gemma rate limit 고려)
   console.log(`📋 ${result.rows.length}개 샘플 뽑음 (${BATCH}개씩 병렬 처리)`);
 
   const samples: Array<Record<string, unknown>> = [];
@@ -103,11 +103,12 @@ async function main() {
     }
   }
 
-  // 10개씩 병렬 처리
+  // BATCH개씩 병렬 처리 + 배치 사이 딜레이
   for (let i = 0; i < result.rows.length; i += BATCH) {
     const batch = result.rows.slice(i, i + BATCH);
     const results = await Promise.all(batch.map((row, j) => translateRow(row, i + j)));
     samples.push(...results);
+    if (i + BATCH < result.rows.length) await new Promise(r => setTimeout(r, 1000));
   }
 
   const outPath = '.claude/ralph-x-runs/translate-prompt-fix/samples.json';
