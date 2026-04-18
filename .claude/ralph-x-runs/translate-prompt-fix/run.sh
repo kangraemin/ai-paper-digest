@@ -65,27 +65,33 @@ Read .claude/ralph-x-runs/translate-prompt-fix/log.md and .claude/ralph-x-runs/t
 
 What to do:
 1. Read .claude/ralph-x-runs/translate-prompt-fix/samples.json (100 translated samples)
-2. Evaluate each one_liner_en — mark as AWKWARD if any of:
-   - Starts with "This is a/an..."
-   - Starts with "This is a [content type] that/where/demonstrating..."
+2. Evaluate ALL fields for each sample — mark as AWKWARD if any of:
+   [one_liner_en]
+   - Starts with "This is a/an..." or "This is a [content type] that/where..."
    - Obvious Korean sentence structure
    - Overly formal/passive ("serves as a warning about", "is characterized by", "aims to")
    - Too long (3+ sentences)
    - Vague opener ("A new study...", "Researchers found...")
-3. Count AWKWARD out of 100. Pass condition: ≤5 awkward
+   [key_findings_en / how_to_apply_en items]
+   - Starts with "This is..." pattern
+   - Obvious translation artifact phrases
+   - Unnatural English phrasing
+   - Missing context that makes the item confusing
+3. Count AWKWARD samples out of 100 (a sample is awkward if ANY field is awkward). Pass condition: ≤5 awkward
 4. Write .claude/ralph-x-runs/translate-prompt-fix/eval.md (OVERWRITE each iteration):
    ## Iteration Result
    - Status: PASS / FAIL
    - Awkward count: X/100
+   - Breakdown: one_liner issues: X, key_findings issues: X, how_to_apply issues: X
 
    ## Awkward Examples
-   (list all awkward ones with id + one_liner_en + why it's awkward)
+   (list all awkward ones with id + which field + the bad text + why it's awkward)
 
    ## Good Examples
-   (list 5+ good ones)
+   (list 5+ good ones across all fields)
 
    ## Retrospective
-   - What patterns still fail
+   - Which fields still have the most issues
    - What the prompt should fix next iteration
    - What worked well
 
