@@ -22,3 +22,21 @@ Started: 2026-04-18
 
 ## 완료 조건
 - [ ] 랜덤 100개 중 95개 이상 어색한 번역 없음
+
+
+## Iteration 1: 프롬프트 규칙 추가
+
+### 변경 내용
+`scripts/translate.ts`의 `TRANSLATE_PROMPT`에 `oneLinerEn` 전용 규칙 추가:
+- "This is a/an..." 패턴 명시적 금지
+- "핵심 발견/수치/릴리즈/액션으로 시작하라" 지시
+- Good/Bad 예시 2쌍 포함 (Gemma가 few-shot 예시에 잘 반응)
+- 최대 2문장 제한
+
+### 근거
+- Gemma-3-27b-it는 구체적 예시가 있을 때 패턴 회피율이 높음
+- "NEVER start with" 같은 강한 금지어가 약한 권고("avoid")보다 효과적
+- 기존 규칙은 oneLiner에 대한 별도 지시가 전혀 없었음
+
+### 다음 단계
+- 재번역 실행 후 "This is" 패턴 비율 측정 (목표: 40% → 5% 이하)
