@@ -159,3 +159,27 @@ scripts/translate.ts의 oneLinerEn 규칙을 근본적으로 재설계:
 
 ### 다음 단계
 - 재번역 실행 후 평가. 목표: 25% → 10% 이하
+
+## Iteration 8: Simplify + fix contradictions + tighten word limit
+
+### 변경 내용
+scripts/translate.ts의 oneLinerEn 규칙을 단순화 + 모순 제거:
+
+1. **Word limit 축소**: 15-35 → 15-30 words — 2문장 물리적 여지 추가 축소
+2. **모순 제거**: "An LLM now powers..." 예시가 "A/An 금지" 규칙과 충돌 → 해당 예시 삭제
+3. **규칙 구조 단순화**: BANNED PATTERNS 5개 + STRUCTURE → HARD RULES 3개로 통합
+   - Rule 1: period 2개 이상 → FAILED
+   - Rule 2: This/The/A/An/Researchers로 시작 → FAILED
+   - Rule 3: "is a [type] for/that" 패턴 → FAILED
+4. **FIRST WORD 제약 강화**: 별도 라인으로 분리, "No other opener is acceptable" 추가
+5. **Bad→Good 예시 업데이트**: iter 6 eval의 실패 사례 추가 (Claude Opus 4.6 2문장→1문장 압축)
+6. **GOOD EXAMPLES 4개로 축소**: 핵심만 남기고 정보량 줄임 (Gemma 과부하 방지)
+
+### 근거
+- Iter 7의 BANNED PATTERNS 5개 + REWRITE EXAMPLES 7쌍 + GOOD EXAMPLES 5개 = 너무 많은 규칙
+- Gemma-3-27b-it는 규칙이 많으면 일부를 무시하는 경향 (iter 4→6에서 확인)
+- "An LLM..." 예시가 A/An 금지 규칙을 약화시켰을 가능성 — 모순 제거로 일관성 확보
+- 3개 HARD RULES은 각각 독립적이고 기계적으로 검증 가능 → 모호성 감소
+
+### 다음 단계
+- 재번역 실행 후 평가. 목표: 25% → 10% 이하
