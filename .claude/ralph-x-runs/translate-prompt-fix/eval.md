@@ -1,110 +1,182 @@
-# Eval: translate-prompt-fix — Iteration 10
+# Eval: translate-prompt-fix — Iteration 11
 
 ## Iteration Result
 - Status: **FAIL**
 - Samples in file: 50 (task prompt says 100, but samples.json contains 50 entries)
-- Awkward count: **36/50** (72%)
-- Threshold: <=5 awkward
-- Breakdown:
-  - oneLinerEn issues: 35 samples
-  - keyFindingsEn issues: 1 additional sample (2401.14196 sentence fragment)
-  - howToApplyEn issues: 0
+- Awkward count: **38/50** (76%)
+- Threshold: ≤5
+- Breakdown: one_liner_en issues: 38, key_findings_en issues: 0, how_to_apply_en issues: 0
 
 ---
 
 ## Awkward Examples
 
-### Two-sentence oneLinerEn (16 samples)
-- reddit_ClaudeAI_1s1ipep: "A practical breakdown of scaling Claude Code... The author details how to build infrastructure..." -> editorial second sentence
-- 2603.25697: "An autonomous software evolution framework where LLM agents discover bugs... This approach achieves zero regression bugs..." -> This approach trailer
-- reddit_ClaudeAI_1rxswkv: "A community post asks Claude users... The author seeks real-world recommendations..." -> second sentence
-- hn_47685945: "Railway reduced production frontend build times... Teams deploying frequently will immediately feel the impact..." -> editorial second sentence
-- 2604.03173: "Up to 13% of cited URLs... This dramatically improves the reliability..." -> This dramatically improves trailer
-- 2604.09408: "A new benchmark measures... The study reveals a significant drop..." -> second sentence
-- hn_44595492: "OpenAI launched ChatGPT agents... Combining the strengths of Operator and Deep Research, this general-purpose agent marks a pivotal step..." -> editorial second sentence
-- 2505.11792: "Reinforcement learning with LLMs... This approach directly leverages solver results as rewards..." -> This approach directly leverages trailer (exact banned pattern)
-- hn_47394022: "A developer who has been successfully maintaining... The post details how to reduce defect rates..." -> second sentence
-- 2603.19896: "This framework explicitly evaluates... It offers a controllable agent approach for improved efficiency." -> second sentence
-- 2604.07223: "A new benchmark, TRACESAFE-BENCH, systematically measures... The study finds guardrail performance is strongly correlated..." -> second sentence
-- reddit_ClaudeAI_1rruo4u: "Anthropic Claude now generates interactive charts... The new feature aims to make data exploration more intuitive..." -> aims to + second sentence
-- hn_46700594: "Anthropic has open-sourced a performance optimization challenge... The company now challenges the community..." -> second sentence
-- 2504.17674: "A new analysis demonstrates... The research highlights critical trade-offs..." -> second sentence
-- hn_44705445: "A shift in AI interface design is needed... This article challenges fundamental assumptions..." -> second sentence
-- hn_47582877: "A critical bug in Claude Code caching mechanism can inflate API costs... Reports indicate significant cost overruns..." -> second sentence
+### Two-sentence one_liners (14 cases)
 
-### This/Researchers openers (6 samples)
-- 2501.07278: "This survey comprehensively details methodologies for enabling LLM agents..."
-- 2602.24195: "This framework measures uncertainty in multimodal LLMs..."
-- 2403.02691: "This research presents the first benchmark evaluating attacks..."
-- 2505.14631: "This research demonstrates a method for training LLMs..."
-- ce6ab5ae: "Researchers demonstrate a method for automatically identifying true causal relationships..."
-- 2603.19896: (also two sentences) "This framework explicitly evaluates..."
+**2203.06566** | one_liner_en | two sentences + "Researchers unveil" opener
+> "Researchers unveil a visual interface for constructing and debugging complex AI applications by connecting multiple LLM calls as a node-edge graph. The tool aims to simplify development and troubleshooting of multi-step LLM workflows."
+- Why: 2 sentences; "Researchers unveil" banned opener; "aims to" in 2nd sentence.
 
-### A/An descriptor noun openers (15 samples)
-- 2601.00497: "STELLAR is a testing framework that automatically uncovers bugs..." -> X is a type that
-- hn_47480900: "A solo developer solved automated testing gaps..." -> A actor
-- 2502.20122: "A self-training method awakens LLMs inherent ability..." -> A method
-- reddit_ChatGPT_1s2jb1j: "A post details a ChatGPT prompt that identifies..." -> A content type that
-- 2602.12318: "A methodology for automatically identifying..." -> noun phrase, no predicate verb
-- 2507.21509: "An automated pipeline extracts undesirable LLM traits..." -> An noun
-- 2603.20105: "A framework achieving 21.9% higher accuracy..." -> noun phrase, no finite predicate
-- 2604.07223: (also two sentences) "A new benchmark, TRACESAFE-BENCH..." -> A new noun
-- 2504.17674: (also two sentences) "A new analysis demonstrates..." -> A new noun
-- hn_47690415: "A new study analyzing the writing styles of 178 AI models..." -> A new study
-- reddit_ChatGPT_1sbkr23: "A months-long conversation with ChatGPT led to..." -> A noun phrase
-- reddit_ClaudeAI_1s1ipep: (also two sentences) "A practical breakdown of scaling Claude Code..." -> noun phrase, no predicate
-- 2603.25697: (also two sentences) "An autonomous software evolution framework where LLM agents..." -> An noun where
-- hn_47394022: (also two sentences) "A developer who has been successfully maintaining..." -> A actor who
+**hn_47765374** | one_liner_en | two sentences + product definition
+> "Kontext CLI is an open-source tool that securely injects short-lived tokens into AI coding agents accessing external services like GitHub, Stripe, and databases, eliminating the need to expose long-term API keys. It's gaining traction as a safer alternative to copy-pasting keys into .env files."
+- Why: "[Name] is a [type] that..." opener; 2 sentences.
 
-### Other issues (3 samples)
-- hn_44746621: "Developer productivity shifts and practical patterns are revealed..." -> passive voice, no agent
-- 2501.12948: "Achieved OpenAI o1-level reasoning capabilities..." -> missing subject (Korean subject-drop artifact)
-- 2503.05659: "The first comprehensive survey systematically organizing..." -> sentence fragment, no finite verb
+**hn_47675213** | one_liner_en | two sentences
+> "Google open-sourced Scion, an experimental testbed for multi-agent systems, emphasizing isolation over constraints. The project is designed for experimentation, not production-level deployment."
+- Why: 2 sentences.
 
-### keyFindingsEn issues (1 sample)
-- 2401.14196: keyFinding item 1 is a sentence fragment with no predicate verb - "A series of open-source code models ranging from 1.3B to 33B parameters, trained on 2 trillion tokens across 87 programming languages, and licensed for both research and commercial use." Missing copula is.
+**hn_47340079** | one_liner_en | two sentences
+> "Hacker News has formalized a policy prohibiting AI-generated or edited comments, marking the first time an existing informal principle has been codified. The move underscores the community's commitment to maintaining the quality of human-to-human discourse."
+- Why: 2 sentences.
+
+**reddit_ClaudeAI_1s43b8w** | one_liner_en | two sentences
+> "A Python server enabling offline operation of Claude Code by directly serving a local LLM (Qwen3) in the Anthropic Messages API format has been released. It's 7.5x faster than existing Ollama+proxy setups and keeps code entirely local."
+- Why: 2 sentences; passive "has been released" in first sentence.
+
+**hn_47582877** | one_liner_en | two sentences + "A [noun]" opener
+> "A critical bug in Claude Code's caching mechanism can inflate API costs up to 10-20x, impacting developers even on $200/month plans. Users are reporting unexpectedly rapid depletion of their usage limits."
+- Why: 2 sentences; "A critical bug" opener.
+
+**hn_46515696** | one_liner_en | two sentences + "This showcases" trailer
+> "Burke Holland demonstrated building multiple practical applications solo in hours using Claude Opus 4.5, arguing it represents a qualitative leap beyond existing AI agents. This showcases Opus 4.5's ability to autonomously handle complex tasks and self-correct errors."
+- Why: 2 sentences; "This showcases" in 2nd sentence.
+
+**2506.06254** | one_liner_en | "This framework" opener + two sentences
+> "This framework personalizes AI agents by optimizing 'Persona' (system prompts) in real-time for each user. It dynamically adapts to individual user behavior without requiring model fine-tuning."
+- Why: "This framework" opener; 2 sentences.
+
+**270eb331f** | one_liner_en | two sentences + "A new methodology"
+> "A new methodology demonstrates improved Named Entity Recognition (NER) performance by fine-tuning Large Language Models (LLMs) with LoRA+. The research achieves higher fine-tuning efficiency compared to standard LoRA."
+- Why: 2 sentences; "A new methodology" opener.
+
+**hn_47761625** | one_liner_en | two sentences + "Researchers" in 2nd
+> "Building software with multiple LLM agents faces inherent limitations of distributed consensus, a challenge that won't disappear with more powerful models. Researchers are exploring choreographic languages and game theory to address this fundamental issue."
+- Why: 2 sentences; "Researchers are exploring" in 2nd sentence.
+
+**5e49bf591** | one_liner_en | two sentences + "This demonstrates" trailer
+> "Delegating abstract inclusion/exclusion decisions to an LLM can complete an 83-hour task in one day for just $157. This demonstrates a significant cost and time reduction in literature review automation."
+- Why: 2 sentences; "This demonstrates" in 2nd sentence.
+
+**hn_47629485** | one_liner_en | two sentences + "This system" trailer
+> "Imbue revealed the architecture behind automating end-to-end tests for their CLI tool mngr using over 100 parallel Claude agents. This system allows AI to autonomously execute, debug, and even fix tests."
+- Why: 2 sentences; "This system" in 2nd sentence.
+
+**hn_47427647** | one_liner_en | two sentences
+> "Google open-sources Sashiko, an AI code review agent powered by Gemini 3.1 Pro, claiming it detects 53% of bugs missed by human reviewers. The agent is now being rolled out to all Linux kernel mailing list patch submissions."
+- Why: 2 sentences.
+
+**hn_47477339** | one_liner_en | two sentences + "[Name] is a [type] that"
+> "Revise is an AI-powered word processor that lets users choose between OpenAI, Anthropic, and xAI models, offering document proofreading, editing, translation, and summarization all in one interface. Its key differentiator is tight integration with AI agents."
+- Why: "[Name] is a [type] that" opener; 2 sentences.
+
+---
+
+### "This [noun]..." openers (7 cases)
+
+**2503.01245** — "This survey paper comprehensively covers the limitations of LLM-based code generation..."
+**2402.01680** — "This survey provides a comprehensive overview of Multi-Agent systems..."
+**2602.02343** — "This work unifies fine-tuning, LoRA, and Activation Steering under a single equation..."
+**2603.16862** — "This memory framework structures time-based events from conversation history..."
+**2601.22027** — "This benchmark evaluates whether LLM agents can admit they don't know..."
+**2603.11955** — "This LLM agent framework automatically generates realistic digital records..."
+*(2506.06254 also — listed under two-sentence above)*
+
+---
+
+### "A/An [noun phrase]..." openers (12 cases)
+
+**2601.07206** — "A comprehensive evaluation of 10 query-routing techniques..."
+**reddit_MachineLearning_1rxz4xk** — "A novel verifier forces agents off greedy paths..."
+**2504.04717** — "A comprehensive survey consolidating benchmarks..." (also a fragment — no predicate verb)
+**2601.13143** — "A token pruning framework maintains or even improves performance..."
+**2501.09959** — "A comprehensive paper consolidates methodologies..."
+**2504.07986** — "A technique manipulates the latent space..." (vague — which technique has no name given)
+**2507.21509** — "An automated pipeline extracts undesirable LLM traits..."
+**hn_46205632** — "An experiment prompting Gemini Pro 3 with the current HN front page..."
+**reddit_ClaudeAI_1ry9aqa** — "A curated GitHub repository details best practices..."
+**2505.04016** — "A lightweight post-processing model transforms the output of any LLM..."
+**hn_45130260** — "A new interactive website visualizes the entire token processing pipeline..." (explicitly banned "A new [noun]")
+**2602.22787** — "A simple linear classifier on LLM hidden states achieves 0.96 F1 accuracy..."
+
+---
+
+### "Researchers [verb]..." + product definition + passive (4 cases)
+
+**2604.13849** — "MCPThreatHive is an open-source threat intelligence platform that automatically collects..."
+**2603.12091** — "Researchers demonstrate automated neural architecture search using an LLM..."
+**ce6ab5ae636** — "Researchers demonstrate a method for automatically identifying true causal relationships..."
+**hn_47460525** — "OpenCode is an open-source AI coding agent connecting to 75+ LLM providers..."
+
+---
+
+### Passive/vague openers (2 cases)
+
+**2603.13036** — "Warnings emerge that 'vibe coding,' which rapidly builds websites with LLMs, could homogenize the internet..." (passive journalistic)
+**hn_47690415** — "A new study analyzing the writing styles of 178 AI models across 32 dimensions reveals..." (explicitly listed banned pattern)
 
 ---
 
 ## Good Examples
 
-1. 2603.11873 (AdaFuse): "AdaFuse accelerates inference for MoE and LoRA models by 2.4x through a custom CUDA kernel that fuses adapters across all layers in a single pass." - Subject + active verb + specific number.
-2. 2604.12986 (Parallax): "Prompt guardrails are useless if an Agent is compromised - a security architecture paradigm that completely separates reasoning and execution at the OS process level." - Punchy finding-first, one sentence.
-3. hn_47774971 (Gemma 4): "Google open-source Gemma 4 model now runs fully local inference on iPhones without cloud connectivity, signaling a shift from on-device AI experimentation to practical deployment." - Company + product + active verb + result.
-4. 2603.17639 (VeriGrey): "VeriGrey automates prompt injection testing for LLM agents, discovering 33% more vulnerabilities than black-box fuzzing by leveraging a grey-box approach." - Product name + active verb + specific result.
-5. 2603.19118 (SC+VC): "Combining Verbalized Confidence and Self-Consistency with just two samples outperforms using eight samples with a single method when measuring uncertainty in inference models." - Gerund subject + active verb + specific finding.
-6. f1f249d4 (Abstract screening): "Automating abstract screening with six LLMs achieved higher accuracy than human researchers and reduced workload by up to 99%." - Active gerund + specific result + number.
-7. reddit_ChatGPT_1s8zocq (image prompts): "Specifying camera models and settings dramatically increases the realism and unsettling quality of AI-generated images." - Short, direct, concrete.
-8. 2602.04750 (stance detection): "Adding user profiles crafted from their past posts boosted political leaning classification accuracy by up to 38.5 percentage points." - Gerund + active verb + precise number.
+**2602.01778** — states the finding directly as subject
+> "LLM context compression performance is determined by data distribution, not model architecture, and the training data of the decoder dominates compression quality over the encoder."
+
+**2503.06709** — specific concept as subject, active verb, concrete finding
+> "The 'Delusion' phenomenon proves far more difficult to address than typical hallucinations and isn't easily corrected by fine-tuning or self-reflection."
+
+**2603.29953** — gerund action opener with concrete result
+> "Structuring prompts using the 5W3H framework elevates weaker models to the performance level of stronger ones, while also ensuring consistent results across languages."
+
+**2504.20997** — direct action verb, specific comparison result
+> "Directly implementing decades-old reinforcement learning algorithms (PSRL) with LLMs dramatically improves exploration efficiency compared to using LLMs for novel algorithm invention."
+
+**2604.02155** — specific subject + counterintuitive finding with numbers
+> "Function-calling agents perform best with just 32 tokens of Chain-of-Thought reasoning—using 256 tokens actually degrades performance below a no-CoT baseline."
+
+**2502.15851** — myth-busting structure, punchy
+> "The notion that system prompts override user prompts is a myth; social proof cues like 'recommended by 90% of experts' are far more effective."
+
+**2501.13453** — counterintuitive finding, clear mechanism
+> "LLM performance drops after learning new tasks not due to knowledge loss, but task alignment disruption, and freezing lower layers can largely prevent this."
+
+**reddit_ClaudeAI_1rw1b8i** — specific behavior with concrete recommendation
+> "Claude exhibits excessive agreement—a sycophancy issue—when given feedback from ChatGPT, highlighting the need for stronger pushback settings."
+
+**reddit_ChatGPT_1sbuyeg** — narrative with concrete numbers
+> "A codebase rapidly built with AI proved incomprehensible; a 70% deletion and two-week rewrite halved its size and restored full understanding."
+
+**2509.03057** — active verb, concrete comparison
+> "The model autonomously determines where and how to insert adapters, achieving full fine-tuning-level performance with fewer parameters than LoRA."
 
 ---
 
 ## Retrospective
 
 ### Which fields still have the most issues
-- oneLinerEn: 35/50 samples (70%) - ONLY field with systematic problems
-- keyFindingsEn: 1 isolated sentence-fragment issue
-- howToApplyEn: 0 issues - completely solved
+- **one_liner_en**: 38/50 (76%) awkward — the only remaining problem field
+- **key_findings_en**: 0 issues across all 50 samples — fully solved
+- **how_to_apply_en**: 0 issues across all 50 samples — fully solved
 
-### Issue pattern breakdown for oneLinerEn
-| Pattern | Count |
-|---|---|
-| Two-sentence editorial trailer | 16 |
-| A/An descriptor noun opener | 15 |
-| This/Researchers verb opener | 6 |
-| Other (passive, fragment, missing subject) | 3 |
+### Dominant patterns by frequency
+1. Two-sentence one_liner: 14/38 cases (37%) — editorial trailer appended despite word limits, HARD RULES, SELF-CHECK
+2. "A/An [noun phrase]" openers: 12/38 cases (32%) — model defaults to meta-describing content type
+3. "This [noun]..." openers: 7/38 cases (18%) — classic banned pattern still appearing at same rate
+4. "Researchers [verb]" + product definition: 4/38 cases (11%)
+5. Passive/vague others: 2/38 cases (5%)
 
-### Root cause analysis
-After 10 iterations of constraint-based prompting (HARD RULES, SELF-CHECK, word limits, BANNED PATTERNS, templates), the two dominant bad patterns persist at ~70%. The constraint-accumulation approach has reached a dead end. The model CAN produce correct output (14/50 = 28% clean), proving this is a generation-bias problem, not a capability gap.
+### What worked well
+- key_findings and how_to_apply are 100% clean — problem solved for those fields.
+- 12/50 one_liners (24%) are correctly formatted — the model IS capable, just not consistent.
+- The pattern [SPECIFIC SUBJECT][ACTIVE VERB][CONCRETE RESULT] works when the model uses it.
 
-### What the prompt should fix next iteration
-Three options ranked by reliability:
+### What should change next iteration
+After 11 iterations of constraint-based prompting (banned lists, word limits, SELF-CHECK, templates, HARD RULES), the awkward rate remains at 66-76%. Prompt-engineering within generation has reached its limit with Gemma-3-27b-it.
 
-Option A (Post-processing rewrite pass): After Gemma generates oneLinerEn, run a second LLM call that counts periods and rewrites if it detects >= 2 periods, banned openers, or noun-phrase-without-predicate. Does NOT depend on Gemma following instructions.
-
-Option B (Template enforcement): Replace the entire oneLinerEn section with a strict fill-in template:
-[NAMED SUBJECT - product/company/concept, NOT A study, Research, This paper] [ACTIVE VERB] [SPECIFIC RESULT].
-
-Option C (Few-shot only): Remove ALL rules text. Replace with 10+ Bad to Good rewrite examples. Let examples do the work instead of rules.
-
-Recommendation: Option A is most reliable because it enforces constraints structurally after generation rather than hoping the model follows rules during generation.
+**Recommended next step: Post-processing rewrite pass (as proposed in iter 10)**
+1. After Gemma generates oneLinerEn, run a deterministic detector:
+   - Count periods → if >= 2: two-sentence, flag for rewrite
+   - Check first word/phrase against banned starters: This/A/An/Researchers/The model/The system/[Name] is a
+   - Check for "[X] is a [type] that/which" substring → flag
+2. Feed flagged outputs to a rewrite model (Claude Haiku) with the strict template:
+   [NAMED SUBJECT or KEY FINDING] [STRONG ACTIVE VERB] [CONCRETE MEASURABLE RESULT]
+3. This approach decouples correctness from Gemma's instruction-following capability and is more reliable than any prompt constraint.

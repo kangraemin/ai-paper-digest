@@ -263,3 +263,34 @@ Provide 5 Bad→Good rewrites targeting specific remaining patterns from this ev
 
 **Next action (Iter 11):**
 Pivot to post-processing rewrite pass (Option A): After Gemma generates oneLinerEn, run a second LLM call that detects ≥2 periods, banned openers, or noun-phrase-without-predicate, and rewrites to a valid single-sentence format. Does not depend on Gemma following rules during generation.
+
+
+## Iteration 11: Evaluation Result
+
+**Status: FAIL**
+
+- Total samples evaluated: 50/50 (file contains 50 entries, not 100 as stated in task prompt)
+- Awkward count: 38/50 (76%)
+- Threshold: <=5
+
+**Field breakdown:**
+- oneLinerEn: 38 issues
+- keyFindingsEn: 0 issues
+- howToApplyEn: 0 issues
+
+**Dominant patterns (frequency order):**
+1. Two-sentence one_liner (14 cases): Editorial trailer appended despite all prior constraints
+2. A/An [noun phrase] openers (12 cases): Meta-describing content type
+3. This [noun]... openers (7 cases): Classic banned pattern unchanged
+4. Researchers [verb] + product definition (4 cases)
+5. Passive/vague (2 cases)
+
+**Trend vs prior iterations:** 76% (iter 11) vs 72% (iter 10) vs 66% (iter 9). No improvement.
+
+**Root cause (confirmed):** 11 iterations of constraint-based prompting have failed to reduce the awkward rate below 66%. Gemma instruction-following under cognitive load is the ceiling.
+
+**Next action (Iter 12):**
+Pivot to post-processing rewrite pass:
+1. Deterministic detector flags: >=2 periods, banned first-word starters, [X] is a [type] that pattern
+2. Second LLM call (Claude Haiku) rewrites flagged oneLinerEn with strict template
+3. Does not depend on Gemma following rules during generation
