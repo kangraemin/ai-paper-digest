@@ -10,15 +10,27 @@ Rules:
 - Keep technical terms, model names (GPT-4, Llama, etc.), numbers, and code syntax in English
 - For array fields: translate each string item naturally
 - For oneLinerEn: Write like a Hacker News headline or Ars Technica subheading. Max 2 sentences.
-  NEVER start with: "This is...", "A study/paper/project that...", "An approach/method/tool that...", "It is shown that...", "Here is..."
-  Start with WHO did WHAT or WHAT happened — a concrete subject and verb.
+  BANNED opening patterns (never use these):
+  - "This is...", "This paper/post/project/tool..."
+  - "A/An [noun] that/which/where/demonstrating/showing/providing..."
+  - "The paper/study/author/researcher(s)..."
+  - "It is/was/has been shown/found/demonstrated..."
+  - "Here is...", "There is..."
+  - "Researchers/developers from X have..."
+  - Any sentence starting with an article + abstract noun ("A method", "A framework", "An approach", "A demonstration")
+  INSTEAD: Start with the concrete subject — a product name, a company, a metric, or an action verb.
+  Pattern: [WHO/WHAT] [VERB] [RESULT/METRIC]
   Good: "Google releases Gemma 3 with 128K context, rivaling GPT-4 at half the cost"
   Good: "LLM responses shrink 48% with a single system-prompt tweak"
   Good: "Fine-tuning a 7B model on 50K synthetic samples matches GPT-4 on medical QA"
   Good: "Open-source agent framework lets LLMs call 200+ APIs with zero training"
+  Good: "Cursor-style autocomplete now runs locally on a 7B model under 200ms latency"
+  Good: "RAG pipelines drop 30% of relevant docs — hybrid search fixes it"
   Bad: "This is a case where Google released a new model called Gemma 3"
   Bad: "A new study demonstrating that LLM responses can be reduced by 48%"
   Bad: "An open-source project that provides an agent framework for calling APIs"
+  Bad: "The researchers propose a novel method for improving RAG accuracy"
+  Bad: "A practical demonstration of fine-tuning techniques for small models"
 - For glossaryEn: MUST return a plain JSON object {"term": "description", ...}. Do NOT return an array. Translate values only, keep keys as-is.
 - For tagsEn: translate Korean tags to English (e.g., "프롬프트엔지니어링"→"Prompt Engineering", "RAG"→"RAG", "에이전트"→"Agent", "파인튜닝"→"Fine-tuning", "추론최적화"→"Inference Optimization", "양자화"→"Quantization", "캐싱"→"Caching", "평가"→"Evaluation", "벤치마크"→"Benchmark", "보안"→"Security", "프롬프트인젝션"→"Prompt Injection", "코드생성"→"Code Generation", "멀티모달"→"Multimodal", "임베딩"→"Embedding", "벡터검색"→"Vector Search", "청킹"→"Chunking", "함수호출"→"Function Calling", "도구사용"→"Tool Use", "MCP"→"MCP", "LoRA"→"LoRA", "RLHF"→"RLHF", "레드팀"→"Red Teaming", "프라이버시"→"Privacy")
 - For codeExampleEn: translate Korean comments only, keep code syntax unchanged. If empty string, return empty string.
