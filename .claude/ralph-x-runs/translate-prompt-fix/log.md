@@ -111,3 +111,31 @@ The prompt says "max 2 sentences" — model treats this as permission. Need: "EX
 3. SELF-CHECK: add "Starts with 'Researchers [verb]'?" → hard fail
 4. SELF-CHECK: add "Second sentence appended?" → hard fail
 5. Add 3 Bad→Fixed examples for two-sentence compression
+
+
+## Iteration 6: Evaluation Result
+
+**Status: FAIL**
+
+- Total samples evaluated: 100/100
+- Awkward count: 25/100
+- Threshold: ≤5
+
+**Field breakdown:**
+- `one_liner_en`: 24 issues
+- `key_findings_en`: 1 issue (`77b7336a...` — "This provides a practical approach..." in key_findings item)
+- `how_to_apply_en`: 0 issues
+
+**Dominant pattern (18/24): Two-sentence one_liner_en**
+Despite "EXACTLY ONE sentence" instruction and SELF-CHECK, model still appends a second sentence with these trailer starters:
+- "The [noun] [demonstrates/highlights/marks/introduces/improves]..." (7 cases)
+- "This [demonstrates/breakthrough/highlights/marks]..." (6 cases)
+- "It [serves/offers/provides]..." (3 cases)
+- Other second-sentence expansions (2 cases)
+
+**Secondary pattern (6/24): "This [noun]..." openers**
+Bypass forms: "This work...", "This guide...", "This project...", "This framework...", "This open-source...", "This RAG-based..."
+
+**Note on regression vs iter 4 (16% -> 25%):** Different sample set; the 2-sentence count increased (11->18) while "This/Researchers" openers decreased (8->6).
+
+**Next action:** Explicitly enumerate banned trailer starters in SELF-CHECK + add 2-sentence->1-sentence compression examples + strengthen one-sentence enforcement with explicit compression instruction.
