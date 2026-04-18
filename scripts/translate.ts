@@ -9,28 +9,35 @@ const TRANSLATE_PROMPT = `You are a technical translator specializing in AI/ML c
 Rules:
 - Keep technical terms, model names (GPT-4, Llama, etc.), numbers, and code syntax in English
 - For array fields: translate each string item naturally
-- For oneLinerEn: Write like an Ars Technica subheading. Max 2 sentences.
+- For oneLinerEn: Write like an Ars Technica subheading. EXACTLY ONE sentence — never two. A period followed by more text is always wrong.
 
   MANDATORY STRUCTURE: [WHO or WHAT] + [ACTIVE VERB] + [CONCRETE RESULT/FINDING]
   The subject must be a specific entity (company, model, technique name, concrete noun like "LLMs") — never "a method", "a framework", "a study", "a developer", "this project", "this tool".
   The verb must be finite and active (present or past tense): "cuts", "reveals", "achieves", "outperforms", "reduces", "built", "found".
+  Pack multiple details into one sentence using dashes, commas, or subordinate clauses — never by appending a second sentence.
 
   SELF-CHECK before outputting oneLinerEn — reject your draft if ANY of these are true:
-  (1) It has no finite verb (just a noun phrase like "A technique for X" or "A framework that Y")
-  (2) The first two words match: "This [noun]", "A/An [adjective]", "A/An [role]", "The [noun]"
-  (3) It defines what something IS instead of what it DOES/FOUND ("X is a tool for..." → bad)
-  (4) The subject is vague: "a method", "a novel approach", "a study", "a new benchmark", "researchers"
+  (1) It contains more than one sentence (count the periods — only one allowed, at the very end)
+  (2) It has no finite verb (just a noun phrase like "A technique for X" or "Compressing X by Y")
+  (3) The first word is "This" or "The" or "Researchers"
+  (4) The first two words match: "A/An [adjective]", "A/An [role]", "A/An [content-type]" (e.g. "A comprehensive", "A developer", "A post", "A study", "A vulnerability")
+  (5) It defines what something IS instead of what it DOES/FOUND ("X is a tool for..." → bad)
+  (6) The subject is vague: "a method", "a novel approach", "a study", "a new benchmark", "researchers"
+  (7) It ends with a generic editorial clause ("This highlights...", "This demonstrates...", "It serves as...", "This is significant...")
   If any check fails, REWRITE starting with the actual finding, metric, or named entity.
 
   REWRITE EXAMPLES (Bad → Fixed):
   "This project connects an LLM to Animal Crossing" → "An LLM now powers Animal Crossing NPC dialogue on a 24-year-old GameCube via memory sharing, no code mods needed"
   "A novel method identifies when LLMs should abstain" → "Reverse-engineering an LLM's reasoning trace reveals when it answered a different question than asked"
-  "A developer details a successful self-hosting experience" → "Self-hosting on a $379 mini PC with Tailscale and Claude Code automates server setup without sysadmin expertise"
+  "Researchers discovered an HSL color structure within FLUX.1's latent space" → "FLUX.1's latent space contains an HSL color structure that enables direct color control during image generation without additional training"
   "STELLAR is a testing framework that automatically uncovers bugs" → "STELLAR finds 2.5x more failure cases in LLM apps than conventional testing by using evolutionary algorithms"
-  "A three-step framework for detecting LLM hallucinations" → "Detecting and reducing LLM hallucinations by root cause takes three steps in high-stakes domains like finance and law"
   "A comprehensive survey paper consolidates optimization techniques" → "Every major LLM agent optimization technique — fine-tuning, RL, prompt engineering — mapped in one survey"
-  "A study quantifying 40,285 Claude Skills" → "40,285 Claude Skills from a public marketplace reveal what gets built, how skills get used, and where risks hide"
   "AGENTS.md, a project guide for AI coding agents, is already in use" → "Over 60,000 open-source projects now use AGENTS.md to give AI coding agents project-specific instructions"
+
+  TWO-SENTENCE → ONE-SENTENCE compression examples:
+  "Anthropic demonstrates backdoors can be implanted in LLMs with just 250 documents. The research overturns conventional assumptions about model size." → "Anthropic shows backdoors can be implanted in any LLM from 600M to 13B parameters with just 250 malicious documents, regardless of model size or training data volume"
+  "Zed editor now executes Claude Code directly, bypassing the terminal. This is significant as it aims for a common protocol." → "Zed editor executes Claude Code directly via ACP, an open standard aiming to connect any AI agent to any editor without terminal intermediaries"
+  "Atuin v18.13 launches with fuzzy search and AI-powered bash generation. The update significantly enhances usability." → "Atuin v18.13 launches with in-memory fuzzy search, a PTY proxy for improved rendering, and AI-powered bash command generation"
 
   GOOD OPENERS for reference:
   "Google releases Gemma 3 with 128K context, rivaling GPT-4 at half the cost"
