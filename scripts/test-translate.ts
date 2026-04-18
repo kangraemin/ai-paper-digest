@@ -44,19 +44,19 @@ async function main() {
     sql: `SELECT id, title, one_liner, key_findings, how_to_apply, target_audience, evidence
           FROM papers
           WHERE summarized_at IS NOT NULL AND one_liner IS NOT NULL
-          ORDER BY RANDOM() LIMIT 100`,
+          ORDER BY RANDOM() LIMIT 50`,
     args: [],
   });
 
-  console.log(`📋 ${result.rows.length}개 샘플 뽑음`);
+  const BATCH = 10; // 병렬 처리 배치 크기
+  console.log(`📋 ${result.rows.length}개 샘플 뽑음 (${BATCH}개씩 병렬 처리)`);
 
   const samples: Array<Record<string, unknown>> = [];
+  let done = 0;
 
-  for (let i = 0; i < result.rows.length; i++) {
-    const row = result.rows[i];
+  async function translateRow(row: typeof result.rows[0], idx: number): Promise<Record<string, unknown>> {
     const id = String(row.id);
     const title = String(row.title);
-
     try {
       const input: Record<string, unknown> = {
         oneLiner: row.one_liner || '',
@@ -83,9 +83,10 @@ async function main() {
       if (!jsonMatch) throw new Error('JSON 파싱 실패');
       const parsed = JSON.parse(jsonMatch[0]);
 
-      samples.push({
-        id,
-        title,
+      done++;
+      process.stdout.write(`[${done}/${result.rows.length}] ✅ ${title.slice(0, 50)}\n`);
+      return {
+        id, title,
         ko: { oneLiner: input.oneLiner, keyFindings: input.keyFindings, howToApply: input.howToApply },
         en: {
           oneLinerEn: parsed.oneLinerEn ?? '',
@@ -94,17 +95,24 @@ async function main() {
           evidenceEn: parsed.evidenceEn ?? [],
           howToApplyEn: parsed.howToApplyEn ?? [],
         },
-      });
-      process.stdout.write(`[${i + 1}/100] ✅ ${title.slice(0, 50)}\n`);
+      };
     } catch (e) {
-      samples.push({ id, title, error: String(e) });
-      process.stdout.write(`[${i + 1}/100] ❌ ${title.slice(0, 50)}: ${e}\n`);
+      done++;
+      process.stdout.write(`[${done}/${result.rows.length}] ❌ ${title.slice(0, 50)}: ${e}\n`);
+      return { id, title, error: String(e) };
     }
+  }
+
+  // 10개씩 병렬 처리
+  for (let i = 0; i < result.rows.length; i += BATCH) {
+    const batch = result.rows.slice(i, i + BATCH);
+    const results = await Promise.all(batch.map((row, j) => translateRow(row, i + j)));
+    samples.push(...results);
   }
 
   const outPath = '.claude/ralph-x-runs/translate-prompt-fix/samples.json';
   fs.writeFileSync(outPath, JSON.stringify(samples, null, 2));
-  console.log(`\n✅ 저장 완료: ${outPath} (${samples.length}개)`);
+  console.log(`\n✅ 저장 완료: ${outPath} (${samples.filter(s => !s.error).length}개 성공 / ${samples.length}개 시도)`);
 }
 
 main().catch(console.error);
