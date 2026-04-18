@@ -11,7 +11,7 @@ set -euo pipefail
 RUN_DIR=".claude/ralph-x-runs/translate-prompt-fix"
 LOG_FILE="$RUN_DIR/log.md"
 CHECKLIST_FILE="$RUN_DIR/checklist.md"
-MAX_ITER=10
+MAX_ITER=20
 
 PROMPT_DIR=$(mktemp -d)
 
