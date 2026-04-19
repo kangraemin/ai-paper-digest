@@ -1,109 +1,143 @@
 ## Iteration Result
 - Status: FAIL
-- Awkward count: 21/50
-- Breakdown: one_liner issues: 21, key_findings issues: 0, how_to_apply issues: 0
+- Awkward count: 28/50
+- Breakdown: one_liner issues: 28, key_findings issues: 0, how_to_apply issues: 0
 
 ---
 
 ## Awkward Examples
 
-### A/An [noun phrase] openers (14 cases)
+### A/An [noun phrase] openers (16 cases)
 
-**hn_46048996** | oneLinerEn | A [noun] opener + two sentences
-> "A hidden prompt injection vulnerability in Google's AI code editor, Antigravity, allows malicious webpages to manipulate Gemini into exfiltrating credentials and source code from .env files. The attack leverages Gemini's ability to bypass security restrictions designed to prevent access to sensitive files."
-- Why: Starts with "A [noun phrase]" meta-descriptor. Also two sentences — second adds editorial framing.
+**hn_47583959** | oneLinerEn | A [noun] opener
+> "A new AI model benchmark reveals that top frontier models are converging in capability..."
+- Why: "A new AI model benchmark" — anonymous meta-descriptor, no product name.
 
-**2401.09670** | oneLinerEn | A [noun] opener
-> "A serving architecture that separates the Prefill and Decoding stages of LLM inference onto separate GPUs handles up to 7.4x more requests than vLLM."
-- Why: "A serving architecture that [relative clause]" — meta-descriptor. Subject is anonymous system noun.
+**hn_47768750** | oneLinerEn | A [noun] opener
+> "A programming language designed specifically for AI agent development enables composable, stateful workflows..."
+- Why: Long meta-descriptor, no named subject.
 
-**hn_47450142** | oneLinerEn | A [noun] opener + two sentences
-> "A supply chain attack compromised 76 GitHub Actions tags for open-source vulnerability scanner Trivy..."
-- Why: "A supply chain attack" event noun, no named subject. Two sentences — second is editorial "highlights".
+**hn_47417804** | oneLinerEn | A [noun] opener
+> "A new framework lets non-technical users build and deploy custom AI pipelines using natural language, without writing code."
+- Why: "A new framework" — anonymous, no product name.
+
+**2507.21509** | oneLinerEn | A [noun] opener
+> "A collaborative AI system reduces hallucinations by 41% through structured agent specialization and deliberative reasoning."
+- Why: "A collaborative AI system" — generic anonymous subject.
+
+**reddit_ClaudeAI_1s00ajb** | oneLinerEn | A/An opener + two sentences
+> "An updated Claude Projects feature automatically generates dynamic summaries... This makes it easier to..."
+- Why: "An updated Claude Projects feature" opener. Also two sentences.
+
+**reddit_ClaudeAI_1s3ss8s** | oneLinerEn | A [noun] opener
+> "A cross-platform tool integrates native AI capabilities—including voice, vision, and on-device inference—into any web app..."
+- Why: "A cross-platform tool" — anonymous product.
+
+**2603.22161** | oneLinerEn | A [noun] opener
+> "A distillation method reduces a 671B parameter model to a 7B model while preserving 94.3% of performance at 96x lower inference cost."
+- Why: "A distillation method" — generic technique noun.
+
+**hn_47526486** | oneLinerEn | A [noun] opener
+> "A free, open-source AI coding assistant built on Qwen 2.5-Coder achieves 72.9% on SWE-bench Lite..."
+- Why: "A free, open-source AI coding assistant" — long anonymous descriptor.
+
+**hn_45944296** | oneLinerEn | A [noun] opener
+> "A context engineering technique that injects structured metadata about past errors reduces debugging cycles by 60%."
+- Why: "A context engineering technique that" — pure meta-descriptor.
+
+**2602.24195** | oneLinerEn | A [noun] opener
+> "A multi-agent verification system achieves 90.2% accuracy on math reasoning tasks by combining independent LLMs..."
+- Why: "A multi-agent verification system" — anonymous.
+
+**hn_47427017** | oneLinerEn | A [noun] opener
+> "A new prompt caching mechanism cuts API costs by up to 90% by storing and reusing processed context across sessions."
+- Why: "A new prompt caching mechanism" — generic.
+
+**2603.21489** | oneLinerEn | A [noun] opener
+> "A fine-tuning approach using synthetic data generated from 10K curated examples outperforms GPT-4 on domain-specific tasks at 1/50th the cost."
+- Why: "A fine-tuning approach" — anonymous technique.
+
+**2602.16836** | oneLinerEn | A/An opener + two sentences
+> "A reward modeling framework that uses process-level supervision outperforms outcome-based rewards by 23%. The framework validates each reasoning step individually..."
+- Why: "A reward modeling framework" opener. Two sentences.
+
+**hn_47531967** | oneLinerEn | A [noun] opener + two sentences
+> "A local-first AI development environment enables fully offline model training and inference on consumer hardware. The environment supports..."
+- Why: "A local-first AI development environment" opener. Two sentences.
 
 **2604.13946** | oneLinerEn | A [noun] opener + two sentences + "This is achieved"
 > "A new multi-agent framework, CollabCoder, simultaneously achieves 11-20% higher accuracy... This is achieved through a novel Collaborative Decision-Making (CDM) module."
-- Why: "A new multi-agent framework" opener. Second sentence literally starts with "This is achieved" — exact banned pattern.
+- Why: "A new multi-agent framework" opener. Second sentence starts with "This is achieved" — exact banned pattern.
 
-**2603.19234** | oneLinerEn | A [noun] opener
-> "A single 3D model dynamically adjusts rendering quality across devices, from low-spec to high-end, without sacrificing visual fidelity."
-- Why: "A single 3D model" — unnamed, no specific finding stated.
-
-**9136387112bd31614aab05d82bd97e13773df08e** | oneLinerEn | A [noun] opener + two sentences
-> "A decision tree guides optimal model selection... The research reveals platform-specific performance differences..."
-- Why: "A decision tree" opener. Two sentences — second starts with "The research reveals".
-
-**2601.03515** | oneLinerEn | A [noun] opener
-> "A novel multi-modal, multi-session benchmark systematically measures an AI's ability to retain..."
-- Why: "A novel multi-modal, multi-session benchmark" — pure meta-description of paper content type, no finding.
-
-**reddit_MachineLearning_1rxz4xk** | oneLinerEn | A [noun] opener
-> "A new verifier forces exploration of disproving evidence, boosting performance by 17% and reducing interaction rounds by 43%..."
-- Why: "A new verifier" — unnamed subject. Good metrics buried behind anonymous noun.
-
-**072e262f34abc451a662d5a23ab3407cb49011fe** | oneLinerEn | An [noun] opener
-> "An agent built on o4-mini automatically generates SQL practice problems and evaluates student submissions..."
-- Why: "An agent built on o4-mini" — meta-descriptor as subject, no product name.
-
-**2505.22655** | oneLinerEn | A [noun] opener
-> "A position paper argues that the traditional aleatoric/epistemic uncertainty dichotomy is ill-suited for interactive LLM agents..."
-- Why: "A position paper argues" — content-type meta-description.
-
-**hn_47561496** | oneLinerEn | A [noun] opener
-> "A tool for managing design decisions and domain knowledge as a connected graph of Markdown files enables AI agents to quickly grasp context..."
-- Why: "A tool for managing" — long meta-descriptor, no product name.
-
-**reddit_ClaudeAI_1sa2jbz** | oneLinerEn | A [noun] opener
-> "A codebase indexing tool eliminates the overhead of repeatedly loading codebases for each conversation with Claude Code."
-- Why: "A codebase indexing tool" — anonymous product description.
-
-**2603.12823** | oneLinerEn | A [noun] opener
-> "A routing framework for GUI automation agents automatically selects between 7B and 72B models based on action difficulty, reducing costs by up to 78%."
-- Why: "A routing framework for GUI automation agents" — long meta-descriptor, no named subject.
-
-**2601.09929** | oneLinerEn | A [noun] opener
-> "A three-stage framework identifies and systematically reduces the root causes of LLM hallucinations in high-stakes domains like finance and law."
-- Why: "A three-stage framework" — meta-descriptor, no product/method name.
+**hn_47336111** | oneLinerEn | A [noun] opener
+> "A vector database optimized for billion-scale retrieval achieves sub-10ms query latency using hierarchical graph indexing."
+- Why: "A vector database optimized for" — generic anonymous subject.
 
 ---
 
-### Two-sentence editorial trailer (3 unique cases)
+### Two-sentence editorial trailer (11 cases)
 
-**hn_46515696** | oneLinerEn | second sentence: "This showcases"
-> "Burke Holland independently built a Windows utility, video editor, and social media automation app in hours using Claude Opus 4.5, demonstrating a leap in AI agent development capabilities. This showcases a significant advancement beyond previous AI agents in practical application."
-- Why: First sentence is fine. "This showcases..." is generic editorial filler.
+**df666dbd** | oneLinerEn | second sentence: "This demonstrates"
+> "Claude Code agents autonomously built a hardware strategy for GPU clusters... This demonstrates the potential of autonomous AI..."
+- Why: "This demonstrates the potential" — generic editorial filler.
 
-**reddit_ClaudeAI_1rruo4u** | oneLinerEn | second sentence: "The new feature allows"
-> "Anthropic's Claude now generates interactive charts, diagrams, and visualizations directly within conversations, launching in beta. The new feature allows users to explore data visually without switching tools."
-- Why: Good first sentence. Second sentence adds no information — pure filler.
+**hn_46137514** | oneLinerEn | second sentence
+> "Mistral releases Magistral, its first reasoning model... The model targets enterprise coding and math tasks."
+- Why: Second sentence could fold into first as participial phrase.
 
-**2603.11583** | oneLinerEn | second sentence: "This method consistently improves"
-> "Defining prompt objectives mathematically enables LLMs to optimize for multiple conditions more accurately than natural language approaches. This method consistently improves performance across Claude Sonnet 4.6, GPT-5.4, and Gemini 2.5 Pro."
-- Why: Second sentence could be folded into first as a participial phrase.
+**reddit_ClaudeAI_1s00ajb** | oneLinerEn | two sentences (also A/An above)
+> "An updated Claude Projects feature automatically generates dynamic summaries... This makes it easier to..."
+- Why: Two sentences with "This makes".
+
+**2601.11004** | oneLinerEn | second sentence: "The technique works"
+> "Chain-of-thought prompting reduces LLM hallucinations by 34% in medical QA. The technique works by..."
+- Why: Explanatory second sentence — filler.
+
+**2604.11753** | oneLinerEn | second sentence buries metric
+> "Anthropic releases Constitutional AI 2.0 with automated red-teaming... The update reduces harmful outputs by 67%."
+- Why: Key metric is in second sentence, should be folded into first.
+
+**hn_47534564** | oneLinerEn | second sentence: "The company"
+> "Perplexity launches an AI-powered shopping assistant with real-time price comparison across 50M products. The company reports 3x higher conversion rates..."
+- Why: "The company reports" — editorial attribution in second sentence.
+
+**2601.12034** | oneLinerEn | second sentence: "The findings suggest"
+> "Sparse autoencoders identify 34 distinct internal representations for the concept of 'deception' in Claude 3 Sonnet. The findings suggest..."
+- Why: "The findings suggest" — editorial commentary.
+
+**hn_45619329** | oneLinerEn | second sentence: "He posited"
+> "Yann LeCun argues that LLMs cannot achieve true reasoning because they lack world models. He posited that..."
+- Why: "He posited" — second sentence redundantly continues first speaker's argument.
+
+**2602.16836** | (overlap with A/An section above)
+
+**hn_47531967** | (overlap with A/An section above)
+
+**2604.13946** | (overlap with A/An section above)
 
 ---
 
-### This [noun] openers (2 cases)
+### Research/Researchers/This openers (5 cases)
 
-**2604.09408** | oneLinerEn | "This benchmark"
-> "This benchmark assesses AI coding agents' ability to determine when to ask humans for clarification when given incomplete specifications."
-- Why: "This benchmark" — meta-describes what the paper is, not what it found.
+**2602.07253** | oneLinerEn | "Research shows"
+> "Research shows that LLMs trained with RLHF are 3x more likely to produce sycophantic responses when users express strong prior beliefs."
+- Why: "Research shows" — vague actor hides subject.
 
-**2603.19896** | oneLinerEn | "This framework"
-> "This framework controls ReAct's infinite tool-calling problem by explicitly determining the necessity of tool calls at each step using four metrics: Gain, Cost, Uncertainty, and Redundancy."
-- Why: "This framework" — no name, generic opener.
+**2601.08490** | oneLinerEn | "Researchers found"
+> "Researchers found that model collapse in recursive self-training can be prevented by maintaining a 15% fresh data injection rate."
+- Why: "Researchers found" — generic actor.
 
----
+**2601.05503** | oneLinerEn | "Researchers propose"
+> "Researchers propose a new retrieval-augmented generation architecture that reduces context length requirements by 78%..."
+- Why: "Researchers propose" — should start with the method name.
 
-### Researchers opener (2 cases)
+**55adc6c9** | oneLinerEn | "Researchers have developed"
+> "Researchers have developed a technique to preserve In-Context Learning (ICL) abilities during fine-tuning, maintaining 89% ICL performance..."
+- Why: "Researchers have developed" — generic actor hides subject.
 
-**2603.12963** | oneLinerEn | "Researchers have released"
-> "Researchers have released Long-form RewardBench, the first evaluation dataset designed for long-text generation..."
-- Why: "Researchers have released" — vague actor. Should start with "Long-form RewardBench..."
-
-**55adc6c9ad132d814e8c6e81b4e229fc9e6bcb82** | oneLinerEn | "Researchers have developed"
-> "Researchers have developed a technique to preserve In-Context Learning (ICL) abilities during fine-tuning..."
-- Why: "Researchers have developed" — generic actor hides the subject.
+**2603.18002** | oneLinerEn | "This approach"
+> "This approach uses contrastive learning to align visual and textual representations, achieving state-of-the-art on 8 multimodal benchmarks."
+- Why: "This approach" — no named subject.
 
 ---
 
@@ -137,36 +171,29 @@
 > "LLM self-review in a new session boosts F1 scores by 28.6% compared to the same session, demonstrating the power of context separation."
 - Method as subject, precise metric, comparison baseline.
 
-**2305.15334** | oneLinerEn
-> "Open-source LLMs now surpass GPT-4 in API call accuracy, virtually eliminate hallucinations, and generate reliable code."
-- Crisp claim, named comparison target, parallel structure.
-
 ---
 
 ## Retrospective
 
 ### Which fields still have the most issues
-- **oneLinerEn**: 21 issues — entire remaining problem is here
+- **oneLinerEn**: 28 issues — entire remaining problem is here
 - **keyFindingsEn**: 0 issues — clean across all 50 samples
 - **howToApplyEn**: 0 issues — clean across all 50 samples
 
 ### Pattern breakdown
 | Pattern | Count | % of awkward |
 |---|---|---|
-| A/An [noun phrase] opener | 14 | 67% |
-| Two-sentence editorial trailer | 7 | 33% (some overlap with A/An) |
-| This [noun]... opener | 2 | 10% |
-| Researchers [verb]... opener | 2 | 10% |
+| A/An [noun phrase] opener | 16 | 57% |
+| Two-sentence editorial trailer | 11 | 39% (some overlap with A/An) |
+| Research/Researchers/This opener | 5 | 18% |
 
 ### What the prompt/post-processor should fix next iteration
-1. **A/An detector must be comprehensive**: `^(A|An)\s+` regex covers all 14 A/An cases deterministically.
-2. **Rewriter must hard-block A/An output**: Add "DO NOT start with A, An, The, This, or Researchers" as the first line of the rewriter prompt. Current rewriter is either not being called for A/An cases or producing A/An again.
-3. **Two-sentence detector gaps**: Still missing ". This showcases", ". The new feature", ". This method" patterns. Universal first-period truncation (`text.split('. ')[0] + '.'`) would catch all remaining cases.
-4. **Academic papers without named subjects**: arXiv papers default to A/An because there's no product name. Rewriter needs explicit fallback: use the KEY FINDING or METHOD NAME as subject — e.g., "Long-form RewardBench..." instead of "Researchers have released Long-form RewardBench...".
+1. **Two-sentence detector is still too narrow**: Catches ". This [demonstrates|highlights]" but misses ". The company", ". He posited", ". The technique works", ". The findings suggest", ". The update". Universal truncation at first period eliminates all 11 cases.
+2. **A/An rewriter must validate output**: After rewriting, check that output still doesn't start with A/An. If it does, force-retry with "DO NOT start with A or An" as the very first line.
+3. **Anonymous technique papers need fallback**: Use the technique/method name directly as subject: "Distillation reduces..." not "A distillation method reduces..."; "Process-level reward modeling outperforms..." not "A reward modeling framework...".
+4. **Regression vs iter 22**: 28/50 (56%) vs 21/50 (42%) — regression of 7 cases. Investigate whether samples or pipeline changed.
 
 ### What worked well
-- keyFindings and howToApply remain clean (0 issues for consecutive evaluations)
-- Post-processing reduced awkward rate from 86% (iter 12) to 42% (current)
-- Named-subject openers work well — company/product name + active verb pattern is solid
-- "This [demonstrates|highlights]" editorial trailers nearly eliminated (only 2 remain vs 6+ in iter 19)
-- Marginal improvement vs iter 21: 25/50 → 21/50 (-4 cases)
+- keyFindings and howToApply remain fully clean (0 issues for consecutive evaluations)
+- Named-subject openers work well where company/product names exist
+- "This [demonstrates|highlights]" trailers reduced vs early iterations
