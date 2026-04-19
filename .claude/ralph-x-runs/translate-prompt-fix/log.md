@@ -500,3 +500,37 @@ Post-processor (introduced iter 16) is not catching most cases:
 2. Harden rewriter first-word constraint: forbidden list A/An/The/This/Researchers/Research
 3. Add post-rewrite single-sentence validation: truncate if >1 sentence
 4. Add inline positive examples to rewriter prompt
+
+
+---
+
+## Iter 21 (2026-04-19) — FAIL
+
+- **Awkward**: 25/50 (50%)
+- **Sample set**: 50 samples from current samples.json
+- **Threshold**: <=5 awkward to PASS
+
+### Pattern breakdown
+| Pattern | Count | % of awkward |
+|---|---|---|
+| A/An [noun phrase] opener | 14 | 56% |
+| Two-sentence editorial trailer | 9 | 36% |
+| This [noun]... opener | 3 | 12% |
+| Researchers [verb]... opener | 2 | 8% |
+
+### keyFindingsEn / howToApplyEn
+- keyFindingsEn: 0 issues
+- howToApplyEn: 0 issues
+
+### vs iter 19
+- 27/50 to 25/50: marginal improvement (-2 cases)
+- Rate: 54% to 50% -- essentially flat
+
+### Root cause
+Post-processor not reliably catching A/An openers (56% of failures) -- either detector not triggering or rewriter outputting A/An again. Two-sentence truncation still missing many variants. This [noun] detector not catching all cases.
+
+### Next fix needed
+1. Rewriter prompt: first instruction = DO NOT start with A, An, The, This, Researchers
+2. Post-rewrite re-validation: if still banned opener -> take first clause
+3. Two-sentence: greedy first-period cut text.split(. )[0] + .
+4. Strip Alternatively... edge case from output
