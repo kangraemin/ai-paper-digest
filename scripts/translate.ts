@@ -6,38 +6,62 @@ import { eq, and, isNotNull, or, isNull } from 'drizzle-orm';
 
 const REWRITE_PROMPT = `Rewrite this one-liner as a single Ars Technica headline sentence.
 
-RULES:
-- EXACTLY ONE sentence. If you write two sentences, you fail.
-- First word must be a proper noun (product name, company, person, or specific concept).
-- NEVER start with: A, An, The, This, These, Researchers, Research
-- NEVER use "[Name] is a [type] that/for" pattern
-- Use an active verb (launches, achieves, reduces, ships, reveals, outperforms)
-- Keep all facts, numbers, and technical terms from the input
+CRITICAL — your first word decides pass/fail:
+✅ ALLOWED first words: product names (GPT-4, Claude, Llama), company names (Google, OpenAI, Meta), person names, specific concept names (LoRA, RLHF, RAG)
+❌ BANNED first words: A, An, The, This, These, Researchers, Research — instant fail
+
+ONE sentence only. One period at the end. Nothing after it.
+
+Pattern: [Named subject] [active verb] [concrete result with numbers if available].
 
 BAD → GOOD:
 - "A token pruning framework reduces compute by 40%..." → "FastPrune cuts multimodal LLM compute by 40% without accuracy loss."
 - "This framework measures uncertainty in multimodal LLMs..." → "UncertaintyBench probes multimodal LLM confidence, flagging unreliable outputs before deployment."
-- "Researchers demonstrate an RL-based agent that surpasses GUI manipulation..." → "WebAgent surpasses state-of-the-art GUI manipulation using RL with only 0.02% of typical training data."
+- "Researchers demonstrate an RL-based agent..." → "WebAgent surpasses state-of-the-art GUI manipulation using RL with only 0.02% of typical training data."
 - "A comprehensive survey reveals current LLM limitations..." → "GPT-4 and Claude still fail at multi-step reasoning, scoring below 40% on compositional benchmarks."
+- "A new sparse attention mechanism based on Fourier filtering selectively attends..." → "FourierAttention selectively filters attention heads via Fourier analysis, cutting transformer memory 60%."
+- "A new programming language co-designed with LLMs features deterministic semantics..." → "Lex ships deterministic semantics co-designed with LLMs for predictable code generation."
 - "Hypura is a Rust-based open-source project that enables running LLMs larger than physical memory." → "Hypura runs LLMs larger than a Mac's physical RAM by swapping layers to disk in Rust."
-- "OpenAI launches GPT-5.2-Codex, sparking debate. Initial benchmarks suggest comparable coding ability." → "OpenAI ships GPT-5.2-Codex with coding benchmarks rivaling Claude Opus 4.5 but lagging in agentic tasks."
 
 Input: {input}
 Output:`;
 
+function truncateToOneSentence(text: string): string {
+  const match = text.match(/^(.+?\.)\s+[A-Z]/);
+  return match ? match[1] : text;
+}
+
 function needsOneLinerFix(text: string): boolean {
   if (/\.\s+[A-Z]/.test(text)) return true;
-  if (/^(This |The |A |An |Researchers )/i.test(text) && /^(This |The |A |An |Researchers )/.test(text)) return true;
+  if (/^(This |The |A |An |Researchers |Research )/.test(text)) return true;
   if (/\bis an? [\w\s-]+ (that|for|which) /i.test(text)) return true;
   return false;
 }
 
+function cleanRewriteOutput(raw: string): string {
+  return raw.trim().replace(/^["']|["']$/g, '').replace(/^Output:\s*/i, '');
+}
+
 async function fixOneLiner(text: string): Promise<string> {
   if (!needsOneLinerFix(text)) return text;
+
   const prompt = REWRITE_PROMPT.replace('{input}', text);
   const raw = await withRetry(() => callGemma(prompt), { label: 'fix-oneliner', retries: 2 });
-  const fixed = raw.trim().replace(/^["']|["']$/g, '').replace(/^Output:\s*/i, '');
-  return needsOneLinerFix(fixed) ? text : fixed;
+  let fixed = truncateToOneSentence(cleanRewriteOutput(raw));
+
+  if (!needsOneLinerFix(fixed)) return fixed;
+
+  if (/^(A |An |The |This |Researchers )/.test(fixed)) {
+    const raw2 = await withRetry(() => callGemma(REWRITE_PROMPT.replace('{input}', fixed)), { label: 'fix-oneliner-retry', retries: 1 });
+    const fixed2 = truncateToOneSentence(cleanRewriteOutput(raw2));
+    if (!needsOneLinerFix(fixed2)) return fixed2;
+    fixed = fixed2;
+  }
+
+  const truncated = truncateToOneSentence(text);
+  if (!needsOneLinerFix(truncated)) return truncated;
+
+  return fixed;
 }
 
 const TRANSLATE_PROMPT = `You are a technical translator specializing in AI/ML content. Translate the following Korean fields to English.
