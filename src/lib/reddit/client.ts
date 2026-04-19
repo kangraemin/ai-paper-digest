@@ -62,7 +62,10 @@ export async function fetchRedditAI(
           .replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&#32;/g, ' ')
           .replace(/\s+/g, ' ').trim();
 
-        const cleaned = contentText.trim();
+        // RSS footer "submitted by /u/... [link] [comments]" strip — 텍스트 포스트도 footer 포함되어 isRedditUIText가 오탐함
+        const footerStripped = contentText
+          .replace(/\s*submitted by\s+\/u\/\S+[\s\S]*?\[link\][\s\S]*?\[comments\]\s*$/i, '')
+          .trim();
 
         return {
           id,
@@ -74,7 +77,7 @@ export async function fetchRedditAI(
           num_comments: 0,
           permalink: permalink.replace('https://www.reddit.com', ''),
           subreddit: sub,
-          selftext: (cleaned.length > 50 && !isRedditUIText(cleaned)) ? cleaned : '',
+          selftext: footerStripped.length > 50 ? footerStripped : '',
         };
       });
 
