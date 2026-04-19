@@ -570,3 +570,38 @@ Post-processor not reliably catching A/An openers (56% of failures) -- either de
 2. Rewriter first constraint: "DO NOT start with A, An, The, This, or Researchers"
 3. Two-sentence: first-period truncation `text.split('. ')[0] + '.'` as universal catch-all
 4. For academic papers: rewriter fallback strategy — use method/finding name as subject, not meta-descriptor
+
+
+---
+
+## Iter 23 (2026-04-19) - FAIL
+
+- **Awkward**: 32/50 (64%)
+- **Sample set**: 50 samples from current samples.json
+- **Threshold**: <=5 awkward to PASS
+
+### Pattern breakdown
+Pattern | Count | % of awkward
+A/An noun phrase opener | 14 | 44%
+Two-sentence editorial trailer | 12 | 38%
+This/The opener | 3 | 9%
+Researchers opener | 3 | 9%
+
+### keyFindingsEn / howToApplyEn
+- keyFindingsEn: 1 issue (2603.19008 - "This is a training-free approach...")
+- howToApplyEn: 0 issues
+
+### vs iter 22
+- 21/50 (42%) -> 32/50 (64%): regression
+- A/An remains dominant (14 cases, same count as iter 22)
+- Two-sentence increased (7->12)
+- This/The/Researchers count similar
+
+### Root cause
+Post-processor not reliably catching all two-sentence patterns or A/An openers. Named-entity papers pass 100% - academic papers without named product consistently fail with A/An fallback.
+
+### Next fix needed
+1. Universal first-sentence truncation: text.split('. ')[0] + '.' - no regex, always takes first sentence
+2. Universal A/An + This/The/Researchers detector with single regex
+3. Rewriter hard constraint: first word must be named concept/product/verb
+4. Academic paper strategy: extract named technique from content and use as subject
