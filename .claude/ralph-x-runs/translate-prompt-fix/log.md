@@ -437,3 +437,35 @@ scripts/translate.ts에 두 가지 근본적 변경:
 1. Universal two-sentence detection: re.search(r"\.\s+[A-Z]", text.rstrip('.'))
 2. A/An opener detection: re.match(r"^(A|An)\s+", text)
 3. Improve rewriter prompt to prevent A/An meta-descriptions in rewrite output
+
+---
+
+## Iter 18 (2026-04-19) — FAIL
+
+- **Awkward**: 27/50 (54%)
+- **Sample set**: 50 samples from current `samples.json`
+- **Threshold**: ≤5 awkward to PASS
+
+### Pattern breakdown
+| Pattern | Count | % of awkward |
+|---|---|---|
+| A/An [noun phrase] opener | 15 | 55.6% |
+| Two-sentence editorial trailer | 7 | 25.9% |
+| "This [noun]..." opener | 3 | 11.1% |
+| "Researchers [verb]..." opener | 2 | 7.4% |
+
+### keyFindingsEn / howToApplyEn
+- keyFindingsEn: 0 issues
+- howToApplyEn: 0 issues
+
+### Root cause
+Post-processor (introduced iter 16) is not catching most cases:
+- A/An: rewriter output not constrained from producing A/An again
+- Two-sentence: rewriter not reliably producing single sentence
+- "This [noun]..." and "Researchers...": no detector exists
+
+### Next fix needed
+1. Add explicit negative constraint to rewrite prompt: no A/An/The/This/Researchers openers
+2. Add "This [noun]..." detector
+3. Add "Researchers [verb]..." detector  
+4. Post-rewrite single-sentence validation: truncate if still two sentences
