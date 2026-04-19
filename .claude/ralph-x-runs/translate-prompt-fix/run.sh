@@ -12,6 +12,7 @@ RUN_DIR=".claude/ralph-x-runs/translate-prompt-fix"
 LOG_FILE="$RUN_DIR/log.md"
 CHECKLIST_FILE="$RUN_DIR/checklist.md"
 MAX_ITER=20
+START_ITER=${START_ITER:-1}
 
 PROMPT_DIR=$(mktemp -d)
 
@@ -111,7 +112,7 @@ Do NOT ask for permission. Do NOT skip writing. Just write them.
 S3EOF
 
 # Main loop
-for i in $(seq 1 $MAX_ITER); do
+for i in $(seq $START_ITER $MAX_ITER); do
   echo "━━━ Ralph-X iteration $i/$MAX_ITER ━━━"
 
   # Check if all checklist items are done
