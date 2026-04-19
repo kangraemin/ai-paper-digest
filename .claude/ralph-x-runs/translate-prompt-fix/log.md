@@ -407,3 +407,33 @@ scripts/translate.ts에 두 가지 근본적 변경:
 1. Catch ALL two-sentence oneLinerEn with re.search(r'[.]\s+[A-Z]', text.rstrip('.')) -- deterministic, covers 26 cases
 2. Add A/An meta opener detection to rewrite trigger
 3. Add [Name] is a [type] detection to rewrite trigger
+
+
+## Current Iteration: Evaluation Result
+
+**Status: FAIL**
+
+- Total samples evaluated: 50/50
+- Awkward count: 40/50 (80%)
+- Threshold: ≤5
+
+**Field breakdown:**
+- oneLinerEn: 40 issues
+- keyFindingsEn: 2 issues (both in hn_47006594 content-failure edge case)
+- howToApplyEn: 0 issues
+
+**Pattern breakdown:**
+| Pattern | Count |
+|---------|-------|
+| Two-sentence editorial trailer | 23 |
+| A/An opener | 17 |
+| [Name] is a [type] | 7 |
+| Banned opener (This/Researchers) | 3 |
+| Meta failure | 1 |
+
+**vs iter 16 re-eval:** Two-sentence slightly down (26→23), A/An openers sharply UP (8→17). Post-processor catching some "This demonstrates" trailers but missing all A/An openers and most two-sentence variants.
+
+**Next action:** Expand post-processor:
+1. Universal two-sentence detection: re.search(r"\.\s+[A-Z]", text.rstrip('.'))
+2. A/An opener detection: re.match(r"^(A|An)\s+", text)
+3. Improve rewriter prompt to prevent A/An meta-descriptions in rewrite output
