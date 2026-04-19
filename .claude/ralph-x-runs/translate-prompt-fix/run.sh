@@ -39,14 +39,14 @@ S1EOF
 cat > "$PROMPT_DIR/step2.txt" << 'S2EOF'
 You are in a Ralph-X loop testing a translation prompt.
 
-Task: Pick 100 random papers from the DB, run them through the CURRENT Gemma translation prompt (from scripts/translate.ts), and save results to a file. DO NOT write anything to the DB.
+Task: Pick 50 random papers from the DB, run them through the CURRENT Gemma translation prompt (from scripts/translate.ts), and save results to a file. DO NOT write anything to the DB.
 
 Read .claude/ralph-x-runs/translate-prompt-fix/log.md for context.
 
 What to do:
 1. Source env: `source .env`
-2. Query 100 random papers from DB (one_liner only, no DB writes):
-   SELECT id, title, one_liner FROM papers WHERE summarized_at IS NOT NULL AND one_liner IS NOT NULL ORDER BY RANDOM() LIMIT 100
+2. Query 50 random papers from DB (one_liner only, no DB writes):
+   SELECT id, title, one_liner FROM papers WHERE summarized_at IS NOT NULL AND one_liner IS NOT NULL ORDER BY RANDOM() LIMIT 50
    Use npx tsx with @libsql/client (async function pattern, not top-level await).
 3. Read the current TRANSLATE_PROMPT from scripts/translate.ts
 4. For each paper, call the Gemma API directly using src/lib/gemma/client.ts callGemma() to translate just the one_liner field.
@@ -63,12 +63,12 @@ S2EOF
 cat > "$PROMPT_DIR/step3.txt" << 'S3EOF'
 You are in a Ralph-X loop evaluating translation quality.
 
-Task: Read samples.json, evaluate all 100 translations, write detailed assessment + retrospective.
+Task: Read samples.json, evaluate all 50 translations, write detailed assessment + retrospective.
 
 Read .claude/ralph-x-runs/translate-prompt-fix/log.md and .claude/ralph-x-runs/translate-prompt-fix/checklist.md for context.
 
 What to do:
-1. Read .claude/ralph-x-runs/translate-prompt-fix/samples.json (100 translated samples)
+1. Read .claude/ralph-x-runs/translate-prompt-fix/samples.json (50 translated samples)
 2. Evaluate ALL fields for each sample — mark as AWKWARD if any of:
    [one_liner_en]
    - Starts with "This is a/an..." or "This is a [content type] that/where..."
@@ -81,11 +81,11 @@ What to do:
    - Obvious translation artifact phrases
    - Unnatural English phrasing
    - Missing context that makes the item confusing
-3. Count AWKWARD samples out of 100 (a sample is awkward if ANY field is awkward). Pass condition: ≤5 awkward
+3. Count AWKWARD samples out of 50 (a sample is awkward if ANY field is awkward). Pass condition: ≤3 awkward
 4. Write .claude/ralph-x-runs/translate-prompt-fix/eval.md (OVERWRITE each iteration):
    ## Iteration Result
    - Status: PASS / FAIL
-   - Awkward count: X/100
+   - Awkward count: X/50
    - Breakdown: one_liner issues: X, key_findings issues: X, how_to_apply issues: X
 
    ## Awkward Examples
@@ -126,7 +126,7 @@ for i in $(seq $START_ITER $MAX_ITER); do
   claude -p --model claude-opus-4-6 "$(cat "$PROMPT_DIR/step1.txt")"
 
   # Step 2: 랜덤 100개 샘플 번역 → 파일 저장 (DB 안 건드림, 스크립트 직접 실행)
-  echo "▶ Step 2: 100개 샘플 번역 → 파일 저장 (스크립트)"
+  echo "▶ Step 2: 50개 샘플 번역 → 파일 저장 (스크립트)"
   source .env && TURSO_DATABASE_URL=$TURSO_DATABASE_URL TURSO_AUTH_TOKEN=$TURSO_AUTH_TOKEN GEMINI_API_KEY=$GEMINI_API_KEY npx tsx scripts/test-translate.ts
 
   # Step 3: 평가 + 회고 (sonnet)
