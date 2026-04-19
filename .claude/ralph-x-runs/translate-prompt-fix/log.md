@@ -534,3 +534,39 @@ Post-processor not reliably catching A/An openers (56% of failures) -- either de
 2. Post-rewrite re-validation: if still banned opener -> take first clause
 3. Two-sentence: greedy first-period cut text.split(. )[0] + .
 4. Strip Alternatively... edge case from output
+
+
+---
+
+## Iter 22 (2026-04-19) — FAIL
+
+- **Awkward**: 21/50 (42%)
+- **Sample set**: 50 samples from current samples.json
+- **Threshold**: ≤5 awkward to PASS
+
+### Pattern breakdown
+| Pattern | Count | % of awkward |
+|---|---|---|
+| A/An [noun phrase] opener | 14 | 67% |
+| Two-sentence editorial trailer | 7 | 33% (some overlap) |
+| This [noun]... opener | 2 | 10% |
+| Researchers [verb]... opener | 2 | 10% |
+
+### keyFindingsEn / howToApplyEn
+- keyFindingsEn: 0 issues
+- howToApplyEn: 0 issues
+
+### vs iter 21
+- 25/50 → 21/50: marginal improvement (-4 cases)
+- A/An opener now dominant (14/21 = 67%)
+
+### Root cause
+- A/An detector not catching all variants, or rewriter producing A/An again after rewrite
+- Two-sentence truncation missing ". This showcases", ". The new feature", ". This method" starters
+- Academic papers (no named product) consistently default to A/An meta-descriptor pattern
+
+### Next fix needed
+1. Universal A/An detector: `^(A|An)\s+` regex — covers all 14 remaining A/An cases
+2. Rewriter first constraint: "DO NOT start with A, An, The, This, or Researchers"
+3. Two-sentence: first-period truncation `text.split('. ')[0] + '.'` as universal catch-all
+4. For academic papers: rewriter fallback strategy — use method/finding name as subject, not meta-descriptor
