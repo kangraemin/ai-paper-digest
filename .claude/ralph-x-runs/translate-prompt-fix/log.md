@@ -469,3 +469,34 @@ Post-processor (introduced iter 16) is not catching most cases:
 2. Add "This [noun]..." detector
 3. Add "Researchers [verb]..." detector  
 4. Post-rewrite single-sentence validation: truncate if still two sentences
+
+---
+
+## Iter 19 (2026-04-19) — FAIL
+
+- **Awkward**: 27/50 (54%)
+- **Sample set**: 50 samples from current `samples.json`
+- **Threshold**: ≤5 awkward to PASS
+
+### Pattern breakdown
+| Pattern | Count | % of awkward | vs iter 18 |
+|---|---|---|---|
+| Two-sentence oneLinerEn | 12 | 44.4% | +5 (was 7) |
+| A/An [noun phrase] opener | 13 | 48.1% | -2 (was 15) |
+| "This [noun]..." opener | 1 | 3.7% | -2 (was 3) |
+| "Researchers [verb]..." opener | 1 | 3.7% | -1 (was 2) |
+
+### keyFindingsEn / howToApplyEn
+- keyFindingsEn: 0 issues
+- howToApplyEn: 0 issues
+
+### Root cause
+- Two-sentence detector incomplete: misses ". The [noun]", ". It enables", ". The model" patterns
+- A/An rewriter partially constrained but still producing openers
+- No post-rewrite sentence count validation
+
+### Next fix needed
+1. Expand two-sentence detector regex to catch ". The ", ". It ", ". This " second sentence starters
+2. Harden rewriter first-word constraint: forbidden list A/An/The/This/Researchers/Research
+3. Add post-rewrite single-sentence validation: truncate if >1 sentence
+4. Add inline positive examples to rewriter prompt
