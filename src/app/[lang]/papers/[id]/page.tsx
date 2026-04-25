@@ -14,6 +14,7 @@ import Link from 'next/link';
 import { Calendar, Users, FileText, Zap, ChevronDown } from 'lucide-react';
 import { PaperViewTracker } from '@/components/paper-view-tracker';
 import { TrackedExternalLink } from '@/components/tracked-external-link';
+import { PaperSubscriptionCta } from '@/components/paper-subscription-cta';
 
 function parseBulletList(value: string): string[] {
   try {
@@ -383,6 +384,7 @@ export default async function PaperDetail({ params }: Props) {
           </details>
         </section>
       )}
+      <PaperSubscriptionCta lang={lang} />
     </article>
     </>
   );
