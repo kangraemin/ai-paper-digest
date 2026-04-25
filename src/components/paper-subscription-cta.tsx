@@ -19,7 +19,7 @@ export function PaperSubscriptionCta({ lang }: { lang: Lang }) {
 
   useEffect(() => {
     if (
-      localStorage.getItem('paper_cta_dismissed') ||
+      sessionStorage.getItem('paper_cta_dismissed') ||
       localStorage.getItem('paper_cta_subscribed')
     ) return;
 
@@ -60,7 +60,7 @@ export function PaperSubscriptionCta({ lang }: { lang: Lang }) {
 
   const handleDismiss = () => {
     setVisible(false);
-    localStorage.setItem('paper_cta_dismissed', '1');
+    sessionStorage.setItem('paper_cta_dismissed', '1');
   };
 
   const clientId = process.env.NEXT_PUBLIC_SLACK_CLIENT_ID;
