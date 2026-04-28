@@ -1,4 +1,5 @@
-export const revalidate = 0;
+// 1h ISR — 모바일 크롤러 응답 안정화 (revalidate=0 시 매 요청 DB 쿼리로 인덱싱 지연 위험)
+export const revalidate = 3600;
 
 import type { Metadata } from 'next';
 import { db } from '@/lib/db';
@@ -15,6 +16,8 @@ import { Calendar, Users, FileText, Zap, ChevronDown } from 'lucide-react';
 import { PaperViewTracker } from '@/components/paper-view-tracker';
 import { TrackedExternalLink } from '@/components/tracked-external-link';
 import { PaperSubscriptionCta } from '@/components/paper-subscription-cta';
+import { RelatedPapers } from '@/components/related-papers';
+import { getRelatedPapers } from '@/lib/db/queries';
 
 function parseBulletList(value: string): string[] {
   try {
@@ -114,6 +117,7 @@ export default async function PaperDetail({ params }: Props) {
 
   if (result.length === 0) notFound();
   const paper = result[0];
+  const related = await getRelatedPapers(paper.id, paper.aiCategory, 8);
   const authorList = safeJsonParse<string[]>(paper.authors, []);
   const catColor = paper.aiCategory ? (categoryColorMap[paper.aiCategory] ?? '#888') : '#888';
   const catName = paper.aiCategory ? (categoryDisplayName[paper.aiCategory] ?? paper.aiCategory) : null;
@@ -341,6 +345,8 @@ export default async function PaperDetail({ params }: Props) {
           return null;
         }
       })()}
+
+      <RelatedPapers items={related} lang={lang} />
 
       {/* Related Resources */}
       {(paper.relatedResources || paper.relatedResourcesEn) && (() => {

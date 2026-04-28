@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation';
 import { Header } from '@/components/header';
+import { Footer } from '@/components/footer';
 import { SUPPORTED_LANGS } from '@/lib/i18n';
 import type { Lang } from '@/lib/i18n';
 
@@ -46,6 +47,7 @@ export default async function LangLayout({
     <>
       <Header lang={lang as Lang} />
       <main className="flex-1 flex flex-col items-center w-full">{children}</main>
+      <Footer lang={lang as Lang} />
     </>
   );
 }
