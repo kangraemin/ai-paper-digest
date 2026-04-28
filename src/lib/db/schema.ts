@@ -52,6 +52,8 @@ export const papers = sqliteTable('papers', {
   index('idx_dev_relevance').on(table.devRelevance),
   index('idx_source').on(table.source),
   index('idx_published_at_ai_category').on(table.publishedAt, table.aiCategory),
+  index('idx_summarized_at').on(table.summarizedAt),
+  index('idx_summarized_at_ai_category').on(table.summarizedAt, table.aiCategory),
 ]);
 
 export const aiCategories = sqliteTable('ai_categories', {

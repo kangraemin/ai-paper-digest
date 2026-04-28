@@ -5,30 +5,7 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import { Bookmark, BookmarkMinus, Search } from 'lucide-react';
 import Link from 'next/link';
-
-const categoryColorMap: Record<string, string> = {
-  prompting: '#3b82f6',
-  rag: '#10b981',
-  agent: '#8b5cf6',
-  'fine-tuning': '#f97316',
-  finetuning: '#f97316',
-  eval: '#ec4899',
-  'cost-speed': '#14b8a6',
-  cost: '#14b8a6',
-  security: '#ef4444',
-};
-
-const categoryDisplayName: Record<string, string> = {
-  prompting: 'Prompting',
-  rag: 'RAG',
-  agent: 'Agent',
-  'fine-tuning': 'Fine-tuning',
-  finetuning: 'Fine-tuning',
-  eval: 'Eval',
-  'cost-speed': 'Cost/Speed',
-  cost: 'Cost',
-  security: 'Security',
-};
+import { CATEGORY_COLOR as categoryColorMap, CATEGORY_NAME as categoryDisplayName } from '@/lib/category';
 
 interface Paper {
   id: string;

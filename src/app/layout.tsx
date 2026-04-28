@@ -23,6 +23,7 @@ export const metadata: Metadata = {
     url: SITE_URL,
     siteName: 'AI Paper Digest',
     type: "website",
+    images: [{ url: '/opengraph-image', width: 1200, height: 630, alt: 'AI Paper Digest' }],
   },
   robots: {
     index: true,
@@ -38,6 +39,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'AI Paper Digest',
     description: 'Daily AI/LLM paper summaries. Latest arXiv papers summarized by Claude.',
+    images: ['/opengraph-image'],
   },
 };
 

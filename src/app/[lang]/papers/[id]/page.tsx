@@ -18,6 +18,7 @@ import { TrackedExternalLink } from '@/components/tracked-external-link';
 import { PaperSubscriptionCta } from '@/components/paper-subscription-cta';
 import { RelatedPapers } from '@/components/related-papers';
 import { getRelatedPapers } from '@/lib/db/queries';
+import { CATEGORY_COLOR as categoryColorMap, CATEGORY_NAME as categoryDisplayName } from '@/lib/category';
 
 function parseBulletList(value: string): string[] {
   try {
@@ -29,30 +30,6 @@ function parseBulletList(value: string): string[] {
   }
   return value.split('\n').filter(l => l.trim()).map(l => l.replace(/^-\s*/, ''));
 }
-
-const categoryColorMap: Record<string, string> = {
-  prompting: '#3b82f6',
-  rag: '#10b981',
-  agent: '#8b5cf6',
-  'fine-tuning': '#f97316',
-  finetuning: '#f97316',
-  eval: '#ec4899',
-  'cost-speed': '#14b8a6',
-  cost: '#14b8a6',
-  security: '#ef4444',
-};
-
-const categoryDisplayName: Record<string, string> = {
-  prompting: 'Prompting',
-  rag: 'RAG',
-  agent: 'Agent',
-  'fine-tuning': 'Fine-tuning',
-  finetuning: 'Fine-tuning',
-  eval: 'Eval',
-  'cost-speed': 'Cost',
-  cost: 'Cost',
-  security: 'Security',
-};
 
 interface Props {
   params: Promise<{ lang: string; id: string }>;

@@ -34,22 +34,24 @@ export function HeaderSearch({ lang }: { lang: Lang }) {
 
   if (open) {
     return (
-      <div className="flex items-center gap-2">
+      <form action={`/${lang}`} method="GET" className="flex items-center gap-2">
         <input
           ref={inputRef}
           type="text"
+          name="q"
           value={query}
           onChange={e => handleChange(e.target.value)}
           placeholder={t('search.placeholder', lang)}
           className="w-40 sm:w-56 bg-card border border-border rounded-sm px-3 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-ring"
         />
         <button
+          type="button"
           onClick={handleClose}
           className="flex items-center justify-center rounded-sm h-8 w-8 bg-card hover:bg-accent text-muted-foreground hover:text-foreground border border-border transition-colors"
         >
           <X size={16} />
         </button>
-      </div>
+      </form>
     );
   }
 

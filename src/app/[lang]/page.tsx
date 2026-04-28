@@ -40,6 +40,7 @@ export async function generateMetadata({
       siteName: 'AI Paper Digest',
       type: 'website',
       locale: isKo ? 'ko_KR' : 'en_US',
+      images: [{ url: '/opengraph-image', width: 1200, height: 630, alt: 'AI Paper Digest' }],
     },
     twitter: {
       card: 'summary_large_image',
@@ -47,6 +48,7 @@ export async function generateMetadata({
       description: isKo
         ? '매일 업데이트되는 AI/LLM 논문 한글 요약. arXiv 최신 논문을 Claude가 요약합니다.'
         : 'Daily AI/LLM paper summaries in Korean and English. Latest arXiv papers summarized by Claude.',
+      images: ['/opengraph-image'],
     },
   }
 }

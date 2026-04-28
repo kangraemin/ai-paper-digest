@@ -13,7 +13,7 @@ export function TrackedExternalLink({ href, paperId, source, label, children, cl
     <a
       href={href}
       target="_blank"
-      rel="noopener noreferrer"
+      rel="noopener noreferrer nofollow"
       className={className}
       onClick={() => trackEvent('arxiv_link_click', { paper_id: paperId, source, label })}
     >
