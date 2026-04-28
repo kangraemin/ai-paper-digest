@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { headers } from "next/headers";
 import { Inter, JetBrains_Mono } from "next/font/google";
 import { GoogleAnalytics } from "@next/third-parties/google";
@@ -41,6 +41,12 @@ export const metadata: Metadata = {
   },
 };
 
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 5,
+};
+
 const websiteJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'WebSite',
@@ -49,7 +55,7 @@ const websiteJsonLd = {
   description: 'Daily AI/LLM paper summaries. Latest arXiv papers summarized by Claude.',
   potentialAction: {
     '@type': 'SearchAction',
-    target: `${SITE_URL}/ko?q={search_term_string}`,
+    target: `${SITE_URL}/en?q={search_term_string}`,
     'query-input': 'required name=search_term_string',
   },
 };

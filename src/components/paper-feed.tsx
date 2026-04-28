@@ -75,7 +75,8 @@ export function PaperFeed({ initialPapers, initialSource = 'all', initialCategor
     const timer = setTimeout(async () => {
       setSearching(true);
       try {
-        const res = await fetch(`/api/search?q=${encodeURIComponent(searchQuery)}&limit=20&page=1`);
+        const res = await fetch(`/api/search?q=${encodeURIComponent(searchQuery)}&lang=${lang}&limit=20&page=1`);
+        if (!res.ok) throw new Error(`search HTTP ${res.status}`);
         const data = await res.json();
         setSearchResults(data.papers);
         setSearchPage(1);
@@ -83,11 +84,13 @@ export function PaperFeed({ initialPapers, initialSource = 'all', initialCategor
         trackEvent('search', {
           search_term: searchQuery,
           results_count: data.papers.length,
+          lang,
         });
         if (data.papers.length === 0) {
-          trackEvent('search_no_results', { search_term: searchQuery });
+          trackEvent('search_no_results', { search_term: searchQuery, lang });
         }
-      } catch {
+      } catch (err) {
+        trackEvent('search_error', { search_term: searchQuery, lang, message: String(err) });
         setSearching(false);
       }
     }, 300);
@@ -99,7 +102,7 @@ export function PaperFeed({ initialPapers, initialSource = 'all', initialCategor
     const nextPage = searchPage + 1;
     trackEvent('load_more', { page: nextPage });
     try {
-      const res = await fetch(`/api/search?q=${encodeURIComponent(searchQuery)}&limit=20&page=${nextPage}`);
+      const res = await fetch(`/api/search?q=${encodeURIComponent(searchQuery)}&lang=${lang}&limit=20&page=${nextPage}`);
       const data = await res.json();
       setSearchResults(prev => [...prev, ...data.papers]);
       setSearchPage(nextPage);
