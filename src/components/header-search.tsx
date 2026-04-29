@@ -20,9 +20,11 @@ export function HeaderSearch({ lang }: { lang: Lang }) {
     setQuery(val);
     if (timerRef.current) clearTimeout(timerRef.current);
     timerRef.current = setTimeout(() => {
-      const url = val.trim() ? `/${lang}?q=${encodeURIComponent(val)}` : `/${lang}`;
+      const trimmed = val.trim();
+      if (trimmed.length > 0 && trimmed.length < 2) return;
+      const url = trimmed ? `/${lang}?q=${encodeURIComponent(val)}` : `/${lang}`;
       router.replace(url, { scroll: false });
-    }, 300);
+    }, 600);
   };
 
   const handleClose = () => {
@@ -42,7 +44,7 @@ export function HeaderSearch({ lang }: { lang: Lang }) {
           value={query}
           onChange={e => handleChange(e.target.value)}
           placeholder={t('search.placeholder', lang)}
-          className="w-40 sm:w-56 bg-card border border-border rounded-sm px-3 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-ring"
+          className="w-48 sm:w-72 bg-card border border-border rounded-sm px-3 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-ring"
         />
         <button
           type="button"

@@ -1,5 +1,5 @@
-export const CATEGORY_SLUGS = ['prompting', 'rag', 'agent', 'finetuning', 'eval', 'cost', 'security'] as const;
-export type CategorySlug = typeof CATEGORY_SLUGS[number];
+// Deprecated: 학술 분류용 색·라벨 매핑만 남김. 사용자 노출 토픽은 src/lib/topics.ts 참조.
+// paper-detail/bookmarks의 paper.aiCategory(LLM 분류 결과) 표시 호환.
 
 export const CATEGORY_COLOR: Record<string, string> = {
   prompting: '#3b82f6',
@@ -24,7 +24,3 @@ export const CATEGORY_NAME: Record<string, string> = {
   cost: 'Cost/Speed',
   security: 'Security',
 };
-
-export function isCategorySlug(s: string): s is CategorySlug {
-  return (CATEGORY_SLUGS as readonly string[]).includes(s);
-}

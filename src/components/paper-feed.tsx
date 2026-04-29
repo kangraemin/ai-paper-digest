@@ -73,6 +73,7 @@ export function PaperFeed({ initialPapers, initialSource = 'all', initialCategor
       return;
     }
     const timer = setTimeout(async () => {
+      if (searchQuery.trim().length < 2) return;
       setSearching(true);
       try {
         const res = await fetch(`/api/search?q=${encodeURIComponent(searchQuery)}&lang=${lang}&limit=20&page=1`);
@@ -93,7 +94,7 @@ export function PaperFeed({ initialPapers, initialSource = 'all', initialCategor
         trackEvent('search_error', { search_term: searchQuery, lang, message: String(err) });
         setSearching(false);
       }
-    }, 300);
+    }, 600);
     return () => clearTimeout(timer);
   }, [searchQuery]);
 

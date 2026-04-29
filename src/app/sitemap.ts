@@ -2,7 +2,7 @@ import { MetadataRoute } from 'next'
 import { db } from '@/lib/db'
 import { papers } from '@/lib/db/schema'
 import { isNotNull, desc } from 'drizzle-orm'
-import { CATEGORY_SLUGS } from '@/lib/category'
+import { TOPIC_SLUGS } from '@/lib/topics'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const BASE = (process.env.NEXT_PUBLIC_SITE_URL || 'https://paper-digest.app').trim()
@@ -44,16 +44,16 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         },
       },
     },
-    ...CATEGORY_SLUGS.map((slug) => ({
-      url: `${BASE}/ko/categories/${slug}`,
+    ...TOPIC_SLUGS.map((slug) => ({
+      url: `${BASE}/ko/topics/${slug}`,
       lastModified: latestDate,
       changeFrequency: 'weekly' as const,
       priority: 0.6,
       alternates: {
         languages: {
-          'ko-KR': `${BASE}/ko/categories/${slug}`,
-          'en-US': `${BASE}/en/categories/${slug}`,
-          'x-default': `${BASE}/en/categories/${slug}`,
+          'ko-KR': `${BASE}/ko/topics/${slug}`,
+          'en-US': `${BASE}/en/topics/${slug}`,
+          'x-default': `${BASE}/en/topics/${slug}`,
         },
       },
     })),
