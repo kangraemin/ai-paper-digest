@@ -168,7 +168,16 @@ def save_snapshot(snap, out_dir):
 def find_prev_snapshot(out_dir, current_path):
     files = sorted(Path(out_dir).glob("*.json"))
     files = [f for f in files if f != current_path]
-    return files[-1] if files else None
+    # GA4 스냅샷만 (sections 키 있는 파일)
+    ga_files = []
+    for f in files:
+        try:
+            d = json.loads(f.read_text())
+            if "sections" in d:
+                ga_files.append(f)
+        except Exception:
+            pass
+    return ga_files[-1] if ga_files else None
 
 
 def to_num(v):
