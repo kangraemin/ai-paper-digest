@@ -1,10 +1,11 @@
 'use client';
 
-import { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { SourceTabs } from './source-tabs';
 import { CategoryChips } from './category-chips';
 import { PaperCard } from './paper-card';
+import { PaperSubscriptionCta } from './paper-subscription-cta';
 
 import type { PaperListItem } from '@/lib/types';
 import type { Lang } from '@/lib/i18n';
@@ -268,39 +269,42 @@ export function PaperFeed({ initialPapers, initialSource = 'all', initialCategor
         </div>
       ) : (
         <div className="space-y-8">
-          {Object.entries(grouped).map(([date, datePapers]) => (
-            <section key={date}>
-              <div className="sticky top-0 z-10 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 py-2 mb-4">
-                <h2 className="font-mono text-[12px] text-muted-foreground uppercase tracking-wider mb-1 flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-muted-foreground inline-block" />
-                  {formatDateHeader(date, lang)} · {t('feed.count', lang, { n: String(datePapers.length) })}
-                </h2>
-              </div>
-              <div className="space-y-3">
-                {datePapers.map((paper, index) => (
-                  <PaperCard
-                    key={paper.id}
-                    id={paper.id}
-                    title={paper.title}
-                    titleKo={paper.titleKo}
-                    oneLiner={paper.oneLiner}
-                    oneLinerEn={paper.oneLinerEn ?? null}
-                    aiCategory={paper.aiCategory}
-                    devRelevance={paper.devRelevance}
-                    targetAudience={paper.targetAudience}
-                    tags={paper.tags}
-                    source={paper.source}
-                    isHot={paper.isHot}
-                    publishedAt={paper.publishedAt}
-                    authors={paper.authors}
-                    venue={paper.venue}
-                    affiliations={paper.affiliations}
-                    lang={lang}
-                    position={index}
-                  />
-                ))}
-              </div>
-            </section>
+          {Object.entries(grouped).map(([date, datePapers], groupIndex) => (
+            <React.Fragment key={date}>
+              <section>
+                <div className="sticky top-0 z-10 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 py-2 mb-4">
+                  <h2 className="font-mono text-[12px] text-muted-foreground uppercase tracking-wider mb-1 flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full bg-muted-foreground inline-block" />
+                    {formatDateHeader(date, lang)} · {t('feed.count', lang, { n: String(datePapers.length) })}
+                  </h2>
+                </div>
+                <div className="space-y-3">
+                  {datePapers.map((paper, index) => (
+                    <PaperCard
+                      key={paper.id}
+                      id={paper.id}
+                      title={paper.title}
+                      titleKo={paper.titleKo}
+                      oneLiner={paper.oneLiner}
+                      oneLinerEn={paper.oneLinerEn ?? null}
+                      aiCategory={paper.aiCategory}
+                      devRelevance={paper.devRelevance}
+                      targetAudience={paper.targetAudience}
+                      tags={paper.tags}
+                      source={paper.source}
+                      isHot={paper.isHot}
+                      publishedAt={paper.publishedAt}
+                      authors={paper.authors}
+                      venue={paper.venue}
+                      affiliations={paper.affiliations}
+                      lang={lang}
+                      position={index}
+                    />
+                  ))}
+                </div>
+              </section>
+              {groupIndex === 0 && <PaperSubscriptionCta lang={lang} />}
+            </React.Fragment>
           ))}
 
           {hasMore && (
