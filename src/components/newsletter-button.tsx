@@ -44,9 +44,12 @@ export function NewsletterButton({ lang }: { lang: Lang }) {
       <button
         onClick={() => { setOpen(!open); setStatus('idle'); setMessage(''); }}
         title={t('newsletter.label', lang)}
-        className="flex items-center justify-center rounded-sm h-8 w-8 bg-card hover:bg-accent text-muted-foreground hover:text-foreground border border-border transition-colors"
+        className="flex items-center gap-1.5 rounded-sm h-8 px-2.5 bg-card hover:bg-accent text-muted-foreground hover:text-foreground border border-border transition-colors"
       >
-        <Mail size={16} />
+        <Mail size={14} />
+        <span className="hidden sm:inline text-xs font-medium">
+          {t('newsletter.subscribe', lang)}
+        </span>
       </button>
 
       {open && (

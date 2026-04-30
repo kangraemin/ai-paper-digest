@@ -23,7 +23,7 @@ export async function generateMetadata({
       : 'AI Paper Digest — Daily AI/LLM Paper Summaries',
     description: isKo
       ? '매일 업데이트되는 AI/LLM 논문 한글 요약. arXiv 최신 논문을 Claude가 요약합니다.'
-      : 'Daily AI/LLM paper summaries in Korean and English. Latest arXiv papers summarized by Claude.',
+      : 'Daily AI/LLM paper digests from arXiv, HN & Reddit — summarized by Claude. Free newsletter.',
     alternates: {
       canonical: `${BASE}/${lang}`,
       languages: {
@@ -47,7 +47,7 @@ export async function generateMetadata({
       title: isKo ? 'AI Paper Digest — AI·LLM 논문 매일 한글 요약' : 'AI Paper Digest — Daily AI/LLM Paper Summaries',
       description: isKo
         ? '매일 업데이트되는 AI/LLM 논문 한글 요약. arXiv 최신 논문을 Claude가 요약합니다.'
-        : 'Daily AI/LLM paper summaries in Korean and English. Latest arXiv papers summarized by Claude.',
+        : 'Daily AI/LLM paper digests from arXiv, HN & Reddit — summarized by Claude. Free newsletter.',
       images: ['/opengraph-image'],
     },
   }
