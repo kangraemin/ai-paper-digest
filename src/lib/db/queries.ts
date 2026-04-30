@@ -3,38 +3,37 @@ import { papers } from './schema';
 import { desc, like, or, and, sql, isNotNull, ne, eq } from 'drizzle-orm';
 import type { Lang } from '@/lib/i18n';
 
+function escapePattern(word: string): string {
+  return '%' + word.replace(/%/g, '\\%').replace(/_/g, '\\_') + '%';
+}
+
+function wordCondition(word: string) {
+  const pattern = escapePattern(word);
+  return or(
+    like(papers.title, pattern),
+    like(papers.titleKo, pattern),
+    like(papers.abstract, pattern),
+    like(papers.tags, pattern),
+    like(papers.tagsEn, pattern),
+    like(papers.summaryKo, pattern),
+    like(papers.oneLiner, pattern),
+    like(papers.oneLinerEn, pattern),
+    like(papers.keyFindings, pattern),
+    like(papers.keyFindingsEn, pattern),
+  );
+}
+
 export async function searchPapers(
   query: string,
   limit = 20,
   offset = 0,
   lang: Lang = 'ko',
 ) {
-  const escaped = query.replace(/%/g, '\\%').replace(/_/g, '\\_');
-  const pattern = `%${escaped}%`;
+  const words = query.trim().split(/\s+/).filter(w => w.length > 0);
+  if (words.length === 0) return { results: [], total: 0 };
 
-  const commonCols = [
-    like(papers.title, pattern),
-    like(papers.titleKo, pattern),
-    like(papers.abstract, pattern),
-    like(papers.tags, pattern),
-    like(papers.tagsEn, pattern),
-  ];
-  const koCols = [
-    like(papers.summaryKo, pattern),
-    like(papers.oneLiner, pattern),
-    like(papers.keyFindings, pattern),
-  ];
-  const enCols = [
-    like(papers.oneLinerEn, pattern),
-    like(papers.keyFindingsEn, pattern),
-  ];
-  const primary = lang === 'en' ? enCols : koCols;
-  const secondary = lang === 'en' ? koCols : enCols;
-
-  const searchCondition = and(
-    isNotNull(papers.summarizedAt),
-    or(...commonCols, ...primary, ...secondary),
-  );
+  const wordConditions = words.map(wordCondition);
+  const searchCondition = and(isNotNull(papers.summarizedAt), ...wordConditions);
 
   const results = await db.select()
     .from(papers)
