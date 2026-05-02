@@ -1,0 +1,600 @@
+{
+  "site": "sc-domain:paper-digest.app",
+  "current": {
+    "start": "2026-03-31",
+    "end": "2026-04-27",
+    "totals": {
+      "clicks": 4,
+      "impressions": 214,
+      "ctr_pct": 1.87,
+      "avg_position": 8.82
+    },
+    "by_date": [
+      {
+        "keys": [
+          "2026-03-31"
+        ],
+        "clicks": 0,
+        "impressions": 15,
+        "ctr": 0,
+        "position": 7.666666666666667
+      },
+      {
+        "keys": [
+          "2026-04-01"
+        ],
+        "clicks": 0,
+        "impressions": 4,
+        "ctr": 0,
+        "position": 6.25
+      },
+      {
+        "keys": [
+          "2026-04-02"
+        ],
+        "clicks": 0,
+        "impressions": 2,
+        "ctr": 0,
+        "position": 8
+      },
+      {
+        "keys": [
+          "2026-04-03"
+        ],
+        "clicks": 0,
+        "impressions": 2,
+        "ctr": 0,
+        "position": 7.5
+      },
+      {
+        "keys": [
+          "2026-04-04"
+        ],
+        "clicks": 0,
+        "impressions": 17,
+        "ctr": 0,
+        "position": 9.117647058823529
+      },
+      {
+        "keys": [
+          "2026-04-05"
+        ],
+        "clicks": 0,
+        "impressions": 14,
+        "ctr": 0,
+        "position": 6.785714285714286
+      },
+      {
+        "keys": [
+          "2026-04-06"
+        ],
+        "clicks": 0,
+        "impressions": 12,
+        "ctr": 0,
+        "position": 6.333333333333333
+      },
+      {
+        "keys": [
+          "2026-04-07"
+        ],
+        "clicks": 0,
+        "impressions": 5,
+        "ctr": 0,
+        "position": 8.8
+      },
+      {
+        "keys": [
+          "2026-04-08"
+        ],
+        "clicks": 0,
+        "impressions": 6,
+        "ctr": 0,
+        "position": 9.666666666666666
+      },
+      {
+        "keys": [
+          "2026-04-09"
+        ],
+        "clicks": 2,
+        "impressions": 26,
+        "ctr": 0.07692307692307693,
+        "position": 7.884615384615385
+      },
+      {
+        "keys": [
+          "2026-04-10"
+        ],
+        "clicks": 0,
+        "impressions": 12,
+        "ctr": 0,
+        "position": 11.083333333333334
+      },
+      {
+        "keys": [
+          "2026-04-11"
+        ],
+        "clicks": 0,
+        "impressions": 6,
+        "ctr": 0,
+        "position": 7.166666666666667
+      },
+      {
+        "keys": [
+          "2026-04-12"
+        ],
+        "clicks": 0,
+        "impressions": 5,
+        "ctr": 0,
+        "position": 7.2
+      },
+      {
+        "keys": [
+          "2026-04-13"
+        ],
+        "clicks": 0,
+        "impressions": 9,
+        "ctr": 0,
+        "position": 6.888888888888889
+      },
+      {
+        "keys": [
+          "2026-04-14"
+        ],
+        "clicks": 0,
+        "impressions": 6,
+        "ctr": 0,
+        "position": 6.833333333333333
+      },
+      {
+        "keys": [
+          "2026-04-15"
+        ],
+        "clicks": 0,
+        "impressions": 8,
+        "ctr": 0,
+        "position": 8
+      },
+      {
+        "keys": [
+          "2026-04-16"
+        ],
+        "clicks": 2,
+        "impressions": 13,
+        "ctr": 0.15384615384615385,
+        "position": 22.384615384615383
+      },
+      {
+        "keys": [
+          "2026-04-17"
+        ],
+        "clicks": 0,
+        "impressions": 9,
+        "ctr": 0,
+        "position": 11.777777777777779
+      },
+      {
+        "keys": [
+          "2026-04-18"
+        ],
+        "clicks": 0,
+        "impressions": 3,
+        "ctr": 0,
+        "position": 7
+      },
+      {
+        "keys": [
+          "2026-04-19"
+        ],
+        "clicks": 0,
+        "impressions": 4,
+        "ctr": 0,
+        "position": 8
+      },
+      {
+        "keys": [
+          "2026-04-20"
+        ],
+        "clicks": 0,
+        "impressions": 3,
+        "ctr": 0,
+        "position": 3.3333333333333335
+      },
+      {
+        "keys": [
+          "2026-04-21"
+        ],
+        "clicks": 0,
+        "impressions": 0,
+        "ctr": 0,
+        "position": 0
+      },
+      {
+        "keys": [
+          "2026-04-22"
+        ],
+        "clicks": 0,
+        "impressions": 11,
+        "ctr": 0,
+        "position": 6.818181818181818
+      },
+      {
+        "keys": [
+          "2026-04-23"
+        ],
+        "clicks": 0,
+        "impressions": 8,
+        "ctr": 0,
+        "position": 6.75
+      },
+      {
+        "keys": [
+          "2026-04-24"
+        ],
+        "clicks": 0,
+        "impressions": 5,
+        "ctr": 0,
+        "position": 11.2
+      },
+      {
+        "keys": [
+          "2026-04-25"
+        ],
+        "clicks": 0,
+        "impressions": 5,
+        "ctr": 0,
+        "position": 7.8
+      },
+      {
+        "keys": [
+          "2026-04-26"
+        ],
+        "clicks": 0,
+        "impressions": 4,
+        "ctr": 0,
+        "position": 5.25
+      }
+    ],
+    "queries": [
+      {
+        "keys": [
+          "claude code hallucinations"
+        ],
+        "clicks": 1,
+        "impressions": 3,
+        "ctr": 0.3333333333333333,
+        "position": 8
+      },
+      {
+        "keys": [
+          "\"a survey on the memory mechanism of large language model based agents\""
+        ],
+        "clicks": 0,
+        "impressions": 3,
+        "ctr": 0,
+        "position": 20.333333333333332
+      },
+      {
+        "keys": [
+          "anthropic reduce hallucinations"
+        ],
+        "clicks": 0,
+        "impressions": 3,
+        "ctr": 0,
+        "position": 6
+      },
+      {
+        "keys": [
+          "anthropic reduce hallucinations docs"
+        ],
+        "clicks": 0,
+        "impressions": 2,
+        "ctr": 0,
+        "position": 5.5
+      },
+      {
+        "keys": [
+          "claude hallucination"
+        ],
+        "clicks": 0,
+        "impressions": 3,
+        "ctr": 0,
+        "position": 9.333333333333334
+      },
+      {
+        "keys": [
+          "claude hallucinations"
+        ],
+        "clicks": 0,
+        "impressions": 2,
+        "ctr": 0,
+        "position": 8.5
+      },
+      {
+        "keys": [
+          "kestrel: grounding self-refinement for lvlm hallucination mitigation"
+        ],
+        "clicks": 0,
+        "impressions": 1,
+        "ctr": 0,
+        "position": 7
+      },
+      {
+        "keys": [
+          "linking perception, confidence and accuracy in mllms"
+        ],
+        "clicks": 0,
+        "impressions": 4,
+        "ctr": 0,
+        "position": 6
+      },
+      {
+        "keys": [
+          "paper digest"
+        ],
+        "clicks": 0,
+        "impressions": 6,
+        "ctr": 0,
+        "position": 23.333333333333332
+      },
+      {
+        "keys": [
+          "paperdigest"
+        ],
+        "clicks": 0,
+        "impressions": 1,
+        "ctr": 0,
+        "position": 27
+      },
+      {
+        "keys": [
+          "papers digest"
+        ],
+        "clicks": 0,
+        "impressions": 2,
+        "ctr": 0,
+        "position": 45
+      }
+    ],
+    "pages": [
+      {
+        "keys": [
+          "https://paper-digest.app/ko/papers/reddit_ClaudeAI_1rzyqqt"
+        ],
+        "clicks": 3,
+        "impressions": 51,
+        "ctr": 0.058823529411764705,
+        "position": 6.568627450980392
+      },
+      {
+        "keys": [
+          "https://paper-digest.app/"
+        ],
+        "clicks": 1,
+        "impressions": 93,
+        "ctr": 0.010752688172043012,
+        "position": 10.838709677419354
+      },
+      {
+        "keys": [
+          "https://paper-digest.app/en/papers/2404.13501"
+        ],
+        "clicks": 0,
+        "impressions": 29,
+        "ctr": 0,
+        "position": 8.586206896551724
+      },
+      {
+        "keys": [
+          "https://paper-digest.app/en/papers/2603.12149"
+        ],
+        "clicks": 0,
+        "impressions": 13,
+        "ctr": 0,
+        "position": 7.230769230769231
+      },
+      {
+        "keys": [
+          "https://paper-digest.app/en/papers/2603.16664"
+        ],
+        "clicks": 0,
+        "impressions": 10,
+        "ctr": 0,
+        "position": 8.6
+      },
+      {
+        "keys": [
+          "https://paper-digest.app/en/papers/hn_47533297"
+        ],
+        "clicks": 0,
+        "impressions": 16,
+        "ctr": 0,
+        "position": 6.875
+      },
+      {
+        "keys": [
+          "https://paper-digest.app/ko/papers/2501.09620"
+        ],
+        "clicks": 0,
+        "impressions": 5,
+        "ctr": 0,
+        "position": 6.2
+      },
+      {
+        "keys": [
+          "https://paper-digest.app/ko/papers/2603.13099"
+        ],
+        "clicks": 0,
+        "impressions": 1,
+        "ctr": 0,
+        "position": 2
+      },
+      {
+        "keys": [
+          "https://paper-digest.app/ko/papers/2603.23269"
+        ],
+        "clicks": 0,
+        "impressions": 2,
+        "ctr": 0,
+        "position": 4.5
+      },
+      {
+        "keys": [
+          "https://paper-digest.app/ko/papers/hn_44840728"
+        ],
+        "clicks": 0,
+        "impressions": 3,
+        "ctr": 0,
+        "position": 6.666666666666667
+      },
+      {
+        "keys": [
+          "https://paper-digest.app/ko/papers/hn_46902638"
+        ],
+        "clicks": 0,
+        "impressions": 2,
+        "ctr": 0,
+        "position": 4.5
+      },
+      {
+        "keys": [
+          "https://paper-digest.app/ko/papers/hn_47394022"
+        ],
+        "clicks": 0,
+        "impressions": 3,
+        "ctr": 0,
+        "position": 4.666666666666666
+      },
+      {
+        "keys": [
+          "https://paper-digest.app/ko/papers/hn_47397367"
+        ],
+        "clicks": 0,
+        "impressions": 2,
+        "ctr": 0,
+        "position": 5.5
+      }
+    ],
+    "countries": [
+      {
+        "keys": [
+          "kor"
+        ],
+        "clicks": 3,
+        "impressions": 56,
+        "ctr": 0.05357142857142857,
+        "position": 6.660714285714286
+      },
+      {
+        "keys": [
+          "usa"
+        ],
+        "clicks": 1,
+        "impressions": 84,
+        "ctr": 0.011904761904761904,
+        "position": 9.857142857142858
+      },
+      {
+        "keys": [
+          "aus"
+        ],
+        "clicks": 0,
+        "impressions": 3,
+        "ctr": 0,
+        "position": 8.333333333333332
+      },
+      {
+        "keys": [
+          "bra"
+        ],
+        "clicks": 0,
+        "impressions": 7,
+        "ctr": 0,
+        "position": 7.571428571428571
+      },
+      {
+        "keys": [
+          "can"
+        ],
+        "clicks": 0,
+        "impressions": 6,
+        "ctr": 0,
+        "position": 8.666666666666668
+      },
+      {
+        "keys": [
+          "che"
+        ],
+        "clicks": 0,
+        "impressions": 1,
+        "ctr": 0,
+        "position": 6
+      },
+      {
+        "keys": [
+          "chn"
+        ],
+        "clicks": 0,
+        "impressions": 2,
+        "ctr": 0,
+        "position": 7
+      },
+      {
+        "keys": [
+          "col"
+        ],
+        "clicks": 0,
+        "impressions": 2,
+        "ctr": 0,
+        "position": 5.5
+      },
+      {
+        "keys": [
+          "deu"
+        ],
+        "clicks": 0,
+        "impressions": 4,
+        "ctr": 0,
+        "position": 7.25
+      },
+      {
+        "keys": [
+          "esp"
+        ],
+        "clicks": 0,
+        "impressions": 1,
+        "ctr": 0,
+        "position": 9
+      }
+    ],
+    "devices": [
+      {
+        "keys": [
+          "DESKTOP"
+        ],
+        "clicks": 4,
+        "impressions": 209,
+        "ctr": 0.019138755980861243,
+        "position": 8.894736842105264
+      },
+      {
+        "keys": [
+          "MOBILE"
+        ],
+        "clicks": 0,
+        "impressions": 5,
+        "ctr": 0,
+        "position": 5.8
+      }
+    ]
+  },
+  "previous": {
+    "start": "2026-03-03",
+    "end": "2026-03-30",
+    "totals": {
+      "clicks": 0,
+      "impressions": 81,
+      "ctr_pct": 0.0,
+      "avg_position": 7.79
+    }
+  }
+}

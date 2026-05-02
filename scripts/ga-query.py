@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # GA4 Data API config — created by ga-connect skill
+import os
 PROPERTY_ID = "528507004"
 SA_PATH = os.path.expanduser("~/.claude/ai-paper-analytics-sa.json")
 
