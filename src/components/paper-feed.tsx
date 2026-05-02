@@ -64,6 +64,8 @@ export function PaperFeed({ initialPapers, initialSource = 'all', initialCategor
   const [searchHasMore, setSearchHasMore] = useState(false);
   const [searchLoadingMore, setSearchLoadingMore] = useState(false);
   const isInitialRender = useRef(true);
+  const currentQueryRef = useRef(searchQuery);
+  currentQueryRef.current = searchQuery;
 
   // 검색 debounce
   useEffect(() => {
@@ -75,24 +77,27 @@ export function PaperFeed({ initialPapers, initialSource = 'all', initialCategor
     }
     const timer = setTimeout(async () => {
       if (searchQuery.trim().length < 2) return;
+      const capturedQuery = searchQuery;
       setSearching(true);
       try {
-        const res = await fetch(`/api/search?q=${encodeURIComponent(searchQuery)}&lang=${lang}&limit=20&page=1`);
+        const res = await fetch(`/api/search?q=${encodeURIComponent(capturedQuery)}&lang=${lang}&limit=20&page=1`);
         if (!res.ok) throw new Error(`search HTTP ${res.status}`);
         const data = await res.json();
         setSearchResults(data.papers);
         setSearchPage(1);
         setSearchHasMore(data.papers.length === 20 && data.total > 20);
-        trackEvent('search', {
-          search_term: searchQuery,
-          results_count: data.papers.length,
-          lang,
-        });
-        if (data.papers.length === 0) {
-          trackEvent('search_no_results', { search_term: searchQuery, lang });
+        if (currentQueryRef.current === capturedQuery) {
+          trackEvent('search', {
+            search_term: capturedQuery,
+            results_count: data.papers.length,
+            lang,
+          });
+          if (data.papers.length === 0) {
+            trackEvent('search_no_results', { search_term: capturedQuery, lang });
+          }
         }
       } catch (err) {
-        trackEvent('search_error', { search_term: searchQuery, lang, message: String(err) });
+        trackEvent('search_error', { search_term: capturedQuery, lang, message: String(err) });
         setSearching(false);
       }
     }, 600);
