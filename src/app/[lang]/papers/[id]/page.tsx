@@ -52,13 +52,19 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (result.length === 0) return {};
   const paper = result[0];
   const title = lang === 'en' ? paper.title : (paper.titleKo || paper.title);
-  const description = (lang === 'en' ? paper.oneLinerEn : paper.oneLiner)
-    || paper.abstract?.slice(0, 160)
-    || (lang === 'en' ? `${paper.title} — AI research summary` : `${paper.titleKo || paper.title} — AI 논문 요약`);
+  const pageTitle = `${title} | AI Paper Digest`;
+  const rawDesc = (lang === 'en' ? paper.oneLinerEn : paper.oneLiner)
+    || paper.abstract?.slice(0, 140);
+  const description = rawDesc
+    ? (rawDesc.length > 140 ? rawDesc.slice(0, 140) + '…' : rawDesc)
+      + (lang === 'en' ? ' — Claude AI summary' : '')
+    : (lang === 'en'
+        ? `${paper.title} — Claude AI summary | AI Paper Digest`
+        : `${paper.titleKo || paper.title} — AI 논문 요약`);
   const authorList = safeJsonParse<string[]>(paper.authors, []);
 
   return {
-    title,
+    title: pageTitle,
     description,
     alternates: {
       canonical: `${BASE}/${lang}/papers/${id}`,
@@ -69,7 +75,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       },
     },
     openGraph: {
-      title,
+      title: pageTitle,
       description,
       type: 'article',
       url: `${BASE}/${lang}/papers/${id}`,
@@ -81,7 +87,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     },
     twitter: {
       card: 'summary_large_image',
-      title,
+      title: pageTitle,
       description,
     },
   };

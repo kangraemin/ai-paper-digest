@@ -32,6 +32,19 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       },
     },
     {
+      url: `${BASE}/en`,
+      lastModified: latestDate,
+      changeFrequency: 'daily',
+      priority: 0.9,
+      alternates: {
+        languages: {
+          'ko-KR': `${BASE}/ko`,
+          'en-US': `${BASE}/en`,
+          'x-default': `${BASE}/en`,
+        },
+      },
+    },
+    {
       url: `${BASE}/ko/trends`,
       lastModified: latestDate,
       changeFrequency: 'daily',
