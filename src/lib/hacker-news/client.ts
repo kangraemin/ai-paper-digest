@@ -28,6 +28,8 @@ const AI_KEYWORDS = [
   'neural', 'transformer', 'language model', 'ChatGPT', 'OpenAI',
   'Anthropic', 'RAG', 'agent', 'fine-tuning', 'embedding', 'prompt',
   'diffusion', 'Gemini', 'Llama', 'Mistral',
+  'Qwen', 'DeepSeek', 'Grok', 'o1', 'o3', 'Sora', 'Copilot', 'Cursor',
+  'Perplexity', 'Stable Diffusion', 'Flux', 'Manus',
 ];
 
 export async function fetchHNTopAI(limit = 30): Promise<HNItem[]> {

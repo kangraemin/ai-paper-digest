@@ -95,7 +95,10 @@ async function main() {
     : [];
   const cachedIds = new Set(cachedScreenings.map(r => r.id));
 
-  const toScreenHN = newStories.filter(s => !cachedIds.has(`hn_${s.id}`));
+  const HIGH_SCORE_BYPASS = 500;
+  const autoPassHN = newStories.filter(s => s.score >= HIGH_SCORE_BYPASS && !cachedIds.has(`hn_${s.id}`));
+  const toScreenHN = newStories.filter(s => s.score < HIGH_SCORE_BYPASS && !cachedIds.has(`hn_${s.id}`));
+  console.log(`[고득점우회] score≥${HIGH_SCORE_BYPASS}: ${autoPassHN.length}개 자동통과`);
   const toScreenReddit = enrichedPosts.filter(p => !cachedIds.has(`reddit_${p.subreddit}_${p.id}`));
   console.log(`[스크리닝캐시] HN ${newStories.length}개 중 ${toScreenHN.length}개 신규 스크리닝`);
   console.log(`[스크리닝캐시] Reddit ${enrichedPosts.length}개 중 ${toScreenReddit.length}개 신규 스크리닝`);
@@ -107,6 +110,9 @@ async function main() {
     screenBatch(toScreenReddit.map(p => ({ id: `reddit_${p.subreddit}_${p.id}`, title: p.title, abstract: p.selftext || p.title })), 3, 'reddit'),
   ]);
   const hnResults = hnSettled.status === 'fulfilled' ? hnSettled.value : new Map<string, { pass: boolean; score: number; reason: string }>();
+  for (const s of autoPassHN) {
+    hnResults.set(`hn_${s.id}`, { pass: true, score: 8, reason: 'high-score auto-pass' });
+  }
   const redditResults = redditSettled.status === 'fulfilled' ? redditSettled.value : new Map<string, { pass: boolean; score: number; reason: string }>();
   if (hnSettled.status === 'rejected') console.error('[screening] HN failed:', hnSettled.reason);
   if (redditSettled.status === 'rejected') console.error('[screening] Reddit failed:', redditSettled.reason);
