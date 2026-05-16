@@ -50,6 +50,7 @@ PASS if the post is:
 
 REJECT if the post is:
 - Pure news/announcement with no technical depth ("X raised $NB", "Y launched Z")
+  Exception: Official releases or major updates of core AI models/products (Claude, GPT, Gemini, Llama, Mistral, Grok, etc.) PASS even without technical depth — developers need to know these exist.
 - AI politics, regulation, policy, ethics debate
 - Opinion essay or hot take without technical content
 - CEO quotes, executive drama, company gossip
