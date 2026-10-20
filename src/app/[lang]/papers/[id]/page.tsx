@@ -41,7 +41,7 @@ function BulletItem({ line }: { line: string }) {
           <span className="font-medium text-foreground">{title}</span>
           <ul className="mt-1.5 ml-5 space-y-1">
             {points.map((p, j) => (
-              <li key={j} className="pl-3 relative before:content-['–'] before:absolute before:left-0">{p}</li>
+              <li key={j} className="pl-3 relative before:content-['◦'] before:absolute before:left-0">{p}</li>
             ))}
           </ul>
         </>
