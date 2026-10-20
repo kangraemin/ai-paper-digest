@@ -53,3 +53,6 @@ next-env.d.ts
 # ai-bouncer 런타임 상태
 .ai-bouncer/
 .cache/
+
+# Claude Code 예약 작업 잠금
+.claude/scheduled_tasks.lock
