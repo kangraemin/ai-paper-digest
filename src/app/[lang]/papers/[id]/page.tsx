@@ -35,13 +35,13 @@ function parseBulletList(value: string): string[] {
 function BulletItem({ line }: { line: string }) {
   const { title, points } = splitItem(line);
   return (
-    <li className="text-[14px] text-muted-foreground leading-relaxed pl-4 relative before:content-['•'] before:absolute before:left-0 before:text-muted-foreground">
+    <li className="text-[14px] text-muted-foreground leading-relaxed pl-4 relative before:content-['•'] before:absolute before:left-0 before:text-foreground">
       {title ? (
         <>
           <span className="font-medium text-foreground">{title}</span>
           <ul className="mt-1.5 ml-5 space-y-1">
             {points.map((p, j) => (
-              <li key={j} className="pl-3 relative before:content-['◦'] before:absolute before:left-0">{p}</li>
+              <li key={j} className="pl-4 relative before:content-['◦'] before:absolute before:left-0 before:text-muted-foreground/60">{p}</li>
             ))}
           </ul>
         </>
