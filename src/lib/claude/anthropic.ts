@@ -25,6 +25,7 @@ export async function callAnthropicSDK(prompt: string, options: SDKOptions): Pro
         ...(options.schema && { format: { type: 'json_schema', schema: options.schema } }),
       },
     }),
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } as any) as Anthropic.Message;
   // 잘리거나 거절된 응답을 성공처럼 넘기지 않는다
   if (message.stop_reason === 'max_tokens') throw new Error('response truncated (max_tokens)');

@@ -134,6 +134,7 @@ export function spaceOut(code: string): string {
 }
 
 // 구조화 출력 결과 → papers 테이블 칸
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function toPaperRow(r: any) {
   const j = (v: unknown) => JSON.stringify(v ?? []);
   return {
