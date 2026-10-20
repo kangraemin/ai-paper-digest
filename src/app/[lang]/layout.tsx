@@ -45,6 +45,7 @@ export default async function LangLayout({
 
   return (
     <>
+      {lang !== 'ko' && <script dangerouslySetInnerHTML={{ __html: `document.documentElement.lang=${JSON.stringify(lang)}` }} />}
       <Header lang={lang as Lang} />
       <main className="flex-1 flex flex-col items-center w-full">{children}</main>
       <Footer lang={lang as Lang} />

@@ -16,5 +16,8 @@ export async function GET(req: NextRequest) {
 
   const { results, total } = await searchPapers(q, limit, (page - 1) * limit, lang);
 
-  return NextResponse.json({ papers: results, total, page, limit, lang });
+  return NextResponse.json(
+    { papers: results, total, page, limit, lang },
+    { headers: { 'Cache-Control': 'public, s-maxage=600, stale-while-revalidate=3600' } }
+  );
 }

@@ -3,7 +3,7 @@ import type { Metadata } from 'next';
 import { db } from "@/lib/db";
 import { papers } from "@/lib/db/schema";
 import { desc, isNotNull, eq, inArray, notInArray, and } from "drizzle-orm";
-import { PaperFeed } from "@/components/paper-feed";
+import { PaperFeed, PaperFeedFallback } from "@/components/paper-feed";
 import type { PaperListItem } from "@/lib/types";
 
 export const revalidate = 3600;
@@ -55,15 +55,13 @@ export async function generateMetadata({
 
 export default async function Home({
   params: routeParams,
-  searchParams,
 }: {
   params: Promise<{ lang: string }>;
-  searchParams: Promise<{ source?: string; category?: string; q?: string }>;
 }) {
   const { lang } = await routeParams;
-  const params = await searchParams;
-  const sourceFilter = params.source || 'all';
-  const categoryFilter = params.category || 'all';
+  // searchParams를 읽으면 매 요청 렌더가 된다. 필터는 PaperFeed가 주소에서 읽어 다시 불러온다
+  const sourceFilter: string = 'all';
+  const categoryFilter: string = 'all';
 
   const conditions = [isNotNull(papers.summarizedAt)];
   const communitySources = ['hacker_news', 'reddit'];
@@ -100,7 +98,7 @@ export default async function Home({
 
   return (
     <div className="w-full max-w-[800px] flex flex-col px-4 sm:px-6 py-6">
-      <Suspense fallback={null}>
+      <Suspense fallback={<PaperFeedFallback initialPapers={items} lang={lang as 'ko' | 'en'} />}>
         <PaperFeed
           initialPapers={items}
           initialSource={sourceFilter}

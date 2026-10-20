@@ -48,14 +48,15 @@ interface PaperFeedProps {
 }
 
 export function PaperFeed({ initialPapers, initialSource = 'all', initialCategory = 'all', lang = 'ko' }: PaperFeedProps) {
+  const searchParams = useSearchParams();
   const [allPapers, setAllPapers] = useState(initialPapers);
-  const [source, setSource] = useState(initialSource);
-  const [category, setCategory] = useState(initialCategory);
+  // 첫 화면은 필터 없이 미리 만들어 두므로 주소의 필터는 여기서 읽는다
+  const [source, setSource] = useState(searchParams.get('source') || initialSource);
+  const [category, setCategory] = useState(searchParams.get('category') || initialCategory);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(initialPapers.length >= 20);
   const [loading, setLoading] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
-  const searchParams = useSearchParams();
   const router = useRouter();
   const searchQuery = searchParams.get('q') ?? '';
   const [searchResults, setSearchResults] = useState<PaperListItem[]>([]);
@@ -124,8 +125,8 @@ export function PaperFeed({ initialPapers, initialSource = 'all', initialCategor
   useEffect(() => {
     if (isInitialRender.current) {
       isInitialRender.current = false;
-      // 서버가 이미 올바른 필터로 렌더링했으므로 초기 fetch 스킵
-      return;
+      // 서버가 필터 없는 목록을 이미 그렸으면 초기 fetch 스킵
+      if (source === initialSource && category === initialCategory) return;
     }
     const params = new URLSearchParams();
     if (source !== 'all') params.set('source', source);
@@ -334,5 +335,26 @@ export function PaperFeed({ initialPapers, initialSource = 'all', initialCategor
       )
       )}
     </>
+  );
+}
+
+// useSearchParams를 쓰는 PaperFeed가 클라이언트에서 뜨기 전, 미리 만든 HTML에 들어가는 목록
+export function PaperFeedFallback({ initialPapers, lang = 'ko' }: { initialPapers: PaperListItem[]; lang?: Lang }) {
+  return (
+    <div className="space-y-8">
+      {Object.entries(groupByDate(initialPapers)).map(([date, datePapers]) => (
+        <section key={date}>
+          <h2 className="font-mono text-[12px] text-muted-foreground uppercase tracking-wider py-2 mb-4 flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-muted-foreground inline-block" />
+            {formatDateHeader(date, lang)} · {t('feed.count', lang, { n: String(datePapers.length) })}
+          </h2>
+          <div className="space-y-3">
+            {datePapers.map((paper, index) => (
+              <PaperCard key={paper.id} {...paper} oneLinerEn={paper.oneLinerEn ?? null} lang={lang} position={index} />
+            ))}
+          </div>
+        </section>
+      ))}
+    </div>
   );
 }

@@ -1,5 +1,4 @@
 import type { Metadata, Viewport } from "next";
-import { headers } from "next/headers";
 import { Inter, JetBrains_Mono } from "next/font/google";
 import { GoogleAnalytics } from "@next/third-parties/google";
 import { ThemeProvider } from "next-themes";
@@ -62,13 +61,12 @@ const websiteJsonLd = {
   },
 };
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
-  const headerList = await headers();
-  const lang = headerList.get('x-lang') || 'ko';
+  // headers()를 읽으면 모든 페이지가 매 요청 렌더로 바뀐다. 언어는 [lang] 레이아웃이 고친다
   return (
-    <html lang={lang} suppressHydrationWarning>
+    <html lang="ko" suppressHydrationWarning>
       <body className={`${inter.variable} ${mono.variable} font-sans antialiased bg-background text-foreground min-h-screen flex flex-col`}>
         <script
           type="application/ld+json"

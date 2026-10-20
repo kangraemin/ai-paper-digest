@@ -1,5 +1,9 @@
 // 1h ISR — 모바일 크롤러 응답 안정화 (revalidate=0 시 매 요청 DB 쿼리로 인덱싱 지연 위험)
 export const revalidate = 3600;
+// 빌드 때는 만들지 않고 처음 열릴 때 만들어 1시간 캐시한다(ISR)
+export async function generateStaticParams() {
+  return [];
+}
 
 import type { Metadata } from 'next';
 import { db } from '@/lib/db';
