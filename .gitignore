@@ -52,3 +52,4 @@ next-env.d.ts
 
 # ai-bouncer 런타임 상태
 .ai-bouncer/
+.cache/

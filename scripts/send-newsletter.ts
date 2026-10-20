@@ -99,4 +99,4 @@ async function main() {
   console.log(`✅ ${activeSubscribers.length}명에게 발송 완료`, sendResult);
 }
 
-main().catch(console.error);
+main().catch(e => { console.error(e); process.exit(1); });

@@ -18,6 +18,7 @@ import { TrackedExternalLink } from '@/components/tracked-external-link';
 import { PaperSubscriptionCta } from '@/components/paper-subscription-cta';
 import { RelatedPapers } from '@/components/related-papers';
 import { getRelatedPapers } from '@/lib/db/queries';
+import { splitItem } from '@/lib/bullets';
 import { CATEGORY_COLOR as categoryColorMap, CATEGORY_NAME as categoryDisplayName } from '@/lib/category';
 
 function parseBulletList(value: string): string[] {
@@ -29,6 +30,24 @@ function parseBulletList(value: string): string[] {
     return value.split(',- ').map(l => l.replace(/^-\s*/, '').trim()).filter(Boolean);
   }
   return value.split('\n').filter(l => l.trim()).map(l => l.replace(/^-\s*/, ''));
+}
+
+function BulletItem({ line }: { line: string }) {
+  const { title, points } = splitItem(line);
+  return (
+    <li className="text-[14px] text-muted-foreground leading-relaxed pl-4 relative before:content-['•'] before:absolute before:left-0 before:text-muted-foreground">
+      {title ? (
+        <>
+          <span className="font-medium text-foreground">{title}</span>
+          <ul className="mt-1 space-y-1">
+            {points.map((p, j) => (
+              <li key={j} className="pl-3 relative before:content-['–'] before:absolute before:left-0">{p}</li>
+            ))}
+          </ul>
+        </>
+      ) : points.join(' ')}
+    </li>
+  );
 }
 
 interface Props {
@@ -238,9 +257,7 @@ export default async function PaperDetail({ params }: Props) {
           </h3>
           <ul className="space-y-2">
             {parseBulletList(lf(paper.keyFindings, paper.keyFindingsEn)!).map((line, i) => (
-              <li key={i} className="text-[14px] text-muted-foreground leading-relaxed pl-4 relative before:content-['•'] before:absolute before:left-0 before:text-muted-foreground">
-                {line}
-              </li>
+              <BulletItem key={i} line={line} />
             ))}
           </ul>
         </section>
@@ -250,13 +267,11 @@ export default async function PaperDetail({ params }: Props) {
       {lf(paper.evidence, paper.evidenceEn) && (
         <section className="mb-10">
           <h3 className="text-[14px] font-semibold text-foreground uppercase tracking-wide border-b border-border pb-2 mb-4">
-            Evidence
+            {paper.source === 'hacker_news' || paper.source === 'reddit' ? 'Community Reactions' : 'Evidence'}
           </h3>
           <ul className="space-y-2">
             {parseBulletList(lf(paper.evidence, paper.evidenceEn)!).map((line, i) => (
-              <li key={i} className="text-[14px] text-muted-foreground leading-relaxed pl-4 relative before:content-['•'] before:absolute before:left-0 before:text-muted-foreground">
-                {line}
-              </li>
+              <BulletItem key={i} line={line} />
             ))}
           </ul>
         </section>
@@ -270,9 +285,7 @@ export default async function PaperDetail({ params }: Props) {
           </h3>
           <ul className="space-y-2">
             {parseBulletList(lf(paper.howToApply, paper.howToApplyEn)!).map((line, i) => (
-              <li key={i} className="text-[14px] text-muted-foreground leading-relaxed pl-4 relative before:content-['•'] before:absolute before:left-0 before:text-muted-foreground">
-                {line}
-              </li>
+              <BulletItem key={i} line={line} />
             ))}
           </ul>
         </section>
@@ -284,11 +297,11 @@ export default async function PaperDetail({ params }: Props) {
         return code ? (
         <section className="mb-10">
           <h3 className="text-[14px] font-semibold text-foreground uppercase tracking-wide border-b border-border pb-2 mb-4">
-            Code Example
+            Try It
           </h3>
           <div className="relative rounded-sm border border-border bg-muted overflow-hidden">
             <div className="flex items-center justify-between px-4 py-2 bg-card border-b border-border">
-              <span className="font-mono text-[12px] text-muted-foreground">snippet</span>
+              <span className="font-mono text-[12px] text-muted-foreground">{lang === 'en' ? 'copy & run' : '복사해서 바로 해보기'}</span>
               <CopyButton text={code} />
             </div>
             <div className="p-4 overflow-x-auto">

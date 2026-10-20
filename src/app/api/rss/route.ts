@@ -1,4 +1,5 @@
 import { db } from '@/lib/db';
+import { itemToText } from '@/lib/bullets';
 import { papers } from '@/lib/db/schema';
 import { desc, eq, and, isNotNull } from 'drizzle-orm';
 
@@ -20,12 +21,12 @@ function buildDescription(p: typeof papers.$inferSelect, pageUrl: string): strin
 
   const findings = parseBulletList(p.keyFindings);
   if (findings.length > 0) {
-    parts.push(`Core Mechanics\n${findings.map(f => `- ${f}`).join('\n')}`);
+    parts.push(`Core Mechanics\n${findings.map(f => itemToText(f)).join('\n')}`);
   }
 
   const applies = parseBulletList(p.howToApply);
   if (applies.length > 0) {
-    parts.push(`How to apply\n${applies.map(a => `- ${a}`).join('\n')}`);
+    parts.push(`How to apply\n${applies.map(a => itemToText(a)).join('\n')}`);
   }
 
   parts.push(`더보기... ${pageUrl}`);

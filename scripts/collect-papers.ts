@@ -159,4 +159,4 @@ async function main() {
   console.log(`\n✅ Papers: ${saved}개 저장`);
 }
 
-main().catch(console.error);
+main().catch(e => { console.error(e); process.exit(1); });

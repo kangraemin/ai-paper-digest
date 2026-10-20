@@ -96,27 +96,23 @@ If post content is fewer than 100 characters or contains no actual information, 
 
 Answer in JSON only: {"pass": true/false, "score": 1-10, "reason": "one line explanation"}`;
 
+const SCREEN_SCHEMA = {
+  type: 'object',
+  properties: { pass: { type: 'boolean' }, score: { type: 'integer' }, reason: { type: 'string' } },
+  required: ['pass', 'score', 'reason'],
+  additionalProperties: false,
+};
+
 export async function screenPaper(title: string, abstract: string, source: 'paper' | 'hn' | 'reddit' = 'paper'): Promise<{ pass: boolean; score: number; reason: string }> {
   if (!process.env.ANTHROPIC_API_KEY) {
     return { pass: true, score: 5, reason: 'Screening skipped - no API key (manual review required)' };
   }
   const template = source === 'reddit' ? REDDIT_SCREEN_PROMPT : source === 'hn' ? HN_SCREEN_PROMPT : PAPER_SCREEN_PROMPT;
   const prompt = template.replace('{title}', title).replace('{abstract}', abstract);
-  let text = await runClaude(prompt, { model: 'haiku', timeout: 60000 });
-
-  // JSON 추출: 코드블록, 또는 { } 매칭
-  if (text.includes('```')) {
-    text = text.split('```')[1];
-    if (text.startsWith('json')) text = text.slice(4);
-    text = text.trim();
-  }
-  const jsonMatch = text.match(/\{[\s\S]*?"pass"[\s\S]*?\}/);
-  if (jsonMatch) {
-    const result = JSON.parse(jsonMatch[0]);
-    return { pass: result.pass, score: result.score ?? 5, reason: result.reason };
-  }
-  // fallback: pass 못 찾으면 탈락 처리
-  return { pass: false, score: 0, reason: 'Failed to parse screening response' };
+  // 구조화 출력이라 파싱 실패가 없다. 실패(오류)는 던져서 screenBatch가 결과에서 빼게 한다(0점 탈락과 구분).
+  const text = await runClaude(prompt, { model: 'haiku', timeout: 60000, effort: 'low', schema: SCREEN_SCHEMA });
+  const r = JSON.parse(text);
+  return { pass: r.pass, score: r.score, reason: r.reason };
 }
 
 export async function screenBatch(
@@ -133,6 +129,8 @@ export async function screenBatch(
     for (const result of settled) {
       if (result.status === 'fulfilled') {
         results.set(result.value.id, { pass: result.value.pass, score: result.value.score, reason: result.value.reason });
+      } else {
+        console.error('  [screening] 실패:', (result.reason as Error).message);
       }
     }
     console.log(`  스크리닝 ${Math.min(i + concurrency, papers.length)}/${papers.length}`);

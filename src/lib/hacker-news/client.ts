@@ -31,6 +31,8 @@ const AI_KEYWORDS = [
   'Qwen', 'DeepSeek', 'Grok', 'o1', 'o3', 'Sora', 'Copilot', 'Cursor',
   'Perplexity', 'Stable Diffusion', 'Flux', 'Manus',
 ];
+// 단어 단위로 맞춘다(부분 문자열이면 'AI'가 'said'·'Taiwan'에, 'agent'가 'reagent'에 걸린다). 복수형 s는 허용.
+export const AI_TITLE_RE = new RegExp(`\\b(${AI_KEYWORDS.map(k => k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|')})s?\\b`, 'i');
 
 export async function fetchHNTopAI(limit = 30): Promise<HNItem[]> {
   const ids = await withRetry(async () => {
@@ -52,7 +54,7 @@ export async function fetchHNTopAI(limit = 30): Promise<HNItem[]> {
   return items
     .filter(item =>
       item && item.type === 'story' && item.score >= 50 &&
-      AI_KEYWORDS.some(kw => item.title.toLowerCase().includes(kw.toLowerCase()))
+      AI_TITLE_RE.test(item.title)
     )
     .slice(0, limit);
 }

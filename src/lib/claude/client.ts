@@ -1,65 +1,16 @@
-import { runClaude } from './runner';
-import { SUMMARY_PROMPT } from './prompts';
+import { callAnthropicSDK } from './anthropic';
+import { PAPER_PROMPT_V2, SUMMARY_SCHEMA_V2 } from './prompts-v2';
 import { fetchPdfText } from '../pdf-fetcher';
-import type { SummaryResult } from './types';
 
-export async function summarizePaper(
-  title: string,
-  abstract: string,
-  pdfUrl?: string
-): Promise<SummaryResult> {
-  let content = abstract;
-
-  if (pdfUrl) {
-    const pdfText = await fetchPdfText(pdfUrl);
-    if (pdfText.length > 200) {
-      content = pdfText;
-    }
-  }
-
-  const raw = await runClaude(
-    SUMMARY_PROMPT.replace('{title}', title).replace('{content}', content),
-    { model: 'sonnet', timeout: 120000, jsonOutput: true }
-  );
-
-  // JSON 추출: 코드블록/backtick 관계없이 outermost {} 탐색
-  const jsonMatch = raw.match(/\{[\s\S]*\}/);
-  if (!jsonMatch) {
-    console.error(`[summarize] 파싱 실패. claude 응답:\n${raw.slice(0, 300)}`);
-    throw new Error('Failed to parse summary response');
-  }
-  try {
-    return JSON.parse(jsonMatch[0]);
-  } catch (e) {
-    console.error('[summarize] JSON parse failed:', jsonMatch[0].slice(0, 200));
-    throw new Error('Failed to parse summary JSON');
-  }
+// v2 프롬프트 한 번 호출 → 한·영 요약(구조화 출력). 결과는 toPaperRow로 DB 칸에 맞춘다.
+export async function summarizeV2(prompt: string): Promise<any> {
+  const raw = await callAnthropicSDK(prompt, { model: 'sonnet', maxTokens: 16000, effort: 'medium', schema: SUMMARY_SCHEMA_V2 });
+  return JSON.parse(raw);
 }
 
-export async function summarizeBatch(
-  papers: { id: string; title: string; abstract: string; pdfUrl?: string }[],
-  concurrency = 5
-): Promise<Map<string, SummaryResult>> {
-  const results = new Map<string, SummaryResult>();
-
-  for (let i = 0; i < papers.length; i += concurrency) {
-    const batch = papers.slice(i, i + concurrency);
-    const settled = await Promise.allSettled(
-      batch.map(p => summarizePaper(p.title, p.abstract, p.pdfUrl))
-    );
-
-    settled.forEach((result, idx) => {
-      if (result.status === 'fulfilled') {
-        results.set(batch[idx].id, result.value);
-      } else {
-        console.error(`Failed to summarize ${batch[idx].id}:`, result.reason);
-      }
-    });
-
-    if (i + concurrency < papers.length) {
-      await new Promise(r => setTimeout(r, 1000));
-    }
-  }
-
-  return results;
+// 논문: PDF 전문(참고문헌 제외)이 있으면 그걸, 없으면 초록으로 요약한다
+export async function summarizePaper(title: string, abstract: string, pdfUrl?: string): Promise<any> {
+  const pdfText = pdfUrl ? await fetchPdfText(pdfUrl) : '';
+  const content = pdfText.length > 200 ? pdfText : abstract;
+  return summarizeV2(PAPER_PROMPT_V2.replace('{title}', title).replace('{content}', content));
 }

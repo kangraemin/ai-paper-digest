@@ -6,13 +6,18 @@ interface RunClaudeOptions {
   model: 'sonnet' | 'haiku';
   timeout?: number;
   jsonOutput?: boolean;
+  maxTokens?: number;
+  effort?: 'low' | 'medium' | 'high';
+  schema?: object;
 }
 
 export async function runClaude(prompt: string, options: RunClaudeOptions): Promise<string> {
   if (process.env.ANTHROPIC_API_KEY) {
     return callAnthropicSDK(prompt, {
       model: options.model,
-      maxTokens: options.model === 'haiku' ? 1024 : 8192,
+      maxTokens: options.maxTokens ?? (options.model === 'haiku' ? 4096 : 8192),
+      effort: options.effort,
+      schema: options.schema,
     });
   }
   return runClaudeCLI(prompt, options);

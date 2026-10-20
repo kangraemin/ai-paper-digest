@@ -1,3 +1,4 @@
+import { itemToText } from '@/lib/bullets';
 const categoryColors: Record<string, string> = {
   prompting: '#3b82f6',
   rag: '#10b981',
@@ -77,13 +78,13 @@ export function buildSlackPayload(paper: PaperForSlack, siteUrl: string, lang: s
   if (findings.length > 0) {
     sectionBlocks.push({ type: 'divider' });
     sectionBlocks.push({ type: 'header', text: { type: 'plain_text', text: 'Core Mechanics' } });
-    sectionBlocks.push({ type: 'section', text: { type: 'mrkdwn', text: findings.map(f => `• ${f}`).join('\n') } });
+    sectionBlocks.push({ type: 'section', text: { type: 'mrkdwn', text: findings.map(f => itemToText(f, '•', '    ◦', t => `*${t}*`)).join('\n') } });
     sectionBlocks.push({ type: 'context', elements: [{ type: 'mrkdwn', text: ' ' }] });
   }
   if (applies.length > 0) {
     sectionBlocks.push({ type: 'divider' });
     sectionBlocks.push({ type: 'header', text: { type: 'plain_text', text: 'How to Apply' } });
-    sectionBlocks.push({ type: 'section', text: { type: 'mrkdwn', text: applies.map(a => `• ${a}`).join('\n') } });
+    sectionBlocks.push({ type: 'section', text: { type: 'mrkdwn', text: applies.map(a => itemToText(a, '•', '    ◦', t => `*${t}*`)).join('\n') } });
     sectionBlocks.push({ type: 'context', elements: [{ type: 'mrkdwn', text: ' ' }] });
   }
   if (audience) {

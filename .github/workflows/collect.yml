@@ -4,7 +4,22 @@ on:
     - cron: '0 22 * * *'
   workflow_dispatch:
 
+permissions:
+  contents: read
+  actions: write
+
 jobs:
+  # 60일 동안 커밋이 없으면 GitHub가 예약 워크플로를 끈다(7/12에 꺼졌었다) → 매일 다시 켜 둔다
+  keepalive:
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          for wf in collect.yml slack-drip.yml; do
+            gh api -X PUT "repos/${{ github.repository }}/actions/workflows/$wf/enable"
+          done
+        env:
+          GH_TOKEN: ${{ github.token }}
+
   collect:
     runs-on: ubuntu-latest
     timeout-minutes: 30

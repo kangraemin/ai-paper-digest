@@ -105,8 +105,13 @@ async function main() {
 
   // === 스크리닝 ===
   console.log('🔍 Screening community posts...');
+  // HN은 제목만으로는 판단이 안 된다 → 본문 앞 2,000자를 같이 넣는다
+  const hnPreview = new Map<number, string>();
+  await Promise.all(toScreenHN.map(async s => {
+    hnPreview.set(s.id, s.url ? await fetchContent(s.url, 2000).catch(() => '') : '');
+  }));
   const [hnSettled, redditSettled] = await Promise.allSettled([
-    screenBatch(toScreenHN.map(s => ({ id: `hn_${s.id}`, title: s.title, abstract: s.title })), 3, 'hn'),
+    screenBatch(toScreenHN.map(s => ({ id: `hn_${s.id}`, title: s.title, abstract: hnPreview.get(s.id) || `(본문 없음 — Ask/Show HN이거나 못 가져옴) ${s.title}` })), 3, 'hn'),
     screenBatch(toScreenReddit.map(p => ({ id: `reddit_${p.subreddit}_${p.id}`, title: p.title, abstract: p.selftext || p.title })), 3, 'reddit'),
   ]);
   const hnResults = hnSettled.status === 'fulfilled' ? hnSettled.value : new Map<string, { pass: boolean; score: number; reason: string }>();
@@ -195,4 +200,4 @@ async function main() {
   console.log(`\n✅ Community: ${saved}개 저장`);
 }
 
-main().catch(console.error);
+main().catch(e => { console.error(e); process.exit(1); });

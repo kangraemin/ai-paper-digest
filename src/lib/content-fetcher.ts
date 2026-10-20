@@ -11,6 +11,8 @@ export async function fetchContent(url: string, maxChars = 5000): Promise<string
       signal: controller.signal,
     });
     clearTimeout(timer);
+    // 403·404 페이지나 PDF·이미지 본문을 요약에 넣지 않는다
+    if (!res.ok || !/text|html|xml/.test(res.headers.get('content-type') ?? '')) return '';
 
     const html = await res.text();
 

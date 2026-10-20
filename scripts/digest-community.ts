@@ -4,18 +4,8 @@ import { eq, inArray, isNull, and } from 'drizzle-orm';
 import { fetchContent } from '../src/lib/content-fetcher';
 import { fetchHNComments } from '../src/lib/hacker-news/client';
 import { fetchRedditComments } from '../src/lib/reddit/client';
-import { COMMUNITY_DIGEST_PROMPT, REDDIT_DIGEST_PROMPT } from '../src/lib/claude/community-prompts';
-import { runClaude } from '../src/lib/claude/runner';
-
-function extractJson(text: string): string {
-  if (text.includes('```')) {
-    let inner = text.split('```')[1];
-    if (inner.startsWith('json')) inner = inner.slice(4);
-    return inner.trim();
-  }
-  const match = text.match(/\{[\s\S]*\}/);
-  return match ? match[0] : text;
-}
+import { COMMUNITY_PROMPT_V2, toPaperRow } from '../src/lib/claude/prompts-v2';
+import { summarizeV2 } from '../src/lib/claude/client';
 
 export async function digestCommunity(): Promise<number> {
   console.log('📰 Digesting community content...');
@@ -27,6 +17,7 @@ export async function digestCommunity(): Promise<number> {
   console.log(`Found ${items.length} undigested community items`);
 
   let successCount = 0;
+  let failCount = 0;
   for (const item of items) {
     try {
       console.log(`\n📄 ${item.title}`);
@@ -48,7 +39,7 @@ export async function digestCommunity(): Promise<number> {
         }
         if (!content) content = await fetchContent(item.arxivUrl);
       } else {
-        content = await fetchContent(item.arxivUrl);
+        content = await fetchContent(item.arxivUrl, 20000);
       }
       console.log(`  원문: ${content.length}자`);
 
@@ -56,7 +47,7 @@ export async function digestCommunity(): Promise<number> {
       let comments: string[] = [];
       if (item.source === 'hacker_news') {
         const hnId = parseInt(item.id.replace('hn_', ''));
-        comments = await fetchHNComments(hnId, 15);
+        comments = await fetchHNComments(hnId, 25).catch(() => [] as string[]);
         console.log(`  댓글: ${comments.length}개`);
       } else if (item.source === 'reddit') {
         comments = await fetchRedditComments(item.arxivUrl.replace('https://www.reddit.com', ''), 15);
@@ -72,8 +63,8 @@ export async function digestCommunity(): Promise<number> {
         continue;
       }
 
-      // 3. claude -p로 정리
-      const template = item.source === 'reddit' ? REDDIT_DIGEST_PROMPT : COMMUNITY_DIGEST_PROMPT;
+      // 3. v2 프롬프트로 한·영 동시 정리(구조화 출력)
+      const template = item.source === 'reddit' ? COMMUNITY_PROMPT_V2.replace('Hacker News', 'Reddit') : COMMUNITY_PROMPT_V2;
       const prompt = template
         .replace('{title}', item.title)
         .replace('{url}', item.arxivUrl)
@@ -81,46 +72,29 @@ export async function digestCommunity(): Promise<number> {
         .replace('{comments}', comments.length > 0 ? comments.join('\n---\n') : '(댓글 없음)');
 
       console.log('  🤖 정리 중...');
-      const raw = await runClaude(prompt, { model: 'sonnet', timeout: 120000 });
-      let result;
-      try { result = JSON.parse(extractJson(raw)); }
-      catch (e) {
-        console.error(`  [digest] JSON parse failed for ${item.id}:`, (e as Error).message);
-        continue;
-      }
+      const result = await summarizeV2(prompt);
 
-      if (result.insufficient_content) {
+      if (result.insufficientContent) {
         console.log(`  ⛔ [insufficient] ${item.id} — Claude 내용 부족 감지, 삭제`);
         await db.delete(papers).where(eq(papers.id, item.id));
         continue;
       }
 
       // 4. DB 업데이트
-      await db.update(papers).set({
-        titleKo: result.titleKo,
-        oneLiner: result.oneLiner,
-        targetAudience: result.targetAudience,
-        keyFindings: JSON.stringify(result.keyFindings),
-        evidence: JSON.stringify(result.evidence),
-        howToApply: JSON.stringify(result.howToApply),
-        codeExample: result.codeExample || '',
-        relatedResources: JSON.stringify(result.relatedResources || []),
-        glossary: JSON.stringify(result.glossary || {}),
-        tags: JSON.stringify(result.tags || []),
-        aiCategory: result.aiCategory,
-        devRelevance: result.devRelevance,
-        summarizedAt: new Date().toISOString(),
-      }).where(eq(papers.id, item.id));
+      await db.update(papers).set({ ...toPaperRow(result), summarizedAt: new Date().toISOString() })
+        .where(eq(papers.id, item.id));
 
       successCount++;
       console.log(`  ✅ 완료`);
     } catch (err) {
       console.error(`  ❌ 실패: ${item.id}`, (err as Error).message);
+      failCount++;
     }
   }
 
   console.log(`\n✅ Digested ${successCount}/${items.length} community items`);
+  if (failCount) process.exitCode = 1;
   return successCount;
 }
 
-digestCommunity().catch(console.error);
+digestCommunity().catch(e => { console.error(e); process.exit(1); });
