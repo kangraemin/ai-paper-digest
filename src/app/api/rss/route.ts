@@ -21,12 +21,12 @@ function buildDescription(p: typeof papers.$inferSelect, pageUrl: string): strin
 
   const findings = parseBulletList(p.keyFindings);
   if (findings.length > 0) {
-    parts.push(`Core Mechanics\n${findings.map(f => itemToText(f)).join('\n')}`);
+    parts.push(`Core Mechanics\n${findings.map(f => itemToText(f)).join('\n\n')}`);
   }
 
   const applies = parseBulletList(p.howToApply);
   if (applies.length > 0) {
-    parts.push(`How to apply\n${applies.map(a => itemToText(a)).join('\n')}`);
+    parts.push(`How to apply\n${applies.map(a => itemToText(a)).join('\n\n')}`);
   }
 
   parts.push(`더보기... ${pageUrl}`);

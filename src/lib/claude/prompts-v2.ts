@@ -68,6 +68,7 @@ const COMMON_RULES = `## 독자와 목표
 - codeExample: 독자가 복사해서 바로 돌려볼 '해보기'. 다음 중 하나를 고른다.
   (a) Claude·ChatGPT·Claude Code에 그대로 붙여넣는 프롬프트 — 원문의 방법을 프롬프트로 옮긴 것. 맨 위 한 줄 주석으로 어디에 붙여넣는지 쓰고, 독자가 바꿔 넣을 곳은 {{문서}}·{{질문}}처럼 표시한다.
   (b) 바로 실행되는 짧은 코드(파이썬·TS·셸, 30줄 이내) — 원문에 공개 코드·라이브러리·CLI가 있을 때. 설치 명령 포함. 원문에 없는 API·패키지 이름을 지어내지 않는다.
+  덩어리(첫 줄 주석 / 붙여넣을 본문 / 질문·지시 / 이어서 해 볼 것) 사이에는 빈 줄을 하나씩 넣어 읽기 쉽게 한다.
   원문 방법이 학습·대규모 인프라라서 개인이 따라 할 수 없으면, 그 아이디어를 프롬프트 수준에서 흉내 내 보는 (a)를 쓰고 첫 줄 주석에 "논문 방법의 간이 버전"이라고 밝힌다. 그것도 의미 없으면 빈 문자열.
 - glossary: 3~6개. 일반 개발자가 모를 용어만, 비유로 1~2문장.
 - tags: 아래 목록에서 1~4개. ${TAGS.join(', ')}
@@ -115,6 +116,23 @@ ${COMMON_RULES}
 {comments}
 </comments>`;
 
+// 해보기 칸을 덩어리별로 띄운다: 첫 줄 안내 주석 뒤, 맨 앞에서 시작하는 주석 앞, 닫는 태그(</...>) 뒤에 빈 줄.
+// 들여쓴 줄(코드 블록 안)은 건드리지 않는다. 이미 빈 줄이 있으면 그대로.
+export function spaceOut(code: string): string {
+  const lines = code.split('\n');
+  const out: string[] = [];
+  const topComment = (l?: string) => l !== undefined && /^(#|\/\/)/.test(l);
+  lines.forEach((l, i) => {
+    const prev = out[out.length - 1];
+    if (prev?.trim() && topComment(l) && !topComment(prev)) out.push('');
+    out.push(l);
+    const next = lines[i + 1];
+    if (!next?.trim()) return;
+    if ((i === 0 && topComment(l) && !topComment(next)) || /^<\/[\w-]+>$/.test(l.trim())) out.push('');
+  });
+  return out.join('\n');
+}
+
 // 구조화 출력 결과 → papers 테이블 칸
 export function toPaperRow(r: any) {
   const j = (v: unknown) => JSON.stringify(v ?? []);
@@ -122,10 +140,10 @@ export function toPaperRow(r: any) {
     titleKo: r.titleKo,
     oneLiner: r.oneLiner, targetAudience: r.targetAudience,
     keyFindings: j(r.keyFindings), evidence: j(r.evidence), howToApply: j(r.howToApply),
-    codeExample: r.codeExample || '', glossary: j(r.glossary), tags: j(r.tags),
+    codeExample: spaceOut(r.codeExample || ''), glossary: j(r.glossary), tags: j(r.tags),
     oneLinerEn: r.oneLinerEn, targetAudienceEn: r.targetAudienceEn,
     keyFindingsEn: j(r.keyFindingsEn), evidenceEn: j(r.evidenceEn), howToApplyEn: j(r.howToApplyEn),
-    codeExampleEn: r.codeExampleEn || '', glossaryEn: j(r.glossaryEn), tagsEn: j(r.tagsEn),
+    codeExampleEn: spaceOut(r.codeExampleEn || ''), glossaryEn: j(r.glossaryEn), tagsEn: j(r.tagsEn),
     relatedResources: j(r.relatedResources), relatedResourcesEn: j(r.relatedResources),
     aiCategory: r.aiCategory, devRelevance: r.devRelevance,
   };

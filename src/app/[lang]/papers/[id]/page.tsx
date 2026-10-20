@@ -39,7 +39,7 @@ function BulletItem({ line }: { line: string }) {
       {title ? (
         <>
           <span className="font-medium text-foreground">{title}</span>
-          <ul className="mt-1 space-y-1">
+          <ul className="mt-1.5 space-y-1">
             {points.map((p, j) => (
               <li key={j} className="pl-3 relative before:content-['–'] before:absolute before:left-0">{p}</li>
             ))}
@@ -255,7 +255,7 @@ export default async function PaperDetail({ params }: Props) {
           <h3 className="text-[14px] font-semibold text-foreground uppercase tracking-wide border-b border-border pb-2 mb-4">
             Core Mechanics
           </h3>
-          <ul className="space-y-2">
+          <ul className="space-y-5">
             {parseBulletList(lf(paper.keyFindings, paper.keyFindingsEn)!).map((line, i) => (
               <BulletItem key={i} line={line} />
             ))}
@@ -269,7 +269,7 @@ export default async function PaperDetail({ params }: Props) {
           <h3 className="text-[14px] font-semibold text-foreground uppercase tracking-wide border-b border-border pb-2 mb-4">
             {paper.source === 'hacker_news' || paper.source === 'reddit' ? 'Community Reactions' : 'Evidence'}
           </h3>
-          <ul className="space-y-2">
+          <ul className="space-y-5">
             {parseBulletList(lf(paper.evidence, paper.evidenceEn)!).map((line, i) => (
               <BulletItem key={i} line={line} />
             ))}
@@ -283,7 +283,7 @@ export default async function PaperDetail({ params }: Props) {
           <h3 className="text-[14px] font-semibold text-foreground uppercase tracking-wide border-b border-border pb-2 mb-4">
             How to Apply
           </h3>
-          <ul className="space-y-2">
+          <ul className="space-y-5">
             {parseBulletList(lf(paper.howToApply, paper.howToApplyEn)!).map((line, i) => (
               <BulletItem key={i} line={line} />
             ))}
