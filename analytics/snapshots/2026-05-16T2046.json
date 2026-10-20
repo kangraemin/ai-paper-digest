@@ -1,0 +1,1257 @@
+{
+  "taken_at": "2026-05-16T20:46:23",
+  "period_days": 14,
+  "property_id": "528507004",
+  "sections": {
+    "overview": [
+      {
+        "activeUsers": "127",
+        "newUsers": "107",
+        "sessions": "227",
+        "screenPageViews": "324",
+        "averageSessionDuration": "129.36818245814979",
+        "userEngagementDuration": "4898",
+        "engagementRate": "0.38766519823788548"
+      }
+    ],
+    "sources": [
+      {
+        "sessionSource": "hacker_news",
+        "sessionMedium": "(not set)",
+        "sessions": "72",
+        "activeUsers": "16",
+        "userEngagementDuration": "1762"
+      },
+      {
+        "sessionSource": "(direct)",
+        "sessionMedium": "(none)",
+        "sessions": "67",
+        "activeUsers": "63",
+        "userEngagementDuration": "1169"
+      },
+      {
+        "sessionSource": "(not set)",
+        "sessionMedium": "(not set)",
+        "sessions": "29",
+        "activeUsers": "22",
+        "userEngagementDuration": "910"
+      },
+      {
+        "sessionSource": "google",
+        "sessionMedium": "organic",
+        "sessions": "19",
+        "activeUsers": "18",
+        "userEngagementDuration": "343"
+      },
+      {
+        "sessionSource": "arxiv",
+        "sessionMedium": "(not set)",
+        "sessions": "16",
+        "activeUsers": "7",
+        "userEngagementDuration": "242"
+      },
+      {
+        "sessionSource": "news.hada.io",
+        "sessionMedium": "referral",
+        "sessions": "11",
+        "activeUsers": "6",
+        "userEngagementDuration": "80"
+      },
+      {
+        "sessionSource": "perplexity.ai",
+        "sessionMedium": "referral",
+        "sessions": "4",
+        "activeUsers": "3",
+        "userEngagementDuration": "62"
+      },
+      {
+        "sessionSource": "reddit",
+        "sessionMedium": "(not set)",
+        "sessions": "3",
+        "activeUsers": "2",
+        "userEngagementDuration": "43"
+      },
+      {
+        "sessionSource": "chatgpt.com",
+        "sessionMedium": "(not set)",
+        "sessions": "2",
+        "activeUsers": "2",
+        "userEngagementDuration": "11"
+      },
+      {
+        "sessionSource": "chatgpt.com",
+        "sessionMedium": "referral",
+        "sessions": "2",
+        "activeUsers": "2",
+        "userEngagementDuration": "16"
+      },
+      {
+        "sessionSource": "semantic_scholar",
+        "sessionMedium": "(not set)",
+        "sessions": "2",
+        "activeUsers": "0",
+        "userEngagementDuration": "0"
+      },
+      {
+        "sessionSource": "aisearchindex.space",
+        "sessionMedium": "referral",
+        "sessions": "1",
+        "activeUsers": "1",
+        "userEngagementDuration": "0"
+      },
+      {
+        "sessionSource": "bing",
+        "sessionMedium": "organic",
+        "sessions": "1",
+        "activeUsers": "1",
+        "userEngagementDuration": "0"
+      },
+      {
+        "sessionSource": "cn.bing.com",
+        "sessionMedium": "referral",
+        "sessions": "1",
+        "activeUsers": "1",
+        "userEngagementDuration": "72"
+      },
+      {
+        "sessionSource": "hacker_news",
+        "sessionMedium": "(none)",
+        "sessions": "1",
+        "activeUsers": "0",
+        "userEngagementDuration": "0"
+      },
+      {
+        "sessionSource": "hugging_face",
+        "sessionMedium": "(not set)",
+        "sessions": "1",
+        "activeUsers": "1",
+        "userEngagementDuration": "2"
+      },
+      {
+        "sessionSource": "m.search.naver.com",
+        "sessionMedium": "referral",
+        "sessions": "1",
+        "activeUsers": "1",
+        "userEngagementDuration": "182"
+      },
+      {
+        "sessionSource": "paper_cta",
+        "sessionMedium": "(not set)",
+        "sessions": "1",
+        "activeUsers": "1",
+        "userEngagementDuration": "4"
+      }
+    ],
+    "new_users_by_day": [
+      {
+        "date": "20260506",
+        "newUsers": "12",
+        "activeUsers": "19"
+      },
+      {
+        "date": "20260514",
+        "newUsers": "12",
+        "activeUsers": "14"
+      },
+      {
+        "date": "20260512",
+        "newUsers": "11",
+        "activeUsers": "16"
+      },
+      {
+        "date": "20260515",
+        "newUsers": "10",
+        "activeUsers": "11"
+      },
+      {
+        "date": "20260508",
+        "newUsers": "9",
+        "activeUsers": "11"
+      },
+      {
+        "date": "20260513",
+        "newUsers": "9",
+        "activeUsers": "15"
+      },
+      {
+        "date": "20260505",
+        "newUsers": "7",
+        "activeUsers": "13"
+      },
+      {
+        "date": "20260507",
+        "newUsers": "7",
+        "activeUsers": "10"
+      },
+      {
+        "date": "20260511",
+        "newUsers": "7",
+        "activeUsers": "14"
+      },
+      {
+        "date": "20260502",
+        "newUsers": "6",
+        "activeUsers": "6"
+      },
+      {
+        "date": "20260503",
+        "newUsers": "5",
+        "activeUsers": "9"
+      },
+      {
+        "date": "20260509",
+        "newUsers": "5",
+        "activeUsers": "6"
+      },
+      {
+        "date": "20260510",
+        "newUsers": "4",
+        "activeUsers": "9"
+      },
+      {
+        "date": "20260504",
+        "newUsers": "3",
+        "activeUsers": "5"
+      }
+    ],
+    "devices": [
+      {
+        "deviceCategory": "desktop",
+        "activeUsers": "112",
+        "sessions": "194",
+        "averageSessionDuration": "138.17873081958763"
+      },
+      {
+        "deviceCategory": "mobile",
+        "activeUsers": "15",
+        "sessions": "33",
+        "averageSessionDuration": "77.572837545454533"
+      }
+    ],
+    "countries": [
+      {
+        "country": "South Korea",
+        "activeUsers": "51",
+        "sessions": "145",
+        "userEngagementDuration": "4214"
+      },
+      {
+        "country": "United States",
+        "activeUsers": "28",
+        "sessions": "28",
+        "userEngagementDuration": "155"
+      },
+      {
+        "country": "China",
+        "activeUsers": "10",
+        "sessions": "10",
+        "userEngagementDuration": "91"
+      },
+      {
+        "country": "Singapore",
+        "activeUsers": "8",
+        "sessions": "8",
+        "userEngagementDuration": "89"
+      },
+      {
+        "country": "India",
+        "activeUsers": "5",
+        "sessions": "5",
+        "userEngagementDuration": "75"
+      },
+      {
+        "country": "(not set)",
+        "activeUsers": "3",
+        "sessions": "3",
+        "userEngagementDuration": "5"
+      },
+      {
+        "country": "Germany",
+        "activeUsers": "3",
+        "sessions": "3",
+        "userEngagementDuration": "13"
+      },
+      {
+        "country": "Japan",
+        "activeUsers": "3",
+        "sessions": "4",
+        "userEngagementDuration": "158"
+      },
+      {
+        "country": "Vietnam",
+        "activeUsers": "3",
+        "sessions": "3",
+        "userEngagementDuration": "0"
+      },
+      {
+        "country": "Brazil",
+        "activeUsers": "2",
+        "sessions": "2",
+        "userEngagementDuration": "0"
+      },
+      {
+        "country": "Spain",
+        "activeUsers": "2",
+        "sessions": "4",
+        "userEngagementDuration": "0"
+      },
+      {
+        "country": "",
+        "activeUsers": "1",
+        "sessions": "1",
+        "userEngagementDuration": "7"
+      },
+      {
+        "country": "Bangladesh",
+        "activeUsers": "1",
+        "sessions": "1",
+        "userEngagementDuration": "0"
+      },
+      {
+        "country": "France",
+        "activeUsers": "1",
+        "sessions": "1",
+        "userEngagementDuration": "1"
+      },
+      {
+        "country": "Hong Kong",
+        "activeUsers": "1",
+        "sessions": "1",
+        "userEngagementDuration": "0"
+      },
+      {
+        "country": "Ireland",
+        "activeUsers": "1",
+        "sessions": "1",
+        "userEngagementDuration": "0"
+      },
+      {
+        "country": "Italy",
+        "activeUsers": "1",
+        "sessions": "1",
+        "userEngagementDuration": "12"
+      },
+      {
+        "country": "Lithuania",
+        "activeUsers": "1",
+        "sessions": "1",
+        "userEngagementDuration": "11"
+      },
+      {
+        "country": "Malaysia",
+        "activeUsers": "1",
+        "sessions": "1",
+        "userEngagementDuration": "0"
+      },
+      {
+        "country": "Mexico",
+        "activeUsers": "1",
+        "sessions": "2",
+        "userEngagementDuration": "5"
+      },
+      {
+        "country": "Nepal",
+        "activeUsers": "1",
+        "sessions": "1",
+        "userEngagementDuration": "0"
+      },
+      {
+        "country": "Oman",
+        "activeUsers": "1",
+        "sessions": "1",
+        "userEngagementDuration": "2"
+      },
+      {
+        "country": "Poland",
+        "activeUsers": "1",
+        "sessions": "1",
+        "userEngagementDuration": "0"
+      },
+      {
+        "country": "Portugal",
+        "activeUsers": "1",
+        "sessions": "1",
+        "userEngagementDuration": "54"
+      },
+      {
+        "country": "Russia",
+        "activeUsers": "1",
+        "sessions": "1",
+        "userEngagementDuration": "0"
+      },
+      {
+        "country": "Switzerland",
+        "activeUsers": "1",
+        "sessions": "1",
+        "userEngagementDuration": "1"
+      },
+      {
+        "country": "Taiwan",
+        "activeUsers": "1",
+        "sessions": "1",
+        "userEngagementDuration": "0"
+      },
+      {
+        "country": "Türkiye",
+        "activeUsers": "1",
+        "sessions": "1",
+        "userEngagementDuration": "1"
+      },
+      {
+        "country": "United Kingdom",
+        "activeUsers": "1",
+        "sessions": "2",
+        "userEngagementDuration": "0"
+      },
+      {
+        "country": "Venezuela",
+        "activeUsers": "1",
+        "sessions": "1",
+        "userEngagementDuration": "4"
+      },
+      {
+        "country": "Finland",
+        "activeUsers": "0",
+        "sessions": "1",
+        "userEngagementDuration": "0"
+      }
+    ],
+    "events": [
+      {
+        "eventName": "page_view",
+        "eventCount": "324",
+        "totalUsers": "128",
+        "eventCountPerUser": "2.592"
+      },
+      {
+        "eventName": "session_start",
+        "eventCount": "227",
+        "totalUsers": "131",
+        "eventCountPerUser": "1.8015873015873016"
+      },
+      {
+        "eventName": "scroll",
+        "eventCount": "178",
+        "totalUsers": "98",
+        "eventCountPerUser": "1.8736842105263158"
+      },
+      {
+        "eventName": "paper_view",
+        "eventCount": "164",
+        "totalUsers": "101",
+        "eventCountPerUser": "1.6237623762376239"
+      },
+      {
+        "eventName": "user_engagement",
+        "eventCount": "127",
+        "totalUsers": "78",
+        "eventCountPerUser": "1.8142857142857143"
+      },
+      {
+        "eventName": "first_visit",
+        "eventCount": "107",
+        "totalUsers": "105",
+        "eventCountPerUser": "1.019047619047619"
+      },
+      {
+        "eventName": "paper_click",
+        "eventCount": "44",
+        "totalUsers": "14",
+        "eventCountPerUser": "3.1428571428571428"
+      },
+      {
+        "eventName": "click",
+        "eventCount": "22",
+        "totalUsers": "14",
+        "eventCountPerUser": "1.5714285714285714"
+      },
+      {
+        "eventName": "arxiv_link_click",
+        "eventCount": "19",
+        "totalUsers": "14",
+        "eventCountPerUser": "1.3571428571428572"
+      },
+      {
+        "eventName": "load_more",
+        "eventCount": "15",
+        "totalUsers": "3",
+        "eventCountPerUser": "5"
+      },
+      {
+        "eventName": "source_tab_change",
+        "eventCount": "9",
+        "totalUsers": "3",
+        "eventCountPerUser": "3"
+      },
+      {
+        "eventName": "hot_paper_view",
+        "eventCount": "6",
+        "totalUsers": "5",
+        "eventCountPerUser": "1.2"
+      },
+      {
+        "eventName": "form_start",
+        "eventCount": "2",
+        "totalUsers": "2",
+        "eventCountPerUser": "1"
+      },
+      {
+        "eventName": "newsletter_subscribe",
+        "eventCount": "2",
+        "totalUsers": "2",
+        "eventCountPerUser": "1"
+      },
+      {
+        "eventName": "theme_toggle",
+        "eventCount": "2",
+        "totalUsers": "1",
+        "eventCountPerUser": "2"
+      },
+      {
+        "eventName": "lang_toggle",
+        "eventCount": "1",
+        "totalUsers": "1",
+        "eventCountPerUser": "1"
+      },
+      {
+        "eventName": "slack_add_click",
+        "eventCount": "1",
+        "totalUsers": "1",
+        "eventCountPerUser": "1"
+      }
+    ],
+    "pages": [
+      {
+        "pageTitle": "AI Paper Digest — AI·LLM 논문 매일 한글 요약 | AI Paper Digest",
+        "screenPageViews": "138",
+        "activeUsers": "32"
+      },
+      {
+        "pageTitle": "(not set)",
+        "screenPageViews": "45",
+        "activeUsers": "32"
+      },
+      {
+        "pageTitle": "Agentic Aggregation for Parallel Scaling of Long-Horizon Agentic Tasks | AI Paper Digest | AI Paper Digest",
+        "screenPageViews": "11",
+        "activeUsers": "12"
+      },
+      {
+        "pageTitle": "OpenAI가 대규모 저지연 Voice AI를 제공하는 방법 | AI Paper Digest | AI Paper Digest",
+        "screenPageViews": "7",
+        "activeUsers": "6"
+      },
+      {
+        "pageTitle": "Claude Code에서 HTML을 출력 포맷으로 쓰는 이유: Markdown보다 나은 점들 | AI Paper Digest | AI Paper Digest",
+        "screenPageViews": "5",
+        "activeUsers": "4"
+      },
+      {
+        "pageTitle": "AI Paper Digest — Daily AI/LLM Paper Summaries | AI Paper Digest",
+        "screenPageViews": "4",
+        "activeUsers": "4"
+      },
+      {
+        "pageTitle": "ChatGPT agent: bridging research and action | AI Paper Digest",
+        "screenPageViews": "4",
+        "activeUsers": "4"
+      },
+      {
+        "pageTitle": "ChatGPT agent: bridging research and action | AI Paper Digest | AI Paper Digest",
+        "screenPageViews": "4",
+        "activeUsers": "4"
+      },
+      {
+        "pageTitle": "Needle: Gemini의 Tool Calling 능력을 26M 파라미터 모델로 증류 | AI Paper Digest | AI Paper Digest",
+        "screenPageViews": "4",
+        "activeUsers": "5"
+      },
+      {
+        "pageTitle": "",
+        "screenPageViews": "3",
+        "activeUsers": "3"
+      },
+      {
+        "pageTitle": "Claude를 User Space IP Stack으로 써서 Ping에 응답시키면 얼마나 빠를까? | AI Paper Digest | AI Paper Digest",
+        "screenPageViews": "3",
+        "activeUsers": "3"
+      },
+      {
+        "pageTitle": "ClawGuard: Tool을 사용하는 LLM Agent의 Indirect Prompt Injection 방어를 위한 런타임 보안 프레임워크 | AI Paper Digest | AI Paper Digest",
+        "screenPageViews": "3",
+        "activeUsers": "1"
+      },
+      {
+        "pageTitle": "Google Gemma 4, iPhone에서 완전 오프라인 AI 추론 네이티브 실행 | AI Paper Digest | AI Paper Digest",
+        "screenPageViews": "3",
+        "activeUsers": "1"
+      },
+      {
+        "pageTitle": "MOSAIC-Bench:코딩 에이전트의 Compositional Vulnerability 유도 측정 | AI Paper Digest | AI Paper Digest",
+        "screenPageViews": "3",
+        "activeUsers": "3"
+      },
+      {
+        "pageTitle": "Many-Tier Instruction Hierarchy in LLM Agents | AI Paper Digest | AI Paper Digest",
+        "screenPageViews": "3",
+        "activeUsers": "3"
+      },
+      {
+        "pageTitle": "AI Agent를 위한 Git: re_gent | AI Paper Digest | AI Paper Digest",
+        "screenPageViews": "2",
+        "activeUsers": "4"
+      },
+      {
+        "pageTitle": "AI Paper Digest",
+        "screenPageViews": "2",
+        "activeUsers": "2"
+      },
+      {
+        "pageTitle": "AI를 이용한 클라이언트 사이드 Tool Calling으로 PDF 폼 자동 작성하기 | AI Paper Digest",
+        "screenPageViews": "2",
+        "activeUsers": "2"
+      },
+      {
+        "pageTitle": "Anthropic 공식 문서에서 발견한 Claude의 Hallucination을 크게 줄이는 3가지 Instructions | AI Paper Digest | AI Paper Digest",
+        "screenPageViews": "2",
+        "activeUsers": "1"
+      },
+      {
+        "pageTitle": "LLM의 거절(Refusal) 동작은 단 하나의 방향(Direction)으로 제어된다 | AI Paper Digest",
+        "screenPageViews": "2",
+        "activeUsers": "2"
+      },
+      {
+        "pageTitle": "Less Is More: Android 앱에 On-Device Small Language Model 통합할 때 실제로 겪는 엔지니어링 문제들 | AI Paper Digest | AI Paper Digest",
+        "screenPageViews": "2",
+        "activeUsers": "3"
+      },
+      {
+        "pageTitle": "Linking Perception, Confidence and Accuracy in MLLMs | AI Paper Digest | AI Paper Digest",
+        "screenPageViews": "2",
+        "activeUsers": "2"
+      },
+      {
+        "pageTitle": "Memento-Skills: Let Agents Design Agents | AI Paper Digest | AI Paper Digest",
+        "screenPageViews": "2",
+        "activeUsers": "2"
+      },
+      {
+        "pageTitle": "ProgramBench: LLM이 프로그램을 처음부터 다시 만들 수 있을까? | AI Paper Digest | AI Paper Digest",
+        "screenPageViews": "2",
+        "activeUsers": "4"
+      },
+      {
+        "pageTitle": "Pu.sh – 400줄 Shell 스크립트로 만든 완전한 Coding Agent Harness | AI Paper Digest",
+        "screenPageViews": "2",
+        "activeUsers": "2"
+      },
+      {
+        "pageTitle": "Specsmaxxing – AI 사이코시스 극복기, 그리고 내가 YAML로 스펙을 쓰는 이유 | AI Paper Digest",
+        "screenPageViews": "2",
+        "activeUsers": "3"
+      },
+      {
+        "pageTitle": "Tilde.run – AI Agent를 위한 트랜잭션 기반 버전 관리 파일시스템 샌드박스 | AI Paper Digest | AI Paper Digest",
+        "screenPageViews": "2",
+        "activeUsers": "3"
+      },
+      {
+        "pageTitle": "A case study in testing with 100+ Claude agents in parallel | AI Paper Digest",
+        "screenPageViews": "1",
+        "activeUsers": "1"
+      },
+      {
+        "pageTitle": "A survey on large language model based autonomous agents | AI Paper Digest | AI Paper Digest",
+        "screenPageViews": "1",
+        "activeUsers": "1"
+      },
+      {
+        "pageTitle": "AI Fluency의 역설: 숙련 사용자가 더 많이 실패하는 이유 | AI Paper Digest",
+        "screenPageViews": "1",
+        "activeUsers": "2"
+      },
+      {
+        "pageTitle": "AI가 내 게임을 플레이하게 하기 – 플레이테스팅을 돕는 Agentic Test Harness 구축 | AI Paper Digest | AI Paper Digest",
+        "screenPageViews": "1",
+        "activeUsers": "2"
+      },
+      {
+        "pageTitle": "AI를 이용한 클라이언트 사이드 Tool Calling으로 PDF 폼 자동 작성하기 | AI Paper Digest | AI Paper Digest",
+        "screenPageViews": "1",
+        "activeUsers": "2"
+      },
+      {
+        "pageTitle": "AdaFuse: Adaptive Ensemble Decoding with Test-Time Scaling for LLMs | AI Paper Digest",
+        "screenPageViews": "1",
+        "activeUsers": "1"
+      },
+      {
+        "pageTitle": "Agent-harness-kit: MCP 기반 멀티 에이전트 워크플로우 오케스트레이션 프레임워크 | AI Paper Digest | AI Paper Digest",
+        "screenPageViews": "1",
+        "activeUsers": "2"
+      },
+      {
+        "pageTitle": "AgentWard: A Lifecycle Security Architecture for Autonomous AI Agents | AI Paper Digest | AI Paper Digest",
+        "screenPageViews": "1",
+        "activeUsers": "2"
+      },
+      {
+        "pageTitle": "Airbyte Agents – 여러 데이터 소스를 아우르는 Agent용 Context Layer | AI Paper Digest | AI Paper Digest",
+        "screenPageViews": "1",
+        "activeUsers": "2"
+      },
+      {
+        "pageTitle": "Alignment whack-a-mole: Finetuning activates recall of copyrighted books in LLMs | AI Paper Digest | AI Paper Digest",
+        "screenPageViews": "1",
+        "activeUsers": "1"
+      },
+      {
+        "pageTitle": "Architecting Secure AI Agents: Perspectives on System-Level Defenses Against Indirect Prompt Injection Attacks | AI Paper Digest | AI Paper Digest",
+        "screenPageViews": "1",
+        "activeUsers": "1"
+      },
+      {
+        "pageTitle": "Budget-Constrained Agentic Large Language Models: Intention-Based Planning for Costly Tool Use | AI Paper Digest",
+        "screenPageViews": "1",
+        "activeUsers": "1"
+      },
+      {
+        "pageTitle": "Budget-Constrained Agentic Large Language Models: Intention-Based Planning for Costly Tool Use | AI Paper Digest | AI Paper Digest",
+        "screenPageViews": "1",
+        "activeUsers": "1"
+      },
+      {
+        "pageTitle": "ChatGPT가 교사의 평가를 대체할 수 있을까? LLM 기반 자동 채점·피드백 연구 리뷰 | AI Paper Digest | AI Paper Digest",
+        "screenPageViews": "1",
+        "activeUsers": "1"
+      },
+      {
+        "pageTitle": "Claude Code Unpacked: 소스코드 기반 시각적 분석 가이드 | AI Paper Digest | AI Paper Digest",
+        "screenPageViews": "1",
+        "activeUsers": "1"
+      },
+      {
+        "pageTitle": "Claude Cowork exfiltrates files | AI Paper Digest | AI Paper Digest",
+        "screenPageViews": "1",
+        "activeUsers": "1"
+      },
+      {
+        "pageTitle": "Claude Design 구독 해지 후 프로젝트 접근 불가 경험담 및 주의사항 | AI Paper Digest | AI Paper Digest",
+        "screenPageViews": "1",
+        "activeUsers": "1"
+      },
+      {
+        "pageTitle": "Claude를 활용해 모바일 앱 QA 자동화하기 (Android + iOS) | AI Paper Digest",
+        "screenPageViews": "1",
+        "activeUsers": "1"
+      },
+      {
+        "pageTitle": "ClawGuard: A Runtime Security Framework for Tool-Augmented LLM Agents Against Indirect Prompt Injection | AI Paper Digest | AI Paper Digest",
+        "screenPageViews": "1",
+        "activeUsers": "1"
+      },
+      {
+        "pageTitle": "DAC – AI 에이전트와 사람 모두를 위한 오픈소스 Dashboard-as-Code 툴 | AI Paper Digest",
+        "screenPageViews": "1",
+        "activeUsers": "1"
+      },
+      {
+        "pageTitle": "Different Language Models Learn Similar Number Representations | AI Paper Digest | AI Paper Digest",
+        "screenPageViews": "1",
+        "activeUsers": "1"
+      },
+      {
+        "pageTitle": "Efficient Memory Management for Large Language Model Serving with PagedAttention | AI Paper Digest | AI Paper Digest",
+        "screenPageViews": "1",
+        "activeUsers": "1"
+      },
+      {
+        "pageTitle": "Enhancing diagnostic capability with multi-agents conversational large language models | AI Paper Digest | AI Paper Digest",
+        "screenPageViews": "1",
+        "activeUsers": "1"
+      },
+      {
+        "pageTitle": "Evaluating 5W3H Structured Prompting for Intent Alignment in Human-AI Interaction | AI Paper Digest | AI Paper Digest",
+        "screenPageViews": "1",
+        "activeUsers": "1"
+      },
+      {
+        "pageTitle": "From Static Templates to Dynamic Runtime Graphs: A Survey of Workflow Optimization for LLM Agents | AI Paper Digest | AI Paper Digest",
+        "screenPageViews": "1",
+        "activeUsers": "1"
+      },
+      {
+        "pageTitle": "GAIA – Open-source framework for building AI agents that run on local hardware | AI Paper Digest | AI Paper Digest",
+        "screenPageViews": "1",
+        "activeUsers": "1"
+      },
+      {
+        "pageTitle": "Get Shit Done: A Meta-Prompting, Context Engineering and Spec-Driven Dev System | AI Paper Digest | AI Paper Digest",
+        "screenPageViews": "1",
+        "activeUsers": "1"
+      },
+      {
+        "pageTitle": "Google Chrome, 사용자 동의 없이 4GB AI 모델(Gemini Nano)을 몰래 설치 | AI Paper Digest | AI Paper Digest",
+        "screenPageViews": "1",
+        "activeUsers": "1"
+      },
+      {
+        "pageTitle": "Google Titans: 테스트 타임에 기억하는 법을 배우는 Neural Long-Term Memory 아키텍처 | AI Paper Digest",
+        "screenPageViews": "1",
+        "activeUsers": "1"
+      },
+      {
+        "pageTitle": "InjecAgent: Benchmarking Indirect Prompt Injections in Tool-Integrated Large Language Model Agents | AI Paper Digest | AI Paper Digest",
+        "screenPageViews": "1",
+        "activeUsers": "1"
+      },
+      {
+        "pageTitle": "Just-In-Time Reinforcement Learning: Continual Learning in LLM Agents Without Gradient Updates | AI Paper Digest | AI Paper Digest",
+        "screenPageViews": "1",
+        "activeUsers": "1"
+      },
+      {
+        "pageTitle": "LLM Visualization | AI Paper Digest | AI Paper Digest",
+        "screenPageViews": "1",
+        "activeUsers": "1"
+      },
+      {
+        "pageTitle": "LLM-NER: Advancing Named Entity Recognition with LoRA+ Fine-Tuned Large Language Models | AI Paper Digest | AI Paper Digest",
+        "screenPageViews": "1",
+        "activeUsers": "1"
+      },
+      {
+        "pageTitle": "LLMRouterBench: LLM 라우팅을 위한 대규모 벤치마크 및 통합 프레임워크 | AI Paper Digest | AI Paper Digest",
+        "screenPageViews": "1",
+        "activeUsers": "1"
+      },
+      {
+        "pageTitle": "Letting AI play my game – building an agentic test harness to help play-testing | AI Paper Digest | AI Paper Digest",
+        "screenPageViews": "1",
+        "activeUsers": "1"
+      },
+      {
+        "pageTitle": "M3 Pro에서 실시간 AI 음성/영상 대화 구현 (Gemma E2B + Kokoro) | AI Paper Digest | AI Paper Digest",
+        "screenPageViews": "1",
+        "activeUsers": "0"
+      },
+      {
+        "pageTitle": "Memori: A Persistent Memory Layer for Efficient, Context-Aware LLM Agents | AI Paper Digest | AI Paper Digest",
+        "screenPageViews": "1",
+        "activeUsers": "1"
+      },
+      {
+        "pageTitle": "Multi-Agent Collaboration Mechanisms: A Survey of LLMs | AI Paper Digest | AI Paper Digest",
+        "screenPageViews": "1",
+        "activeUsers": "1"
+      },
+      {
+        "pageTitle": "PromptChainer: Chaining Large Language Model Prompts through Visual Programming | AI Paper Digest | AI Paper Digest",
+        "screenPageViews": "1",
+        "activeUsers": "1"
+      },
+      {
+        "pageTitle": "Pu.sh – 400줄 Shell 스크립트로 만든 완전한 Coding Agent Harness | AI Paper Digest | AI Paper Digest",
+        "screenPageViews": "1",
+        "activeUsers": "1"
+      },
+      {
+        "pageTitle": "Reasoning on Graphs: Faithful and Interpretable Large Language Model Reasoning | AI Paper Digest | AI Paper Digest",
+        "screenPageViews": "1",
+        "activeUsers": "1"
+      },
+      {
+        "pageTitle": "Security Implications of Large Language Model Code Assistants: A User Study | AI Paper Digest | AI Paper Digest",
+        "screenPageViews": "1",
+        "activeUsers": "1"
+      },
+      {
+        "pageTitle": "Show HN: I built a social media management tool in 3 weeks with Claude and Codex | AI Paper Digest | AI Paper Digest",
+        "screenPageViews": "1",
+        "activeUsers": "1"
+      },
+      {
+        "pageTitle": "Show HN: Libretto – Making AI browser automations deterministic | AI Paper Digest | AI Paper Digest",
+        "screenPageViews": "1",
+        "activeUsers": "1"
+      },
+      {
+        "pageTitle": "Specsmaxxing – AI 사이코시스 극복기, 그리고 내가 YAML로 스펙을 쓰는 이유 | AI Paper Digest | AI Paper Digest",
+        "screenPageViews": "1",
+        "activeUsers": "1"
+      },
+      {
+        "pageTitle": "Statewright – AI 에이전트를 안정적으로 만드는 Visual State Machine | AI Paper Digest | AI Paper Digest",
+        "screenPageViews": "1",
+        "activeUsers": "1"
+      },
+      {
+        "pageTitle": "Strategies for Span Labeling with Large Language Models | AI Paper Digest | AI Paper Digest",
+        "screenPageViews": "1",
+        "activeUsers": "1"
+      },
+      {
+        "pageTitle": "The 5 levels of Claude Code (and how to know when you've hit the ceiling on each one) | AI Paper Digest | AI Paper Digest",
+        "screenPageViews": "1",
+        "activeUsers": "1"
+      },
+      {
+        "pageTitle": "The maths you need to start understanding LLMs | AI Paper Digest | AI Paper Digest",
+        "screenPageViews": "1",
+        "activeUsers": "1"
+      },
+      {
+        "pageTitle": "[D] Breaking down MiroThinker H1's verification centric reasoning: why fewer interaction rounds produce better agent performance | AI Paper Digest | AI Paper Digest",
+        "screenPageViews": "1",
+        "activeUsers": "1"
+      },
+      {
+        "pageTitle": "adamsreview: Claude Code용 멀티 에이전트 PR 코드 리뷰 파이프라인 | AI Paper Digest | AI Paper Digest",
+        "screenPageViews": "1",
+        "activeUsers": "3"
+      },
+      {
+        "pageTitle": "c-CRAB: AI 코드 리뷰 에이전트 벤치마크 | AI Paper Digest | AI Paper Digest",
+        "screenPageViews": "1",
+        "activeUsers": "1"
+      },
+      {
+        "pageTitle": "당신의 Agent, 그들의 무기: OpenClaw 실제 환경 보안 분석 | AI Paper Digest | AI Paper Digest",
+        "screenPageViews": "1",
+        "activeUsers": "1"
+      },
+      {
+        "pageTitle": "도로 안전과 언어·비전의 만남: Multimodal LLM을 활용한 교통사고 영상 분석 | AI Paper Digest | AI Paper Digest",
+        "screenPageViews": "1",
+        "activeUsers": "1"
+      },
+      {
+        "pageTitle": "메인프레임과 COBOL을 위한 Agentic 개발 환경 'Hopper' | AI Paper Digest | AI Paper Digest",
+        "screenPageViews": "1",
+        "activeUsers": "1"
+      },
+      {
+        "pageTitle": "북마크 | AI Paper Digest",
+        "screenPageViews": "1",
+        "activeUsers": "1"
+      },
+      {
+        "pageTitle": "사용자 데이터를 보호하는 AI Agent 실행 환경 GAAP | AI Paper Digest | AI Paper Digest",
+        "screenPageViews": "1",
+        "activeUsers": "1"
+      },
+      {
+        "pageTitle": "자연어에서 검증된 코드까지: Dafny 기반 Formal Verification으로 AI 코드 생성 신뢰성 높이기 | AI Paper Digest | AI Paper Digest",
+        "screenPageViews": "1",
+        "activeUsers": "1"
+      },
+      {
+        "pageTitle": "토큰별 기여도 분석 기반 쿼리 효율적 LLM 탈옥 퍼징 (TriageFuzz) | AI Paper Digest | AI Paper Digest",
+        "screenPageViews": "1",
+        "activeUsers": "1"
+      },
+      {
+        "pageTitle": "하루 만에 15개 LLM의 코딩 성능을 개선했다 — 바꾼 건 Harness뿐 | AI Paper Digest | AI Paper Digest",
+        "screenPageViews": "1",
+        "activeUsers": "1"
+      },
+      {
+        "pageTitle": "A small number of samples can poison LLMs of any size | AI Paper Digest | AI Paper Digest",
+        "screenPageViews": "0",
+        "activeUsers": "1"
+      },
+      {
+        "pageTitle": "AI 기반 Unit Test 자동 생성과 Test-Driven Code Refactoring: 실제 프로덕션 케이스 스터디 | AI Paper Digest | AI Paper Digest",
+        "screenPageViews": "0",
+        "activeUsers": "1"
+      },
+      {
+        "pageTitle": "AI가 내 게임을 플레이하게 하기 – 플레이테스팅을 돕는 Agentic Test Harness 구축 | AI Paper Digest",
+        "screenPageViews": "0",
+        "activeUsers": "1"
+      },
+      {
+        "pageTitle": "Agent Flow: Claude Code 실행 흐름을 실시간으로 시각화하는 도구 | AI Paper Digest | AI Paper Digest",
+        "screenPageViews": "0",
+        "activeUsers": "1"
+      },
+      {
+        "pageTitle": "Agent-Native CLI를 위한 설계 원칙 10가지 | AI Paper Digest | AI Paper Digest",
+        "screenPageViews": "0",
+        "activeUsers": "1"
+      },
+      {
+        "pageTitle": "Bookmarks | AI Paper Digest",
+        "screenPageViews": "0",
+        "activeUsers": "1"
+      },
+      {
+        "pageTitle": "Claude를 활용해 모바일 앱 QA 자동화하기 (Android + iOS) | AI Paper Digest | AI Paper Digest",
+        "screenPageViews": "0",
+        "activeUsers": "1"
+      },
+      {
+        "pageTitle": "CollabCoder: Plan-Code Co-Evolution을 통한 협력적 의사결정 기반 효율적 코드 생성 | AI Paper Digest",
+        "screenPageViews": "0",
+        "activeUsers": "1"
+      },
+      {
+        "pageTitle": "EvanFlow – Claude Code를 위한 TDD 기반 반복 피드백 루프 | AI Paper Digest",
+        "screenPageViews": "0",
+        "activeUsers": "1"
+      },
+      {
+        "pageTitle": "Gemini Pro 3가 상상한 10년 후 Hacker News 프론트페이지 | AI Paper Digest | AI Paper Digest",
+        "screenPageViews": "0",
+        "activeUsers": "1"
+      },
+      {
+        "pageTitle": "In-Context Prompting이 절차적 작업에서 Agent Orchestration을 대체한다 | AI Paper Digest | AI Paper Digest",
+        "screenPageViews": "0",
+        "activeUsers": "1"
+      },
+      {
+        "pageTitle": "LLM은 어떻게 Verbal Confidence를 계산하는가? | AI Paper Digest | AI Paper Digest",
+        "screenPageViews": "0",
+        "activeUsers": "1"
+      },
+      {
+        "pageTitle": "Leanstral: Open-source agent for trustworthy coding and formal proof engineering | AI Paper Digest | AI Paper Digest",
+        "screenPageViews": "0",
+        "activeUsers": "1"
+      },
+      {
+        "pageTitle": "Natural Language Autoencoders: Claude의 내부 활성화를 자연어 텍스트로 변환하는 기법 | AI Paper Digest | AI Paper Digest",
+        "screenPageViews": "0",
+        "activeUsers": "1"
+      },
+      {
+        "pageTitle": "Show HN: Browser Harness – Gives LLM freedom to complete any browser task | AI Paper Digest | AI Paper Digest",
+        "screenPageViews": "0",
+        "activeUsers": "1"
+      },
+      {
+        "pageTitle": "Show HN: Git for AI Agents | AI Paper Digest | AI Paper Digest",
+        "screenPageViews": "0",
+        "activeUsers": "1"
+      },
+      {
+        "pageTitle": "TerminalBench 1위 달성한 오픈소스 코딩 에이전트 Dirac - API 비용 50~80% 절감 | AI Paper Digest",
+        "screenPageViews": "0",
+        "activeUsers": "1"
+      },
+      {
+        "pageTitle": "Trend Analysis | AI Paper Digest",
+        "screenPageViews": "0",
+        "activeUsers": "1"
+      },
+      {
+        "pageTitle": "We replaced RAG with a virtual filesystem for our AI documentation assistant | AI Paper Digest | AI Paper Digest",
+        "screenPageViews": "0",
+        "activeUsers": "1"
+      },
+      {
+        "pageTitle": "자연어에서 검증된 코드까지: Dafny 기반 Formal Verification으로 AI 코드 생성 신뢰성 높이기 | AI Paper Digest",
+        "screenPageViews": "0",
+        "activeUsers": "1"
+      }
+    ],
+    "first_session_engagement": [
+      {
+        "firstSessionDate": "20260330",
+        "userEngagementDuration": "694",
+        "eventCountPerUser": "22",
+        "totalUsers": "3"
+      },
+      {
+        "firstSessionDate": "20260325",
+        "userEngagementDuration": "582",
+        "eventCountPerUser": "17.714285714285715",
+        "totalUsers": "7"
+      },
+      {
+        "firstSessionDate": "20260507",
+        "userEngagementDuration": "572",
+        "eventCountPerUser": "9.7142857142857135",
+        "totalUsers": "7"
+      },
+      {
+        "firstSessionDate": "20260505",
+        "userEngagementDuration": "420",
+        "eventCountPerUser": "22.714285714285715",
+        "totalUsers": "7"
+      },
+      {
+        "firstSessionDate": "20260513",
+        "userEngagementDuration": "413",
+        "eventCountPerUser": "10.333333333333334",
+        "totalUsers": "9"
+      },
+      {
+        "firstSessionDate": "20260327",
+        "userEngagementDuration": "352",
+        "eventCountPerUser": "27.666666666666668",
+        "totalUsers": "3"
+      },
+      {
+        "firstSessionDate": "20260326",
+        "userEngagementDuration": "307",
+        "eventCountPerUser": "17.5",
+        "totalUsers": "2"
+      },
+      {
+        "firstSessionDate": "20260511",
+        "userEngagementDuration": "274",
+        "eventCountPerUser": "6",
+        "totalUsers": "7"
+      },
+      {
+        "firstSessionDate": "20260506",
+        "userEngagementDuration": "211",
+        "eventCountPerUser": "7.583333333333333",
+        "totalUsers": "12"
+      },
+      {
+        "firstSessionDate": "20260503",
+        "userEngagementDuration": "204",
+        "eventCountPerUser": "6.6",
+        "totalUsers": "5"
+      },
+      {
+        "firstSessionDate": "20260512",
+        "userEngagementDuration": "151",
+        "eventCountPerUser": "6.9090909090909092",
+        "totalUsers": "11"
+      },
+      {
+        "firstSessionDate": "20260504",
+        "userEngagementDuration": "139",
+        "eventCountPerUser": "8.6666666666666661",
+        "totalUsers": "3"
+      },
+      {
+        "firstSessionDate": "20260514",
+        "userEngagementDuration": "118",
+        "eventCountPerUser": "5.416666666666667",
+        "totalUsers": "12"
+      },
+      {
+        "firstSessionDate": "",
+        "userEngagementDuration": "115",
+        "eventCountPerUser": "2.8",
+        "totalUsers": "5"
+      },
+      {
+        "firstSessionDate": "20260314",
+        "userEngagementDuration": "89",
+        "eventCountPerUser": "31",
+        "totalUsers": "1"
+      },
+      {
+        "firstSessionDate": "20260405",
+        "userEngagementDuration": "79",
+        "eventCountPerUser": "23",
+        "totalUsers": "1"
+      },
+      {
+        "firstSessionDate": "20260509",
+        "userEngagementDuration": "68",
+        "eventCountPerUser": "6.2",
+        "totalUsers": "5"
+      },
+      {
+        "firstSessionDate": "20260510",
+        "userEngagementDuration": "52",
+        "eventCountPerUser": "6",
+        "totalUsers": "4"
+      },
+      {
+        "firstSessionDate": "20260508",
+        "userEngagementDuration": "29",
+        "eventCountPerUser": "5",
+        "totalUsers": "9"
+      },
+      {
+        "firstSessionDate": "20260331",
+        "userEngagementDuration": "16",
+        "eventCountPerUser": "5",
+        "totalUsers": "1"
+      },
+      {
+        "firstSessionDate": "20260423",
+        "userEngagementDuration": "7",
+        "eventCountPerUser": "22",
+        "totalUsers": "1"
+      },
+      {
+        "firstSessionDate": "20260501",
+        "userEngagementDuration": "5",
+        "eventCountPerUser": "8.5",
+        "totalUsers": "2"
+      },
+      {
+        "firstSessionDate": "20260502",
+        "userEngagementDuration": "1",
+        "eventCountPerUser": "4.5",
+        "totalUsers": "6"
+      },
+      {
+        "firstSessionDate": "(not set)",
+        "userEngagementDuration": "0",
+        "eventCountPerUser": "1",
+        "totalUsers": "2"
+      },
+      {
+        "firstSessionDate": "20260409",
+        "userEngagementDuration": "0",
+        "eventCountPerUser": "0",
+        "totalUsers": "1"
+      },
+      {
+        "firstSessionDate": "20260416",
+        "userEngagementDuration": "0",
+        "eventCountPerUser": "0",
+        "totalUsers": "1"
+      },
+      {
+        "firstSessionDate": "20260422",
+        "userEngagementDuration": "0",
+        "eventCountPerUser": "0",
+        "totalUsers": "1"
+      },
+      {
+        "firstSessionDate": "20260428",
+        "userEngagementDuration": "0",
+        "eventCountPerUser": "0",
+        "totalUsers": "1"
+      },
+      {
+        "firstSessionDate": "20260429",
+        "userEngagementDuration": "0",
+        "eventCountPerUser": "0",
+        "totalUsers": "1"
+      },
+      {
+        "firstSessionDate": "20260515",
+        "userEngagementDuration": "0",
+        "eventCountPerUser": "4.5",
+        "totalUsers": "8"
+      }
+    ],
+    "purchases": [],
+    "ads": []
+  },
+  "sections_status": {
+    "overview": "ok",
+    "sources": "ok",
+    "new_users_by_day": "ok",
+    "devices": "ok",
+    "countries": "ok",
+    "events": "ok",
+    "pages": "ok",
+    "first_session_engagement": "ok",
+    "purchases": "ok",
+    "ads": "ok"
+  }
+}
