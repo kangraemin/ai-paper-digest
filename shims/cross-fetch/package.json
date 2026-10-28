@@ -1,0 +1,9 @@
+{
+  "name": "cross-fetch",
+  "version": "4.1.0",
+  "description": "전역 fetch를 그대로 내보낸다. Workers 번들에 node-fetch 폴리필이 들어가 libsql 요청이 깨지는 것을 막는다.",
+  "main": "index.js",
+  "exports": {
+    ".": { "types": "./index.d.ts", "import": "./index.mjs", "require": "./index.js" }
+  }
+}
