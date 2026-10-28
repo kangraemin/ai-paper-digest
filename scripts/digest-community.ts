@@ -87,6 +87,12 @@ export async function digestCommunity(): Promise<number> {
       successCount++;
       console.log(`  ✅ 완료`);
     } catch (err) {
+      // 모델이 거절한 글은 다시 돌려도 또 거절돼 매일 수집 전체를 실패시킨다(10/27·28) → 내용 부족처럼 지운다
+      if ((err as Error).message === 'model refused') {
+        console.log(`  ⛔ [refused] ${item.id} — 모델 거절, 삭제`);
+        await db.delete(papers).where(eq(papers.id, item.id));
+        continue;
+      }
       console.error(`  ❌ 실패: ${item.id}`, (err as Error).message);
       failCount++;
     }
