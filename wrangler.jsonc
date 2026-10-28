@@ -1,0 +1,19 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "ai-paper",
+  "account_id": "c023da92383ce204b357f6f18b86eb86",
+  "main": ".open-next/worker.js",
+  "compatibility_date": "2026-10-01",
+  "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS"
+  },
+  "services": [
+    { "binding": "WORKER_SELF_REFERENCE", "service": "ai-paper" }
+  ],
+  "kv_namespaces": [
+    { "binding": "NEXT_INC_CACHE_KV", "id": "7f9e0989c89749bfba10cb85af5a41d3" }
+  ],
+  "observability": { "enabled": true }
+}

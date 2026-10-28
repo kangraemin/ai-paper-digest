@@ -2,6 +2,10 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   compress: true,
+  // OpenNext(Cloudflare) 번들이 libsql의 workerd용 파일을 찾도록 추적에 넣는다
+  outputFileTracingIncludes: {
+    '/**': ['./node_modules/@libsql/**/*'],
+  },
   async headers() {
     return [
       {

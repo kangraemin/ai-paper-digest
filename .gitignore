@@ -56,3 +56,8 @@ next-env.d.ts
 
 # Claude Code 예약 작업 잠금
 .claude/scheduled_tasks.lock
+
+# OpenNext (Cloudflare)
+.open-next/
+.wrangler/
+.dev.vars

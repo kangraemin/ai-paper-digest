@@ -6,7 +6,10 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "cf:build": "opennextjs-cloudflare build",
+    "cf:preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
+    "cf:deploy": "bash scripts/deploy-cf.sh"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.78.0",
@@ -14,6 +17,7 @@
     "@google-analytics/data": "^5.2.1",
     "@libsql/client": "^0.17.0",
     "@next/third-parties": "^16.1.6",
+    "@opennextjs/cloudflare": "^1.20.13",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "drizzle-orm": "^0.45.1",
@@ -43,6 +47,7 @@
     "eslint-config-next": "^15.5.12",
     "tailwindcss": "^4",
     "tsx": "^4.21.0",
-    "typescript": "^5"
+    "typescript": "^5",
+    "wrangler": "^4.154.0"
   }
 }

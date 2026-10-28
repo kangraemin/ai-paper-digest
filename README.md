@@ -43,7 +43,7 @@ A GitHub Actions pipeline runs automatically every day at 07:00 KST:
 | 3. Summarize community | `digest-community.ts` | Full post + comments | Claude Sonnet | Max 10/day |
 | 4. Summarize papers | `summarize.ts` | Full PDF text | Claude Sonnet | Max 2/day |
 | 5. Translate | `translate.ts` | Korean summaries | Claude Sonnet | Max 12/day |
-| 6. Redeploy | `redeploy.yml` | — | Vercel production deploy | — |
+| 6. Redeploy | `redeploy.yml` | main push | Cloudflare Workers deploy (OpenNext, `scripts/deploy-cf.sh`) | — |
 | 7. Slack drip | `api/cron/slack-drip` | — | cron-job.org (every 5min) | Max 20/day |
 
 **Screening criteria for papers** — passes only if:
@@ -79,7 +79,7 @@ Add to your Slack workspace directly from the site. Summaries are delivered thro
 | AI | Claude Sonnet (summarization) · Haiku (screening) |
 | Database | Turso + Drizzle ORM |
 | Styling | Tailwind CSS v4 + shadcn/ui |
-| Infra | GitHub Actions + Vercel + cron-job.org |
+| Infra | GitHub Actions + Cloudflare Workers (OpenNext) + cron-job.org |
 
 ---
 
