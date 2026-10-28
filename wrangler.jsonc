@@ -9,6 +9,10 @@
     "directory": ".open-next/assets",
     "binding": "ASSETS"
   },
+  "routes": [
+    { "pattern": "paper-digest.app", "custom_domain": true },
+    { "pattern": "www.paper-digest.app", "custom_domain": true }
+  ],
   "services": [
     { "binding": "WORKER_SELF_REFERENCE", "service": "ai-paper" }
   ],
