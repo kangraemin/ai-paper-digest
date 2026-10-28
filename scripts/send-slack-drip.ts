@@ -40,13 +40,13 @@ async function main() {
 
   const siteUrl = process.env.SITE_URL || 'https://paper-digest.app';
   const REVOKED_ERRORS = ['token_revoked', 'account_inactive', 'not_authed', 'invalid_auth'];
-  let allOk = true;
+  let anyOk = false;
 
   for (const ws of workspaces) {
     if (!ws.botToken || !ws.channelId) continue;
     const result = await sendSlackNotification(paper, ws.botToken, ws.channelId, siteUrl, ws.lang ?? 'ko');
+    if (result.ok) anyOk = true;
     if (!result.ok) {
-      allOk = false;
       if (result.error && REVOKED_ERRORS.includes(result.error)) {
         console.log(`  ${ws.teamName}: token revoked, removing from DB`);
         await db.delete(slackWorkspaces).where(eq(slackWorkspaces.id, ws.id));
@@ -56,7 +56,9 @@ async function main() {
     console.log(`  ${ws.teamName}: ${result.ok ? 'OK' : `FAIL (${result.error})`} (${ws.lang ?? 'ko'})`);
   }
 
-  if (allOk) {
+  // 한 곳이라도 보냈으면 보낸 것으로 친다. 한 워크스페이스 실패(not_in_channel 등)로 표시를 안 하면
+  // 같은 글이 다음 실행마다 나머지 전부에 다시 간다(2026-10-28 같은 글 하루 3번).
+  if (anyOk) {
     await db.update(papers)
       .set({ slackNotifiedAt: new Date().toISOString() })
       .where(eq(papers.id, paper.id));
