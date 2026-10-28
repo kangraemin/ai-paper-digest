@@ -75,7 +75,7 @@ export async function GET(req: NextRequest) {
       { headers: { 'Cache-Control': 'public, s-maxage=3600, stale-while-revalidate=86400' } }
     );
   } catch (e) {
-    console.error('[api/papers]', e);
+    console.error('[api/papers]', e, (e as { cause?: unknown })?.cause);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
