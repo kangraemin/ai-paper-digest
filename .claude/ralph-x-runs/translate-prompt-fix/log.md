@@ -605,3 +605,18 @@ Post-processor not reliably catching all two-sentence patterns or A/An openers. 
 2. Universal A/An + This/The/Researchers detector with single regex
 3. Rewriter hard constraint: first word must be named concept/product/verb
 4. Academic paper strategy: extract named technique from content and use as subject
+
+
+---
+
+## Iter 24 (2026-10-30) - 오프라인(API 호출 0), 규칙 후처리 개선
+
+- **핵심 발견**: `scripts/test-translate.ts`는 자체 프롬프트 사본을 쓰고 `fixOneLiner` 후처리를 거치지 않는다. 즉 iter 16~23의 samples.json은 후처리 적용 전 원본 번역이라, 후처리 개선 효과가 한 번도 평가에 반영되지 않았다.
+- **변경**: `src/lib/translate/one-liner-fix.ts` 신설(의존성 없음). `scripts/translate.ts`의 fixOneLiner가 이걸 쓴다.
+  1. 첫 문장 일괄 자르기(약어 vs. e.g.·소수점 보호), 편집자 꼬리(", highlighting ...") 제거
+  2. A/An/The/This 시작 감지 후 규칙 치환: 구체 개체(따옴표 용어·숫자·고유명사)가 있으면 관사만 제거, 없으면 제목 앞부분의 조어명(FastAV, Chronos 등)으로 주어 교체, LLM/AI 약어뿐이면 관사 제거
+  3. "A study demonstrates (that) ..." 벗기기, "while X, it Y" -> "X but Y"
+  4. 규칙으로 못 고친 것만 LLM 재작성 1회(제목 힌트 포함) 후 규칙 재적용, 더 나쁘면 규칙 결과 유지
+- **평가(녹화 samples.json 50건, 검사기 + 직접 판독)**: 검사기 기준 어색함 31/50 -> 9/50. 직접 판독 합격 19/50(38%) -> 41/50(82%). 목표 95%는 미달.
+- **남은 실패(9)**: 관계절/분사구가 붙은 A+명사구 (2502.13260, 2604.07147, 2601.09929, 2603.21489, 2603.20105, reddit_ChatGPT_1sbuyeg), 서베이 서술 (e454a009), 주어가 The+추상명사 (hn_47761625), 수동형 (2603.11957). 전부 LLM 재작성 단계 몫이라 실호출 평가 필요.
+- **실호출 필요**: 위 9건 + 신규 재작성 프롬프트(제목 힌트) 효과 확인용 약 9건 이상, 최종 100건 합격률 측정에는 100건 번역.

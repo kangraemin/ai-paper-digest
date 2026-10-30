@@ -3,6 +3,7 @@ import { papers } from '../src/lib/db/schema';
 import { callGemma } from '../src/lib/gemma/client';
 import { withRetry } from '../src/lib/utils/retry';
 import { eq, and, isNotNull, or, isNull } from 'drizzle-orm';
+import { ruleFixOneLiner, isAwkwardOneLiner, awkwardReasons } from '../src/lib/translate/one-liner-fix';
 
 const REWRITE_PROMPT = `Rewrite this one-liner as a single Ars Technica headline sentence.
 
@@ -26,42 +27,22 @@ BAD → GOOD:
 Input: {input}
 Output:`;
 
-function truncateToOneSentence(text: string): string {
-  const match = text.match(/^(.+?\.)\s+[A-Z]/);
-  return match ? match[1] : text;
-}
-
-function needsOneLinerFix(text: string): boolean {
-  if (/\.\s+[A-Z]/.test(text)) return true;
-  if (/^(This |The |A |An |Researchers |Research )/.test(text)) return true;
-  if (/\bis an? [\w\s-]+ (that|for|which) /i.test(text)) return true;
-  return false;
-}
-
 function cleanRewriteOutput(raw: string): string {
-  return raw.trim().replace(/^["']|["']$/g, '').replace(/^Output:\s*/i, '');
+  return raw.trim().replace(/^Output:\s*/i, '');
 }
 
-async function fixOneLiner(text: string): Promise<string> {
-  if (!needsOneLinerFix(text)) return text;
+// 1) 규칙 후처리(첫 문장 자르기·A/An/This/The 제거·제목 이름 치환) → 2) 그래도 어색하면 LLM 재작성 1회 → 규칙 재적용
+async function fixOneLiner(text: string, title?: string): Promise<string> {
+  const ruled = ruleFixOneLiner(text, title);
+  if (!isAwkwardOneLiner(ruled)) return ruled;
 
-  const prompt = REWRITE_PROMPT.replace('{input}', text);
+  const hint = title ? `\nPaper/project title (use its coined name as the subject if it fits): ${title}` : '';
+  const prompt = REWRITE_PROMPT.replace('{input}', ruled + hint);
   const raw = await withRetry(() => callGemma(prompt), { label: 'fix-oneliner', retries: 2 });
-  let fixed = truncateToOneSentence(cleanRewriteOutput(raw));
+  const rewritten = ruleFixOneLiner(cleanRewriteOutput(raw), title);
 
-  if (!needsOneLinerFix(fixed)) return fixed;
-
-  if (/^(A |An |The |This |Researchers )/.test(fixed)) {
-    const raw2 = await withRetry(() => callGemma(REWRITE_PROMPT.replace('{input}', fixed)), { label: 'fix-oneliner-retry', retries: 1 });
-    const fixed2 = truncateToOneSentence(cleanRewriteOutput(raw2));
-    if (!needsOneLinerFix(fixed2)) return fixed2;
-    fixed = fixed2;
-  }
-
-  const truncated = truncateToOneSentence(text);
-  if (!needsOneLinerFix(truncated)) return truncated;
-
-  return fixed;
+  const bad = (t: string) => awkwardReasons(t).length;
+  return bad(rewritten) <= bad(ruled) ? rewritten : ruled;
 }
 
 const TRANSLATE_PROMPT = `You are a technical translator specializing in AI/ML content. Translate the following Korean fields to English.
@@ -179,7 +160,7 @@ async function main() {
 
       // oneLinerEn 후처리: 어색한 패턴 감지 → 재작성
       if (missing.oneLiner && result.oneLinerEn) {
-        result.oneLinerEn = await fixOneLiner(result.oneLinerEn);
+        result.oneLinerEn = await fixOneLiner(result.oneLinerEn, p.title);
       }
 
       // 누락됐던 필드만 업데이트
