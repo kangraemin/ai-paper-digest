@@ -30,7 +30,7 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
   if (!isTopicSlug(slug)) return {};
   const isKo = lang === 'ko';
   const name = (isKo ? TOPIC_NAME_KO : TOPIC_NAME_EN)[slug];
-  const title = isKo ? `${name} 논문 — AI Paper Digest` : `${name} Papers — AI Paper Digest`;
+  const title = isKo ? `${name} 논문` : `${name} Papers`;
   const description = isKo
     ? `${name} 관련 AI/LLM 논문 한글 요약 모음.`
     : `Curated AI/LLM papers on ${name}.`;
