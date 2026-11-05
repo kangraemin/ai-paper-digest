@@ -18,9 +18,9 @@ export async function generateMetadata({
   const { lang } = await routeParams
   const isKo = lang === 'ko'
   return {
-    title: isKo
-      ? 'AI Paper Digest — AI·LLM 논문 매일 한글 요약'
-      : 'AI Paper Digest — Daily AI/LLM Paper Summaries',
+    title: { absolute: isKo
+      ? 'AI Paper Digest — arXiv·HN·Reddit AI·LLM 논문 매일 한글 요약'
+      : 'AI Paper Digest — Daily AI/LLM Paper Summaries from arXiv, HN & Reddit' },
     description: isKo
       ? '매일 업데이트되는 AI/LLM 논문 한글 요약. arXiv 최신 논문을 Claude가 요약합니다.'
       : 'Daily AI/LLM paper digests from arXiv, HN & Reddit — summarized by Claude. Free newsletter.',
@@ -29,6 +29,7 @@ export async function generateMetadata({
       languages: {
         'ko-KR': `${BASE}/ko`,
         'en-US': `${BASE}/en`,
+        'x-default': `${BASE}/en`,
       },
     },
     openGraph: {
@@ -98,6 +99,14 @@ export default async function Home({
 
   return (
     <div className="w-full max-w-[800px] flex flex-col px-4 sm:px-6 py-6">
+      <h1 className="text-foreground text-[24px] md:text-[28px] font-semibold leading-tight tracking-tight mb-1">
+        {lang === 'ko' ? 'AI·LLM 논문 매일 한글 요약' : 'Daily AI/LLM paper summaries'}
+      </h1>
+      <p className="text-muted-foreground text-sm mb-4">
+        {lang === 'ko'
+          ? 'arXiv, Hacker News, Reddit의 최신 AI 논문과 화제 글을 Claude가 요약합니다.'
+          : 'Latest AI papers and discussions from arXiv, Hacker News and Reddit, summarized by Claude.'}
+      </p>
       <Suspense fallback={<PaperFeedFallback initialPapers={items} lang={lang as 'ko' | 'en'} />}>
         <PaperFeed
           initialPapers={items}

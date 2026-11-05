@@ -27,9 +27,12 @@ export function middleware(req: NextRequest) {
 
   const url = req.nextUrl.clone();
   url.pathname = `/${lang}${pathname}`;
-  return NextResponse.redirect(url);
+  // 루트는 검색엔진용으로 영구 리다이렉트(308). 언어 감지 결과라 브라우저가 캐시하지 않게 no-store
+  const res = NextResponse.redirect(url, 308);
+  res.headers.set('Cache-Control', 'no-store');
+  return res;
 }
 
 export const config = {
-  matcher: ['/((?!api|_next/static|_next/image|favicon\\.ico|sitemap\\.xml|robots\\.txt|opengraph-image|.*\\.(?:ico|png|jpg|svg|webp|xml)).*)'],
+  matcher: ['/((?!api|_next/static|_next/image|favicon\\.ico|sitemap\\.xml|robots\\.txt|llms\\.txt|opengraph-image|.*\\.(?:ico|png|jpg|svg|webp|xml)).*)'],
 };
