@@ -32,8 +32,8 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
   const name = (isKo ? TOPIC_NAME_KO : TOPIC_NAME_EN)[slug];
   const title = isKo ? `${name} 논문` : `${name} Papers`;
   const description = isKo
-    ? `${name} 관련 AI/LLM 논문 한글 요약 모음.`
-    : `Curated AI/LLM papers on ${name}.`;
+    ? `${name} 관련 AI/LLM 논문을 Claude가 한글로 요약한 모음. arXiv·Hacker News·Reddit 최신 글을 매일 갱신합니다.`
+    : `Curated AI/LLM papers on ${name}, summarized by Claude from arXiv, Hacker News and Reddit and updated daily.`;
   return {
     title,
     description,
