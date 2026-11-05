@@ -75,7 +75,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (result.length === 0) return {};
   const paper = result[0];
   const title = lang === 'en' ? paper.title : (paper.titleKo || paper.title);
-  const pageTitle = title.length > 60 ? `${title.slice(0, 59)}…` : title; // 사이트명은 layout 템플릿이 붙인다
+  const pageTitle = title.length > 50 ? `${title.slice(0, 49)}…` : title; // 사이트명은 layout 템플릿이 붙인다
   const rawDesc = (lang === 'en' ? paper.oneLinerEn : paper.oneLiner)
     || paper.abstract?.slice(0, 140);
   const description = rawDesc
