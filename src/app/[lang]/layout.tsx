@@ -20,6 +20,7 @@ export async function generateMetadata({
   return {
     alternates: {
       canonical: `${BASE}/${lang}`,
+      types: { 'application/rss+xml': [{ url: `${BASE}/api/rss?lang=${lang}`, title: 'AI Paper Digest RSS' }] },
       languages: {
         ...Object.fromEntries(
           SUPPORTED_LANGS.map((l) => [

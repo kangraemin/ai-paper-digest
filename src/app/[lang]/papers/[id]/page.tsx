@@ -78,9 +78,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const pageTitle = title.length > 50 ? `${title.slice(0, 49)}…` : title; // 사이트명은 layout 템플릿이 붙인다
   const rawDesc = (lang === 'en' ? paper.oneLinerEn : paper.oneLiner)
     || paper.abstract?.slice(0, 140);
-  const description = rawDesc
+  const shortDesc = rawDesc
     ? (rawDesc.length > 140 ? rawDesc.slice(0, 140) + '…' : rawDesc)
       + (lang === 'en' ? ' — Claude AI summary' : '')
+    : '';
+  // 한국어 한 줄 요약이 40자 미만이면 논문 제목을 덧붙인다
+  const description = shortDesc
+    ? (shortDesc.length < 40 ? `${shortDesc} (${title.slice(0, 100)})` : shortDesc)
     : (lang === 'en'
         ? `${paper.title} — Claude AI summary | AI Paper Digest`
         : `${paper.titleKo || paper.title} — AI 논문 요약`);
@@ -136,6 +140,7 @@ export default async function PaperDetail({ params }: Props) {
     headline: displayTitle,
     description: lf(paper.oneLiner, paper.oneLinerEn) || paper.abstract?.slice(0, 200) || '',
     datePublished: paper.publishedAt,
+    dateModified: paper.summarizedAt || paper.publishedAt,
     author: authorList.map((name) => ({ '@type': 'Person', name })),
     publisher: {
       '@type': 'Organization',

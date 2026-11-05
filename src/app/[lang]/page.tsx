@@ -26,6 +26,7 @@ export async function generateMetadata({
       : 'Daily AI/LLM paper digests from arXiv, HN & Reddit — summarized by Claude. Free newsletter.',
     alternates: {
       canonical: `${BASE}/${lang}`,
+      types: { 'application/rss+xml': [{ url: `${BASE}/api/rss?lang=${lang}`, title: 'AI Paper Digest RSS' }] },
       languages: {
         'ko-KR': `${BASE}/ko`,
         'en-US': `${BASE}/en`,
@@ -107,6 +108,11 @@ export default async function Home({
           ? 'arXiv, Hacker News, Reddit의 최신 AI 논문과 화제 글을 Claude가 요약합니다.'
           : 'Latest AI papers and discussions from arXiv, Hacker News and Reddit, summarized by Claude.'}
       </p>
+      {items[0] && (
+        <p className="text-muted-foreground text-xs mb-4">
+          {lang === 'ko' ? '기준일' : 'Updated'}: {new Date(items[0].publishedAt).toISOString().slice(0, 10)}
+        </p>
+      )}
       <Suspense fallback={<PaperFeedFallback initialPapers={items} lang={lang as 'ko' | 'en'} />}>
         <PaperFeed
           initialPapers={items}

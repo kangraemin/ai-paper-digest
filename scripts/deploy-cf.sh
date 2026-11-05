@@ -27,3 +27,6 @@ rm -rf .next .open-next
 npx opennextjs-cloudflare build
 # 큰 KV 묶음은 로컬 회선에서 끊겨 캐시를 작게 나눠 올린다
 npx opennextjs-cloudflare deploy --cacheChunkSize 5
+
+# 배포 뒤 IndexNow 알림(실패해도 무시)
+node scripts/indexnow.mjs || true
