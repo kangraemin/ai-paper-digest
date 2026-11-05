@@ -15,7 +15,7 @@ export function GET() {
 
 ## Data
 - [Sitemap](${BASE}/sitemap.xml)
-- [RSS feed](${BASE}/api/rss)
+- [RSS feed](${BASE}/api/rss?lang=en)
 
 Each paper page (${BASE}/en/papers/<id>) has a one-line summary, key points, source link and related papers.
 `
