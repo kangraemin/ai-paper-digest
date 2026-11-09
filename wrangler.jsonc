@@ -9,7 +9,9 @@
   "keep_names": false,
   "assets": {
     "directory": ".open-next/assets",
-    "binding": "ASSETS"
+    "binding": "ASSETS",
+    // 검색엔진 소유확인 파일은 .html 주소 그대로 200으로 제공한다.
+    "html_handling": "none"
   },
   "routes": [
     { "pattern": "paper-digest.app", "custom_domain": true },
