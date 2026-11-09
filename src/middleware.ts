@@ -5,6 +5,9 @@ const SUPPORTED = ['ko', 'en'];
 export function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
+  // 검색 소유확인 파일은 언어 경로로 보내지 않고 원래 주소에서 제공한다.
+  if (/^\/naver[a-f0-9]{32}\.html$/.test(pathname)) return NextResponse.next();
+
   // Already has lang prefix
   const firstSegment = pathname.split('/')[1];
   if (SUPPORTED.includes(firstSegment)) {
