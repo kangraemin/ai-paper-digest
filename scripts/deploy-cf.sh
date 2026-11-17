@@ -3,7 +3,7 @@ set -euo pipefail
 
 # Cloudflare Workers(OpenNext)로 빌드·배포한다.
 # 사용법: bash scripts/deploy-cf.sh
-# - CI: CLOUDFLARE_API_TOKEN(Workers·KV 쓰기 권한) 환경변수를 쓴다.
+# - CI: CLOUDFLARE_API_TOKEN(Workers·R2 쓰기 권한) 환경변수를 쓴다.
 # - 로컬: wrangler OAuth 세션 토큰을 쓴다. wrangler는 프로젝트 .env를 읽으므로
 #   .env의 CLOUDFLARE_API_TOKEN(권한 다름)이 끼어들지 않게 프로세스 env로 덮는다.
 
@@ -25,7 +25,7 @@ fi
 
 rm -rf .next .open-next
 npx opennextjs-cloudflare build
-# 큰 KV 묶음은 로컬 회선에서 끊겨 캐시를 작게 나눠 올린다
+# 큰 캐시 묶음은 로컬 회선에서 끊겨 작게 나눠 올린다
 npx opennextjs-cloudflare deploy --cacheChunkSize 5
 
 # 배포 뒤 IndexNow 알림(실패해도 무시)
